@@ -1,0 +1,882 @@
+{
+ "A": {
+  "subject": "PFJ-0be66a_R",
+  "mask": "CORT",
+  "slice_local": 10,
+  "slice_global": 178,
+  "slices": 168,
+  "mask_px": 35054,
+  "rendered_px": 35053,
+  "dropped": 9,
+  "added": 8,
+  "ipldt_vs_ipl_slice": 0,
+  "ipldt_vs_ipl_volume": 0,
+  "crop": [
+   380,
+   287,
+   28
+  ],
+  "crop_dropped": 2,
+  "crop_added": 1,
+  "chains": [
+   [
+    "outer",
+    1551
+   ],
+   [
+    "inner",
+    1491
+   ]
+  ],
+  "gobj": "X2420448_CORT_MASK.GOBJ (version 4)"
+ },
+ "C": {
+  "volumes": 42,
+  "mismatch_total": 0,
+  "volumes_identical": 42,
+  "dropped_ppm": {
+   "min": 37.37868847090161,
+   "max": 439.3709857912553,
+   "median": 144.87270904900947
+  },
+  "added_ppm": {
+   "min": 25.85348140533567,
+   "max": 236.41281468971096,
+   "median": 74.51221428673213
+  },
+  "mask_voxels": 567776495,
+  "rendered_voxels": 567736219,
+  "dropped_voxels": 78913,
+  "added_voxels": 38637,
+  "rows": [
+   {
+    "subj": "PFJ-ab6af9_R",
+    "base": "X3931708",
+    "kind": "CORT",
+    "slices": 504,
+    "mask": 19043007,
+    "ours": 19042175,
+    "ipl": 19042175,
+    "dropped": 4195,
+    "added": 3363,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-ab6af9_R",
+    "base": "X3931708",
+    "kind": "TRAB",
+    "slices": 504,
+    "mask": 35993080,
+    "ours": 35988981,
+    "ipl": 35988981,
+    "dropped": 6525,
+    "added": 2426,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-0be66a_R",
+    "base": "X2420448",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 7154580,
+    "ours": 7154297,
+    "ipl": 7154297,
+    "dropped": 1038,
+    "added": 755,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-0be66a_R",
+    "base": "X2420448",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 20329639,
+    "ours": 20328498,
+    "ipl": 20328498,
+    "dropped": 1750,
+    "added": 609,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-351dc7_R",
+    "base": "X9463122",
+    "kind": "CORT",
+    "slices": 320,
+    "mask": 21756470,
+    "ours": 21755789,
+    "ipl": 21755789,
+    "dropped": 2591,
+    "added": 1910,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-351dc7_R",
+    "base": "X9463122",
+    "kind": "TRAB",
+    "slices": 320,
+    "mask": 16621838,
+    "ours": 16618986,
+    "ipl": 16618986,
+    "dropped": 4011,
+    "added": 1159,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-8bcf88_L",
+    "base": "X4121991",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 8085884,
+    "ours": 8085696,
+    "ipl": 8085696,
+    "dropped": 1313,
+    "added": 1125,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-8bcf88_L",
+    "base": "X4121991",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 13937351,
+    "ours": 13936177,
+    "ipl": 13936177,
+    "dropped": 2016,
+    "added": 842,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-8bcf88_R",
+    "base": "X4891377",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 8849135,
+    "ours": 8848972,
+    "ipl": 8848972,
+    "dropped": 1473,
+    "added": 1310,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-8bcf88_R",
+    "base": "X4891377",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 9988502,
+    "ours": 9987331,
+    "ipl": 9987331,
+    "dropped": 2155,
+    "added": 984,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-d81140_L",
+    "base": "X5366335",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 8355864,
+    "ours": 8355406,
+    "ipl": 8355406,
+    "dropped": 1224,
+    "added": 766,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-d81140_L",
+    "base": "X5366335",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 18225737,
+    "ours": 18224455,
+    "ipl": 18224455,
+    "dropped": 1875,
+    "added": 593,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-d81140_R",
+    "base": "X1130319",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 9176177,
+    "ours": 9175545,
+    "ipl": 9175545,
+    "dropped": 1304,
+    "added": 672,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-d81140_R",
+    "base": "X1130319",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 18798242,
+    "ours": 18796492,
+    "ipl": 18796492,
+    "dropped": 2236,
+    "added": 486,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-0fb201_R",
+    "base": "X5578364",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 10290018,
+    "ours": 10289761,
+    "ipl": 10289761,
+    "dropped": 1247,
+    "added": 990,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-0fb201_R",
+    "base": "X5578364",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 17754140,
+    "ours": 17753011,
+    "ipl": 17753011,
+    "dropped": 1904,
+    "added": 775,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-a5ee4c_R",
+    "base": "X3744142",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 9330060,
+    "ours": 9329506,
+    "ipl": 9329506,
+    "dropped": 1402,
+    "added": 848,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-a5ee4c_R",
+    "base": "X3744142",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 19601071,
+    "ours": 19599685,
+    "ipl": 19599685,
+    "dropped": 2081,
+    "added": 695,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-5f00b4_R",
+    "base": "X5974634",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 11002444,
+    "ours": 11002041,
+    "ipl": 11002041,
+    "dropped": 1367,
+    "added": 964,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-5f00b4_R",
+    "base": "X5974634",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 10748734,
+    "ours": 10747478,
+    "ipl": 10747478,
+    "dropped": 2032,
+    "added": 776,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-a91200_L",
+    "base": "X3186488",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 5670798,
+    "ours": 5670417,
+    "ipl": 5670417,
+    "dropped": 1138,
+    "added": 757,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-a91200_L",
+    "base": "X3186488",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 20683984,
+    "ours": 20682363,
+    "ipl": 20682363,
+    "dropped": 2180,
+    "added": 559,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-b5d5d9_L",
+    "base": "X7775442",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 5889169,
+    "ours": 5888736,
+    "ipl": 5888736,
+    "dropped": 1213,
+    "added": 780,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-b5d5d9_L",
+    "base": "X7775442",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 12936084,
+    "ours": 12934806,
+    "ipl": 12934806,
+    "dropped": 1883,
+    "added": 605,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-42293d_L",
+    "base": "X3623103",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 10538407,
+    "ours": 10538042,
+    "ipl": 10538042,
+    "dropped": 1542,
+    "added": 1177,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-42293d_L",
+    "base": "X3623103",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 21433553,
+    "ours": 21432167,
+    "ipl": 21432167,
+    "dropped": 2275,
+    "added": 889,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-a56aae_R",
+    "base": "X5606590",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 7964906,
+    "ours": 7964424,
+    "ipl": 7964424,
+    "dropped": 1446,
+    "added": 964,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-a56aae_R",
+    "base": "X5606590",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 15513179,
+    "ours": 15511794,
+    "ipl": 15511794,
+    "dropped": 2105,
+    "added": 720,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-6f5538_R",
+    "base": "X5492058",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 11450375,
+    "ours": 11450390,
+    "ipl": 11450390,
+    "dropped": 428,
+    "added": 443,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-6f5538_R",
+    "base": "X5492058",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 1793473,
+    "ours": 1793109,
+    "ipl": 1793109,
+    "dropped": 788,
+    "added": 424,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-6b714e_L",
+    "base": "X5484780",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 8088752,
+    "ours": 8088720,
+    "ipl": 8088720,
+    "dropped": 827,
+    "added": 795,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-6b714e_L",
+    "base": "X5484780",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 10244462,
+    "ours": 10243690,
+    "ipl": 10243690,
+    "dropped": 1482,
+    "added": 710,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-6b714e_R",
+    "base": "X2663245",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 6364868,
+    "ours": 6364621,
+    "ipl": 6364621,
+    "dropped": 1048,
+    "added": 801,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-6b714e_R",
+    "base": "X2663245",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 9665551,
+    "ours": 9664574,
+    "ipl": 9664574,
+    "dropped": 1615,
+    "added": 638,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-69bcb0_L",
+    "base": "X1183449",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 12270535,
+    "ours": 12269733,
+    "ipl": 12269733,
+    "dropped": 1732,
+    "added": 930,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-69bcb0_L",
+    "base": "X1183449",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 22124717,
+    "ours": 22123182,
+    "ipl": 22123182,
+    "dropped": 2333,
+    "added": 798,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-69bcb0_R",
+    "base": "X1346001",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 9978661,
+    "ours": 9977580,
+    "ipl": 9977580,
+    "dropped": 2001,
+    "added": 920,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-69bcb0_R",
+    "base": "X1346001",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 26283976,
+    "ours": 26282267,
+    "ipl": 26282267,
+    "dropped": 2496,
+    "added": 787,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-411dfd_L",
+    "base": "X3334670",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 7827072,
+    "ours": 7826494,
+    "ipl": 7826494,
+    "dropped": 1335,
+    "added": 757,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-411dfd_L",
+    "base": "X3334670",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 20902550,
+    "ours": 20901138,
+    "ipl": 20901138,
+    "dropped": 2002,
+    "added": 590,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-411dfd_R",
+    "base": "X5143651",
+    "kind": "CORT",
+    "slices": 168,
+    "mask": 7121685,
+    "ours": 7121309,
+    "ipl": 7121309,
+    "dropped": 1263,
+    "added": 887,
+    "mismatch": 0
+   },
+   {
+    "subj": "PFJ-411dfd_R",
+    "base": "X5143651",
+    "kind": "TRAB",
+    "slices": 168,
+    "mask": 17987765,
+    "ours": 17986381,
+    "ipl": 17986381,
+    "dropped": 2042,
+    "added": 658,
+    "mismatch": 0
+   }
+  ]
+ },
+ "D": {
+  "mask_px": 122,
+  "dropped": 1,
+  "pre_activated": true,
+  "raw_vertices": 50,
+  "start": [
+   4,
+   5
+  ]
+ },
+ "E": {
+  "events": [
+   [
+    "excursion_v",
+    [
+     3,
+     6
+    ]
+   ],
+   [
+    "corner",
+    [
+     4,
+     13
+    ]
+   ],
+   [
+    "excursion_v",
+    [
+     8,
+     14
+    ]
+   ],
+   [
+    "corner",
+    [
+     7,
+     16
+    ]
+   ],
+   [
+    "corner",
+    [
+     9,
+     16
+    ]
+   ],
+   [
+    "excursion_v",
+    [
+     9,
+     15
+    ]
+   ],
+   [
+    "corner",
+    [
+     17,
+     13
+    ]
+   ],
+   [
+    "spur",
+    [
+     19,
+     10
+    ]
+   ],
+   [
+    "excursion_v",
+    [
+     16,
+     9
+    ]
+   ],
+   [
+    "corner",
+    [
+     17,
+     6
+    ]
+   ],
+   [
+    "sharp",
+    [
+     4,
+     5
+    ]
+   ]
+  ],
+  "vertices_after": 42,
+  "start_after": [
+   5,
+   6
+  ]
+ },
+ "F": {
+  "events": [
+   [
+    "corner",
+    [
+     4,
+     6
+    ]
+   ],
+   [
+    "corner",
+    [
+     7,
+     13
+    ]
+   ],
+   [
+    "sharp",
+    [
+     8,
+     16
+    ]
+   ],
+   [
+    "corner",
+    [
+     8,
+     15
+    ]
+   ],
+   [
+    "sharp",
+    [
+     18,
+     10
+    ]
+   ],
+   [
+    "excursion_h",
+    [
+     14,
+     7
+    ]
+   ],
+   [
+    "sharp",
+    [
+     7,
+     15
+    ]
+   ]
+  ],
+  "sweeps": 3,
+  "vertices_stored": 36,
+  "start": [
+   5,
+   6
+  ]
+ },
+ "G": {
+  "rendered_px": 110,
+  "mask_px": 122,
+  "dropped": 15,
+  "added": 3,
+  "scanline": 10,
+  "crossings": [
+   4,
+   17
+  ]
+ },
+ "H": {
+  "subject": "PFJ-a56aae_R",
+  "mask": "CORT",
+  "slice_local": 90,
+  "slice_global": 258,
+  "inner_vertices": 1369,
+  "lobe_px": 23,
+  "fill_by_connectivity_vs_ipl": 23,
+  "ipldt_vs_ipl": 0,
+  "crop": [
+   182,
+   82,
+   32,
+   24
+  ],
+  "scanline": 91,
+  "crossings": [
+   140,
+   161,
+   163,
+   196,
+   200,
+   676
+  ],
+  "crossings_left_of_finger": 4,
+  "gobj": "X5606590_CORT_MASK.GOBJ (version 5)"
+ },
+ "I": {
+  "subject": "PFJ-d81140_R",
+  "mask": "TRAB",
+  "slice_local": 0,
+  "slice_global": 0,
+  "vertices": 1474,
+  "notches": 8,
+  "unconditional_smoothing_vs_ipl": 8,
+  "ipldt_vs_ipl": 0,
+  "mask_px": 116514,
+  "rendered_px": 116514,
+  "crop": [
+   152,
+   50,
+   40,
+   28
+  ],
+  "gobj": "X1130319_TRAB_MASK.GOBJ (version 2)"
+ },
+ "J": {
+  "h_v12": {
+   "kind": "hole",
+   "slice_global": 172,
+   "raw_vertices": 6,
+   "final_vertices": 6,
+   "activated": false,
+   "sweeps": 0,
+   "stored": true,
+   "ipl_chain_vertices": 6,
+   "rendered_px": 394,
+   "mask_px": 398,
+   "hole_kept": true
+  },
+  "h_h12": {
+   "kind": "hole",
+   "slice_global": 177,
+   "raw_vertices": 6,
+   "final_vertices": 0,
+   "activated": true,
+   "sweeps": 2,
+   "stored": false,
+   "ipl_chain_vertices": 0,
+   "rendered_px": 396,
+   "mask_px": 398,
+   "hole_kept": false
+  },
+  "h_11": {
+   "kind": "hole",
+   "slice_global": 182,
+   "raw_vertices": 4,
+   "final_vertices": 2,
+   "activated": true,
+   "sweeps": 1,
+   "stored": false,
+   "ipl_chain_vertices": 0,
+   "rendered_px": 396,
+   "mask_px": 399,
+   "hole_kept": false
+  },
+  "c_2x2": {
+   "kind": "component",
+   "slice_global": 222,
+   "raw_vertices": 4,
+   "final_vertices": 0,
+   "activated": true,
+   "sweeps": 1,
+   "stored": false,
+   "ipl_chain_vertices": 0,
+   "rendered_px": 0,
+   "mask_px": 4,
+   "hole_kept": null
+  },
+  "c_hex8": {
+   "kind": "component",
+   "slice_global": 207,
+   "raw_vertices": 6,
+   "final_vertices": 3,
+   "activated": true,
+   "sweeps": 1,
+   "stored": false,
+   "ipl_chain_vertices": 0,
+   "rendered_px": 0,
+   "mask_px": 8,
+   "hole_kept": null
+  },
+  "c_4x4": {
+   "kind": "component",
+   "slice_global": 232,
+   "raw_vertices": 12,
+   "final_vertices": 8,
+   "activated": true,
+   "sweeps": 1,
+   "stored": true,
+   "ipl_chain_vertices": 8,
+   "rendered_px": 12,
+   "mask_px": 16,
+   "hole_kept": null
+  },
+  "c_disc12": {
+   "kind": "component",
+   "slice_global": 257,
+   "raw_vertices": 8,
+   "final_vertices": 8,
+   "activated": false,
+   "sweeps": 0,
+   "stored": true,
+   "ipl_chain_vertices": 8,
+   "rendered_px": 12,
+   "mask_px": 12,
+   "hole_kept": null
+  },
+  "_phantom": {
+   "total_mask_voxels": 8910,
+   "total_rendered_voxels": 8544,
+   "ipldt_vs_ipl_min4": 0,
+   "ipldt_vs_ipl_min8": 6,
+   "stored_chains_ipl": 45
+  }
+ },
+ "figure": {
+  "width_mm": 180.0,
+  "height_mm": 261.0,
+  "dpi": 300,
+  "vox_mm": 0.0607
+ },
+ "sources": {
+  "masks": "<IPLDT_LAB_ROOT>/PFJOA/XCT_masks_full_grab",
+  "ipl_renderings_and_contours": "<IPLDT_LAB_ROOT>/Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs",
+  "phantom": "<IPLDT_PROBE19_MIRROR>",
+  "cohort_cache": "manuscript/figures/cache/S4_contour_cohort.json"
+ }
+}

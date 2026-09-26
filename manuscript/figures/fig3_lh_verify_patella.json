@@ -1,0 +1,738 @@
+{
+ "cohort": "patella",
+ "threshold": 15564,
+ "engine": {
+  "pad_offset": "ceil",
+  "dtype": "float32"
+ },
+ "scans": [
+  {
+   "scan": "PFJ-ab6af9_R",
+   "mismatches": 5,
+   "checked": 5,
+   "consistent": 5,
+   "voxels": [
+    {
+     "xyz": [
+      1311,
+      232,
+      183
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1095,
+      178,
+      258
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1237,
+      301,
+      328
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1417,
+      217,
+      342
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1550,
+      312,
+      427
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-0be66a_R",
+   "mismatches": 2,
+   "checked": 2,
+   "consistent": 2,
+   "voxels": [
+    {
+     "xyz": [
+      1351,
+      325,
+      189
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1333,
+      166,
+      278
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-351dc7_R",
+   "mismatches": 3,
+   "checked": 3,
+   "consistent": 3,
+   "voxels": [
+    {
+     "xyz": [
+      1349,
+      211,
+      239
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1137,
+      104,
+      306
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1367,
+      237,
+      378
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-8bcf88_L",
+   "mismatches": 0,
+   "checked": 0,
+   "note": "no voxel list in the record"
+  },
+  {
+   "scan": "PFJ-8bcf88_R",
+   "mismatches": 2,
+   "checked": 2,
+   "consistent": 2,
+   "voxels": [
+    {
+     "xyz": [
+      1017,
+      131,
+      17
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1320,
+      57,
+      130
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-d81140_L",
+   "mismatches": 1,
+   "checked": 1,
+   "consistent": 1,
+   "voxels": [
+    {
+     "xyz": [
+      1141,
+      52,
+      96
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-d81140_R",
+   "mismatches": 0,
+   "checked": 0,
+   "note": "no voxel list in the record"
+  },
+  {
+   "scan": "PFJ-0fb201_R",
+   "mismatches": 2,
+   "checked": 2,
+   "consistent": 2,
+   "voxels": [
+    {
+     "xyz": [
+      1050,
+      235,
+      254
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1333,
+      280,
+      272
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-a5ee4c_R",
+   "mismatches": 3,
+   "checked": 3,
+   "consistent": 3,
+   "voxels": [
+    {
+     "xyz": [
+      1040,
+      74,
+      3
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1312,
+      306,
+      23
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1122,
+      139,
+      131
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-5f00b4_R",
+   "mismatches": 5,
+   "checked": 5,
+   "consistent": 5,
+   "voxels": [
+    {
+     "xyz": [
+      1573,
+      116,
+      172
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1460,
+      132,
+      217
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1389,
+      291,
+      219
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1550,
+      258,
+      261
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1035,
+      137,
+      271
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-a91200_L",
+   "mismatches": 3,
+   "checked": 3,
+   "consistent": 3,
+   "voxels": [
+    {
+     "xyz": [
+      1326,
+      142,
+      205
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1327,
+      214,
+      305
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1121,
+      312,
+      324
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-b5d5d9_L",
+   "mismatches": 2,
+   "checked": 2,
+   "consistent": 2,
+   "voxels": [
+    {
+     "xyz": [
+      1253,
+      216,
+      174
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1153,
+      198,
+      261
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-42293d_L",
+   "mismatches": 3,
+   "checked": 3,
+   "consistent": 3,
+   "voxels": [
+    {
+     "xyz": [
+      1174,
+      185,
+      188
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1103,
+      98,
+      250
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1334,
+      134,
+      302
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-a56aae_R",
+   "mismatches": 3,
+   "checked": 3,
+   "consistent": 3,
+   "voxels": [
+    {
+     "xyz": [
+      1329,
+      185,
+      256
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1389,
+      174,
+      283
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1327,
+      200,
+      325
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-6f5538_R",
+   "mismatches": 2,
+   "checked": 2,
+   "consistent": 2,
+   "voxels": [
+    {
+     "xyz": [
+      1132,
+      133,
+      247
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1325,
+      86,
+      293
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-6b714e_L",
+   "mismatches": 1,
+   "checked": 1,
+   "consistent": 1,
+   "voxels": [
+    {
+     "xyz": [
+      1218,
+      77,
+      63
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-6b714e_R",
+   "mismatches": 2,
+   "checked": 2,
+   "consistent": 2,
+   "voxels": [
+    {
+     "xyz": [
+      1290,
+      46,
+      3
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1278,
+      197,
+      115
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-69bcb0_L",
+   "mismatches": 1,
+   "checked": 1,
+   "consistent": 1,
+   "voxels": [
+    {
+     "xyz": [
+      968,
+      335,
+      6
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-69bcb0_R",
+   "mismatches": 5,
+   "checked": 5,
+   "consistent": 5,
+   "voxels": [
+    {
+     "xyz": [
+      1260,
+      333,
+      27
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1285,
+      374,
+      37
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1180,
+      255,
+      51
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1083,
+      132,
+      109
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      774,
+      305,
+      144
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-411dfd_L",
+   "mismatches": 2,
+   "checked": 2,
+   "consistent": 2,
+   "voxels": [
+    {
+     "xyz": [
+      1178,
+      229,
+      78
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1297,
+      310,
+      140
+     ],
+     "sign": -1,
+     "short": 15563,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  },
+  {
+   "scan": "PFJ-411dfd_R",
+   "mismatches": 3,
+   "checked": 3,
+   "consistent": 3,
+   "voxels": [
+    {
+     "xyz": [
+      883,
+      219,
+      49
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1328,
+      107,
+      60
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    },
+    {
+     "xyz": [
+      1453,
+      183,
+      62
+     ],
+     "sign": 1,
+     "short": 15564,
+     "offset": 0,
+     "consistent": true
+    }
+   ]
+  }
+ ],
+ "summary": {
+  "scans_with_voxel_list": 19,
+  "scans_without": 2,
+  "voxels_checked": 50,
+  "consistent": 50,
+  "within_1_level": 50,
+  "within_2_levels": 50,
+  "within_5_levels": 50,
+  "max_abs_offset": 0,
+  "offset_histogram": {
+   "0": 50
+  },
+  "note": "offset = ipldt short - 15564 for 'ipldt only' voxels (>= 0 expected), ipldt short - 15563 for 'IPL only' voxels (<= 0 expected); one int16 level = 200000/32767 = 6.1 filter units"
+ }
+}

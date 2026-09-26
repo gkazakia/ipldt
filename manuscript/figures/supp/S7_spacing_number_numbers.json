@@ -1,0 +1,238 @@
+{
+ "parameters": {
+  "ridge_epsilon": 0.9,
+  "assign_epsilon": 0.5,
+  "peel_iter": -1,
+  "version": 3,
+  "midaxis_ridge_epsilon_variant": 0.5,
+  "backend": "gpu"
+ },
+ "scan": {
+  "base": "X2420448",
+  "grid_zyx": [
+   168,
+   342,
+   735
+  ],
+  "voxel_mm": 0.06069973483681679,
+  "slice_index": 84,
+  "window_origin_yx": [
+   30,
+   422
+  ],
+  "window_voxels": 64,
+  "n_bone": 10784906,
+  "n_marrow": 31445254,
+  "n_contour": 20328498,
+  "n_voxels": 42230160
+ },
+ "spacing": {
+  "volume": {
+   "centres": 1451013,
+   "kept": 1004081,
+   "removed": 446932,
+   "diameters": [
+    1,
+    19
+   ],
+   "support": 13760672,
+   "ipl_support": 13760672,
+   "differing_voxels": 0,
+   "voxels_compared": 42230160,
+   "report": {
+    "Sp_mm": 0.4380003975404191,
+    "Sp_sd_mm": 0.17024678981328653,
+    "Sp_max_mm": 1.153294961899519,
+    "Sp_n_voxels": 13760672,
+    "valid_fraction": 0.9662921648135853,
+    "voxel_size_mm": 0.06069973483681679,
+    "Sp_skew": 0.6303471482060232,
+    "Sp_kurtosis": 0.290002365862124
+   }
+  },
+  "contour_as_surface": {
+   "differing_voxels": 225465,
+   "support": 13775371,
+   "mean_mm": 0.43650140417294886,
+   "changed_lower": 188406,
+   "changed_higher": 37059
+  }
+ },
+ "number": {
+  "volume": {
+   "midaxis": 1651627,
+   "midaxis_inside_contour": 1067671,
+   "midaxis_cortical": 583958,
+   "centres": 1713822,
+   "kept": 1189510,
+   "removed": 524312,
+   "diameters": [
+    1,
+    20
+   ],
+   "support": 18750659,
+   "ipl_support": 18750659,
+   "differing_voxels": 0,
+   "voxels_compared": 42230160,
+   "report": {
+    "inv_N_mm": 0.49098885837789974,
+    "inv_N_sd_mm": 0.15893764543812916,
+    "inv_N_max_mm": 1.2139946967363358,
+    "inv_N_n_voxels": 18750659,
+    "valid_fraction": 0.9735126638124105,
+    "voxel_size_mm": 0.06069973483681679,
+    "inv_N_skew": 0.4870164319779863,
+    "inv_N_kurtosis": 0.6453366625939041,
+    "Tb_N_per_mm": 2.036706094113299
+   }
+  },
+  "midaxis_variant": {
+   "ridge_epsilon": 0.5,
+   "midaxis": 4773554,
+   "added": 3121927,
+   "removed": 0,
+   "differing_voxels": 15789273,
+   "support": 16822973,
+   "inv_N_mm": 0.389052257159799,
+   "Tb_N_per_mm": 2.5703487940162772,
+   "changed_lower": 15238282,
+   "changed_higher": 550991
+  }
+ },
+ "thickness": {
+  "trabecular_label": {
+   "n_object": 6087803,
+   "differing_voxels": 0,
+   "voxels_compared": 42230160,
+   "support": 5986113,
+   "report": {
+    "Th_mm": 0.2244893914811123,
+    "Th_sd_mm": 0.060448443331023734,
+    "Th_max_mm": 0.4855978786945343,
+    "Th_n_voxels": 5986113,
+    "valid_fraction": 0.9832961086290078,
+    "voxel_size_mm": 0.06069973483681679,
+    "Th_skew": 0.21396002647493031,
+    "Th_kurtosis": -0.2801803253734261
+   }
+  },
+  "whole_segmentation": {
+   "n_object": 10784906,
+   "differing_voxels": 0,
+   "voxels_compared": 42230160,
+   "support": 5951078,
+   "report": {
+    "Th_mm": 0.22734476093811196,
+    "Th_sd_mm": 0.060594422091360664,
+    "Th_max_mm": 0.4855978786945343,
+    "Th_n_voxels": 5951078,
+    "valid_fraction": 0.5517969280399848,
+    "voxel_size_mm": 0.06069973483681679,
+    "Th_skew": 0.21459720910307425,
+    "Th_kurtosis": -0.23034709907630635
+   }
+  }
+ },
+ "cortical": {
+  "n_object": 7154580,
+  "n_pores": 2457003,
+  "n_contour": 7154297,
+  "differing_voxels": 0,
+  "voxels_compared": 42526512,
+  "grid_zyx": [
+   168,
+   343,
+   738
+  ],
+  "window_origin_yx": [
+   0,
+   390
+  ],
+  "window_voxels": 128,
+  "report": {
+   "Th_mm": 2.324945312504018,
+   "Th_sd_mm": 1.0623856384998098,
+   "Th_max_mm": 4.127581968903542,
+   "Th_n_voxels": 7055683,
+   "valid_fraction": 0.9861771061334138,
+   "voxel_size_mm": 0.06069973483681679,
+   "Th_skew": -0.2772193402892456,
+   "Th_kurtosis": -1.149769865874014
+  }
+ },
+ "figure": {
+  "width_mm": 180.0,
+  "height_mm": 240.8,
+  "panel_mm": 42.3,
+  "font_pt": 7.0,
+  "colour_scale_max": {
+   "spacing": 9,
+   "number": 11,
+   "thickness": 5
+  },
+  "window": {
+   "sp": {
+    "centres": 292,
+    "kept": 141,
+    "removed": 151,
+    "map_max": 9,
+    "ipl_max": 9,
+    "alt_max": 9,
+    "alt_diff": 84,
+    "differing": 0
+   },
+   "n": {
+    "centres": 307,
+    "kept": 158,
+    "removed": 149,
+    "map_max": 11,
+    "ipl_max": 11,
+    "alt_max": 9,
+    "alt_diff": 2121,
+    "differing": 0
+   },
+   "midaxis": 340,
+   "midaxis_inside_contour": 158,
+   "midaxis_variant": 804,
+   "midaxis_variant_added": 464,
+   "midaxis_variant_removed": 0,
+   "marrow": 2113,
+   "marrow_inside_contour": 1470,
+   "th": {
+    "object": 946,
+    "map_max": 5,
+    "ipl_max": 5,
+    "differing": 0
+   },
+   "ct": {
+    "object": 6489,
+    "pores": 2406,
+    "bone_outside": 2897
+   }
+  },
+  "cortical_window": {
+   "origin_yx": [
+    0,
+    390
+   ],
+   "voxels": 128
+  },
+  "histograms": {
+   "I": {
+    "mean_voxels": 7.21585355715186,
+    "mean_mm": 0.4380003975404191,
+    "n_voxels": 13760672,
+    "max_value": 19,
+    "ipl_histogram_identical": true
+   },
+   "J": {
+    "mean_voxels": 8.088813891821083,
+    "mean_mm": 0.49098885837789974,
+    "n_voxels": 18750659,
+    "max_value": 20,
+    "ipl_histogram_identical": true,
+    "Tb_N_per_mm": 2.036706094113299
+   }
+  }
+ }
+}

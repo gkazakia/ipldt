@@ -1,0 +1,141 @@
+{
+ "A": {
+  "config": "A",
+  "n": 137,
+  "identical": 137,
+  "mismatch_total": 0,
+  "ours_only": 0,
+  "ipl_only": 0,
+  "max_mismatch": 0,
+  "median_mismatch": 0.0,
+  "ipl_pore_voxels": 71277708,
+  "our_pore_voxels": 71277708,
+  "compared_voxels": 4775892520,
+  "dice_min": 1.0,
+  "ctpo_ipl_mean": 0.06090857839873701,
+  "ctpo_ipl_sd": 0.04241408169996443,
+  "ctpo_mean": 0.06090857839873701,
+  "ctpo_sd": 0.04241408169996443,
+  "bias": 0.0,
+  "sd_diff": 0.0,
+  "max_abs": 0.0,
+  "identical_ctpo": 137,
+  "max_abs_rel_pct": 0.0,
+  "loa": [
+   0.0,
+   0.0
+  ],
+  "slope": 1.0,
+  "intercept": 0.0,
+  "r2": 1.0,
+  "icc": 1.0,
+  "by_cohort": {
+   "diaphyseal": {
+    "n": 58,
+    "identical": 58,
+    "mismatch": 0,
+    "ctpo_mean": 0.051673591882163736,
+    "ctpo_sd": 0.034576944417455464,
+    "ctpo_min": 0.003834933598729293,
+    "ctpo_max": 0.13810053928388774
+   },
+   "patella": {
+    "n": 21,
+    "identical": 21,
+    "mismatch": 0,
+    "ctpo_mean": 0.11951649785234471,
+    "ctpo_sd": 0.03600565773139061,
+    "ctpo_min": 0.06439242649016699,
+    "ctpo_max": 0.22782787311174554
+   },
+   "ultradistal radius": {
+    "n": 29,
+    "identical": 29,
+    "mismatch": 0,
+    "ctpo_mean": 0.024171738540633383,
+    "ctpo_sd": 0.013461858236179736,
+    "ctpo_min": 0.00696902835986701,
+    "ctpo_max": 0.06927855099923941
+   },
+   "ultradistal tibia": {
+    "n": 29,
+    "identical": 29,
+    "mismatch": 0,
+    "ctpo_mean": 0.07367517375461609,
+    "ctpo_sd": 0.029619120567591174,
+    "ctpo_min": 0.022229654423165497,
+    "ctpo_max": 0.12806914807254127
+   }
+  }
+ },
+ "B": {
+  "config": "B",
+  "n": 137,
+  "identical": 92,
+  "mismatch_total": 8808,
+  "ours_only": 6696,
+  "ipl_only": 2112,
+  "max_mismatch": 5922,
+  "median_mismatch": 0.0,
+  "ipl_pore_voxels": 71277708,
+  "our_pore_voxels": 71282292,
+  "compared_voxels": 4775892520,
+  "dice_min": 0.9953238336036487,
+  "ctpo_ipl_mean": 0.06090857839873701,
+  "ctpo_ipl_sd": 0.04241408169996443,
+  "ctpo_mean": 0.06091145276466292,
+  "ctpo_sd": 0.0424166180471629,
+  "bias": 2.874365925918199e-06,
+  "sd_diff": 6.637952848750884e-05,
+  "max_abs": 0.0007595784224318086,
+  "identical_ctpo": 92,
+  "max_abs_rel_pct": 0.9396271320904444,
+  "loa": [
+   -0.00012722950990959913,
+   0.0001329782417614355
+  ],
+  "slope": 1.000058576769501,
+  "intercept": -6.934618315759811e-07,
+  "r2": 0.999997554388736,
+  "icc": 0.9999987820481758,
+  "wilcoxon_p": 0.0006390285636532304,
+  "by_cohort": {
+   "diaphyseal": {
+    "n": 58,
+    "identical": 44,
+    "mismatch": 68,
+    "ctpo_mean": 0.05167351320087096,
+    "ctpo_sd": 0.03457694785191145,
+    "ctpo_min": 0.003834933598729293,
+    "ctpo_max": 0.13810046721023653
+   },
+   "patella": {
+    "n": 21,
+    "identical": 14,
+    "mismatch": 9,
+    "ctpo_mean": 0.11951648333660939,
+    "ctpo_sd": 0.03600562518106437,
+    "ctpo_min": 0.06439242649016699,
+    "ctpo_max": 0.22782769844520578
+   },
+   "ultradistal radius": {
+    "n": 29,
+    "identical": 17,
+    "mismatch": 757,
+    "ctpo_mean": 0.024162161518161723,
+    "ctpo_sd": 0.013461087386221336,
+    "ctpo_min": 0.00696902835986701,
+    "ctpo_max": 0.06926706462781909
+   },
+   "ultradistal tibia": {
+    "n": 29,
+    "identical": 17,
+    "mismatch": 7974,
+    "ctpo_mean": 0.07369849755216613,
+    "ctpo_sd": 0.029614377741644677,
+    "ctpo_min": 0.022229654423165497,
+    "ctpo_max": 0.12799589561721578
+   }
+  }
+ }
+}

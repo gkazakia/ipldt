@@ -1,0 +1,202 @@
+{
+ "scan": {
+  "dim": [
+   746,
+   351,
+   168
+  ],
+  "pos": [
+   793,
+   92,
+   168
+  ],
+  "el_size_mm": [
+   0.06069973483681679,
+   0.060700856149196625,
+   0.06069643050432205
+  ],
+  "voxels": 43990128
+ },
+ "padding": {
+  "extended_dim_xyz": [
+   748,
+   353,
+   170
+  ],
+  "padded_dim_xyz": [
+   1024,
+   512,
+   256
+  ],
+  "pad_before_after_xyz": [
+   [
+    138,
+    138
+   ],
+   [
+    80,
+    79
+   ],
+   [
+    43,
+    43
+   ]
+  ],
+  "pad_offset": "ceil"
+ },
+ "engine_check": {
+  "float_differs": 0,
+  "short_differs": 0
+ },
+ "vs_ipl": {
+  "threshold_decisions_differ": 3,
+  "voxels": 43990128,
+  "threshold_voxels_ipl": 11429498,
+  "short_differs": 132215,
+  "short_abs_diff_max": 1
+ },
+ "norm": {
+  "float_min": -189281.625,
+  "float_max": 385494.59375,
+  "threshold_float_units": 94998.01629688406,
+  "scale_units_per_level": 6.103701895199438,
+  "ge_threshold": 11429497,
+  "ge_threshold_pct": 25.981958952244923,
+  "above_clip": 946927,
+  "above_clip_pct": 2.1525897810526944,
+  "below_neg_clip": 0,
+  "at_short_max": 946927
+ },
+ "components": {
+  "threshold_voxels": 11429497,
+  "periosteal_voxels": 27484219,
+  "masked_threshold_voxels": 10825544,
+  "removed_by_periosteal": 603953,
+  "n_components": 4773,
+  "largest": 10776684,
+  "five_largest": [
+   10776684,
+   445,
+   288,
+   285,
+   278
+  ],
+  "n_lt_35": 4504,
+  "voxels_lt_35": 31158,
+  "n_35_69": 195,
+  "voxels_35_69": 8935,
+  "n_ge_70": 74,
+  "cort_seg": 4697118,
+  "trab_seg": 6087803,
+  "seg": 10784906,
+  "seg_ipl": 10784906,
+  "seg_differs_from_ipl": 2
+ },
+ "window": {
+  "z_local": 94,
+  "z_global": 262,
+  "x0": 350,
+  "y0": 40,
+  "size": 150,
+  "size_mm": 9.104960225522518,
+  "components_lt_35_in_window": 16,
+  "components_35_69_in_window": 2,
+  "voxels_removed_in_window": 97
+ },
+ "variants": {
+  "std": {
+   "eps": 0.45,
+   "lp": 0.3,
+   "amp": 1.0,
+   "threshold_voxels": 11429497,
+   "rel_to_ipl_pct": 0.0,
+   "in_window": 7026
+  },
+  "eps0": {
+   "eps": 0.0,
+   "lp": 0.3,
+   "amp": 1.0,
+   "threshold_voxels": 24968934,
+   "rel_to_ipl_pct": 118.46047993188152,
+   "in_window": 16970
+  },
+  "eps09": {
+   "eps": 0.9,
+   "lp": 0.3,
+   "amp": 1.0,
+   "threshold_voxels": 5328262,
+   "rel_to_ipl_pct": -53.38148301714415,
+   "in_window": 3571
+  },
+  "lp02": {
+   "eps": 0.45,
+   "lp": 0.2,
+   "amp": 1.0,
+   "threshold_voxels": 10118688,
+   "rel_to_ipl_pct": -11.468649932713575,
+   "in_window": 5452
+  },
+  "lp04": {
+   "eps": 0.45,
+   "lp": 0.4,
+   "amp": 1.0,
+   "threshold_voxels": 13654535,
+   "rel_to_ipl_pct": 19.46750587536792,
+   "in_window": 8158
+  },
+  "amp0": {
+   "eps": 0.45,
+   "lp": 0.3,
+   "amp": 0.0,
+   "threshold_voxels": 17928204,
+   "rel_to_ipl_pct": 56.85908137514713,
+   "in_window": 9690
+  },
+  "amp05": {
+   "eps": 0.45,
+   "lp": 0.3,
+   "amp": 0.5,
+   "threshold_voxels": 15491345,
+   "rel_to_ipl_pct": 35.538291842589395,
+   "in_window": 8794
+  }
+ },
+ "phantom": {
+  "dim_xyz": [
+   63,
+   64,
+   64
+  ],
+  "impulse_xyz": [
+   1,
+   32,
+   32
+  ],
+  "amplitude": 25000,
+  "el_size_mm": [
+   0.06069973483681679,
+   0.060700856149196625,
+   0.06069643050432205
+  ],
+  "ipl_max": 135594.25,
+  "ipl_argmax_x": 0,
+  "ipl_threshold_voxels": 6,
+  "ceil": {
+   "max_abs_diff": 0.015625,
+   "short_differs": 0,
+   "threshold_differs": 0
+  },
+  "floor": {
+   "max_abs_diff": 67797.1328125,
+   "short_differs": 39564,
+   "threshold_differs": 6
+  }
+ },
+ "outputs": {
+  "png": "manuscript/figures/supp/S5_lh.png",
+  "svg": "manuscript/figures/supp/S5_lh.svg",
+  "width_mm": 180.0,
+  "height_mm": 247.0,
+  "dpi": 300
+ }
+}

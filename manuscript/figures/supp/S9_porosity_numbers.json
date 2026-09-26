@@ -1,0 +1,1556 @@
+{
+ "A": {
+  "slice": {
+   "index": 101,
+   "crop": [
+    5,
+    413,
+    2,
+    409
+   ]
+  },
+  "compartment": 13390236,
+  "cort_seg": 12022284,
+  "cort_seg_outside": 0,
+  "window": [
+   306,
+   186,
+   100
+  ]
+ },
+ "B": {
+  "slice_set_voxels": 95419,
+  "components": 805,
+  "kept": 803,
+  "dropped": 2,
+  "largest_share": 57.87316991374883,
+  "largest_voxels": 55222,
+  "second_share": 35.58515599618524,
+  "kept_voxels_in_slice": 6242,
+  "pores_E_voxels": 1108108
+ },
+ "C": {
+  "pores_M0_voxels": 16836756,
+  "components": 25292,
+  "rank1_voxels": 9994808,
+  "kept_in_compartment": 98499,
+  "second_largest": 6145174,
+  "rank1_holds_grid_corner": true,
+  "rank1_outside_compartment": 9896309
+ },
+ "D": {
+  "window_counts": {
+   "0": 2480,
+   "1": 0,
+   "2": 431,
+   "3": 718,
+   "125": 0,
+   "127": 6371
+  },
+  "volume_counts": {
+   "0": 15562975,
+   "1": 4328,
+   "2": 165673,
+   "3": 1103780,
+   "125": 0,
+   "127": 12022284
+  },
+  "columns": {
+   "accepted": {
+    "x": 265,
+    "y": 316,
+    "z": 101,
+    "z_run": [
+     96,
+     107
+    ],
+    "run": 12,
+    "seeds": 5,
+    "value2": 7,
+    "value3": 0,
+    "selected": true
+   },
+   "declined": {
+    "x": 277,
+    "y": 316,
+    "z": 100,
+    "z_run": [
+     94,
+     106
+    ],
+    "run": 13,
+    "seeds": 0,
+    "value2": 9,
+    "value3": 4,
+    "selected": false
+   }
+  }
+ },
+ "E": {
+  "rows": [
+   {
+    "value": 0,
+    "meaning": "marrow, or anything outside the compartment",
+    "arises": "cortring_C3 = 0",
+    "voxels": 15562975,
+    "role": "seed"
+   },
+   {
+    "value": 1,
+    "meaning": "a slice-wise small void in that region",
+    "arises": "0 + pores_E",
+    "voxels": 4328,
+    "role": "seed"
+   },
+   {
+    "value": 2,
+    "meaning": "void in the compartment, not marrow-connected, large in its slice",
+    "arises": "cortring_C3 = 2",
+    "voxels": 165673,
+    "role": "weak"
+   },
+   {
+    "value": 3,
+    "meaning": "the same, but small in its slice",
+    "arises": "2 + pores_E",
+    "voxels": 1103780,
+    "role": "weak"
+   },
+   {
+    "value": 125,
+    "meaning": "bone outside the compartment",
+    "arises": "cortseg_D2 = 125",
+    "voxels": 0,
+    "role": "neither"
+   },
+   {
+    "value": 127,
+    "meaning": "cortical bone inside the compartment",
+    "arises": "125 + cortring_C3",
+    "voxels": 12022284,
+    "role": "neither"
+   }
+  ],
+  "hysteresis": {
+   "low_thresh": 1,
+   "high_thresh": 3,
+   "unit": 5,
+   "mode": 0,
+   "grow_axes": [
+    0,
+    0,
+    1
+   ],
+   "value_in_range": 127
+  },
+  "columns": {
+   "accepted": {
+    "x": 265,
+    "y": 316,
+    "z": 101,
+    "z_run": [
+     96,
+     107
+    ],
+    "run": 12,
+    "seeds": 5,
+    "value2": 7,
+    "value3": 0,
+    "selected": true
+   },
+   "declined": {
+    "x": 277,
+    "y": 316,
+    "z": 100,
+    "z_run": [
+     94,
+     106
+    ],
+    "run": 13,
+    "seeds": 0,
+    "value2": 9,
+    "value3": 4,
+    "selected": false
+   }
+  }
+ },
+ "F": {
+  "pores_F0": 139706,
+  "pores_M": 98499,
+  "pores_F": 41207,
+  "pores_F_by_value": {
+   "0": 0,
+   "1": 0,
+   "2": 38808,
+   "3": 2399,
+   "125": 0,
+   "127": 0
+  },
+  "window": {
+   "compartment": 7645,
+   "cort_seg": 6371,
+   "pores_E": 718,
+   "pores_M": 125,
+   "pores_F0": 209,
+   "pores_F": 84,
+   "pores_DF": 854,
+   "pores_G": 938,
+   "pores_H": 900,
+   "ipl_pore": 900,
+   "dropped": 38
+  }
+ },
+ "G": {
+  "components": 28070,
+  "below_min": 18791,
+  "voxels_dropped": 116153,
+  "kept": 1076680,
+  "pores_DF": 1151626,
+  "pores_G": 1192833
+ },
+ "H": {
+  "mismatch": 0,
+  "ours": 1076680,
+  "ipl": 1076680,
+  "ours_only": 0,
+  "ipl_only": 0,
+  "dice": 1.0,
+  "same_grid": true,
+  "compared_voxels": 28859040,
+  "compared_grid": {
+   "dim": [
+    409,
+    420,
+    168
+   ],
+   "pos": [
+    978,
+    408,
+    0
+   ]
+  },
+  "ct_po": {
+   "ct_po": 0.08040784344652327,
+   "pore_voxels": 1076680,
+   "pore_in_mask": 1076680,
+   "mask_voxels": 13390236
+  },
+  "printed": "0.080"
+ },
+ "I": {
+  "scans": [
+   "Diaphyseal/CKD/2422",
+   "Distal/REPRO/2051"
+  ],
+  "rows": [
+   {
+    "label": "mode 0, both bounds inclusive: seed v \u2264 1, weak v \u2264 3 (ipldt)",
+    "short": "seed v \u2264 1, weak v \u2264 3",
+    "main": 0,
+    "second": 0
+   },
+   {
+    "label": "seed v \u2265 3, weak v \u2265 1 (mode ignored)",
+    "short": "seed v \u2265 3, weak v \u2265 1  (mode off)",
+    "main": 12316298,
+    "second": 8034272
+   },
+   {
+    "label": "seed v > 3, weak v > 1 (both bounds strict)",
+    "short": "seed v > 3, weak v > 1",
+    "main": 12316611,
+    "second": 8056063
+   },
+   {
+    "label": "weak = the band 1 \u2264 v \u2264 3, seed v \u2265 3",
+    "short": "seed v \u2265 3, weak 1 \u2264 v \u2264 3",
+    "main": 157561,
+    "second": 892874
+   },
+   {
+    "label": "weak = the band 1 \u2264 v \u2264 3, seed v \u2264 1",
+    "short": "seed v \u2264 1, weak 1 \u2264 v \u2264 3",
+    "main": 146459,
+    "second": 871344
+   },
+   {
+    "label": "weak v \u2264 3, seed v \u2265 3",
+    "short": "seed v \u2265 3, weak v \u2264 3",
+    "main": 157156,
+    "second": 892874
+   },
+   {
+    "label": "weak v \u2265 1, seed v \u2264 1",
+    "short": "seed v \u2264 1, weak v \u2265 1",
+    "main": 331809,
+    "second": 3078497
+   },
+   {
+    "label": "weak v \u2264 1 (one threshold only)",
+    "short": "weak v \u2264 1  (one threshold)",
+    "main": 80413,
+    "second": 0
+   },
+   {
+    "label": "weak = every voxel (no upper bound)",
+    "short": "weak = every voxel",
+    "main": 3109051,
+    "second": 7016784
+   },
+   {
+    "label": "both bounds strict: seed v < 1, weak v < 3",
+    "short": "seed v < 1, weak v < 3",
+    "main": 2019,
+    "second": 7363
+   },
+   {
+    "label": "seed v < 1 (strict), weak v \u2264 3",
+    "short": "seed v < 1, weak v \u2264 3",
+    "main": 0,
+    "second": 7363
+   },
+   {
+    "label": "seed v \u2264 1, weak v < 3 (strict)",
+    "short": "seed v \u2264 1, weak v < 3",
+    "main": 2019,
+    "second": 0
+   },
+   {
+    "label": "output = the grown set minus the seeds",
+    "short": "grown set minus the seeds",
+    "main": 66046,
+    "second": 892874
+   },
+   {
+    "label": "no seeding at all (output = the whole weak set)",
+    "short": "no seeding: the whole weak set",
+    "main": 83281,
+    "second": 0
+   },
+   {
+    "label": "grow_axes ignored, full 6-connectivity",
+    "short": "grow_axes ignored: 6-connectivity",
+    "main": 83281,
+    "second": 0
+   },
+   {
+    "label": "grow_axes read as the axes NOT to grow along (x, y)",
+    "short": "grow_axes = the axes NOT grown",
+    "main": 83281,
+    "second": 0
+   }
+  ]
+ },
+ "J": {
+  "scans": 137,
+  "sheets": 30,
+  "matches": 30,
+  "matches_bv": 0,
+  "exact": 137,
+  "mismatch_total": 0,
+  "ipl_pore_voxels": 71277708,
+  "same_grid": 79,
+  "patellae": 21,
+  "oslh": 116,
+  "excluded": [
+   "Diaphyseal/CKD/991161"
+  ],
+  "table": "validation/results/ipl_printed_values_137.csv",
+  "records": [
+   "validation/results/oslh_auto_v4",
+   "validation/results/porosity_AB_patella",
+   "validation/results/oslh_noedit_v3"
+  ],
+  "sites": {
+   "patella": 21,
+   "ultradistal radius": 29,
+   "ultradistal tibia": 29,
+   "diaphyseal radius": 29,
+   "diaphyseal tibia": 29
+  },
+  "census": {
+   "blank": 101,
+   "followup": 6,
+   "yes": 30
+  },
+  "sheets_patellae": 21,
+  "disagreeing": [],
+  "points": [
+   {
+    "id": "Diaphyseal/CKD/2422",
+    "dataset": "oslh",
+    "site": "diaphyseal tibia",
+    "ours": 0.08040784344652327,
+    "printed": 0.08,
+    "printed_str": "0.080",
+    "bv": 0.08219581334829228,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "Diaphyseal/CKD/558517",
+    "dataset": "oslh",
+    "site": "diaphyseal radius",
+    "ours": 0.05334935263665646,
+    "printed": 0.053,
+    "printed_str": "0.053",
+    "bv": 0.05481836042977872,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "Diaphyseal/CKD/449824",
+    "dataset": "oslh",
+    "site": "diaphyseal tibia",
+    "ours": 0.10138600856914998,
+    "printed": 0.101,
+    "printed_str": "0.101",
+    "bv": 0.10649669994661738,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "Distal/CKD/950636",
+    "dataset": "oslh",
+    "site": "ultradistal tibia",
+    "ours": 0.04677050739043997,
+    "printed": 0.047,
+    "printed_str": "0.047",
+    "bv": 0.05812662883858035,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "Distal/CKD/113739",
+    "dataset": "oslh",
+    "site": "ultradistal tibia",
+    "ours": 0.05317454533548374,
+    "printed": 0.053,
+    "printed_str": "0.053",
+    "bv": 0.0584267128912725,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "Distal/CKD/114224",
+    "dataset": "oslh",
+    "site": "ultradistal tibia",
+    "ours": 0.12070377925964076,
+    "printed": 0.121,
+    "printed_str": "0.121",
+    "bv": 0.13263968342593185,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "Distal/CKD/386723",
+    "dataset": "oslh",
+    "site": "ultradistal tibia",
+    "ours": 0.10013414339284452,
+    "printed": 0.1,
+    "printed_str": "0.100",
+    "bv": 0.12726107099385026,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "Distal/CKD/802246",
+    "dataset": "oslh",
+    "site": "ultradistal radius",
+    "ours": 0.019520568470868027,
+    "printed": 0.02,
+    "printed_str": "0.020",
+    "bv": 0.029980463212590146,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-ab6af9_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.09606885768038577,
+    "printed": 0.096,
+    "printed_str": "0.096",
+    "bv": 0.10997037215331074,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-0be66a_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.15726255144286014,
+    "printed": 0.157,
+    "printed_str": "0.157",
+    "bv": 0.19324292224565162,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-351dc7_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.15469969854919993,
+    "printed": 0.155,
+    "printed_str": "0.155",
+    "bv": 0.17621866992862195,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-8bcf88_L",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.11545264625333429,
+    "printed": 0.115,
+    "printed_str": "0.115",
+    "bv": 0.1393759253942439,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-8bcf88_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.12921591344169694,
+    "printed": 0.129,
+    "printed_str": "0.129",
+    "bv": 0.1598892520669102,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-d81140_L",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.10351035006557431,
+    "printed": 0.104,
+    "printed_str": "0.104",
+    "bv": 0.12005630856047257,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-d81140_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.10965495782539347,
+    "printed": 0.11,
+    "printed_str": "0.110",
+    "bv": 0.127137348706411,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-0fb201_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.139947468167628,
+    "printed": 0.14,
+    "printed_str": "0.140",
+    "bv": 0.16759884079561457,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-a5ee4c_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.13524328083394768,
+    "printed": 0.135,
+    "printed_str": "0.135",
+    "bv": 0.1587671669146998,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-5f00b4_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.1368977810571693,
+    "printed": 0.137,
+    "printed_str": "0.137",
+    "bv": 0.1607126413306747,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-a91200_L",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.10639728965259522,
+    "printed": 0.106,
+    "printed_str": "0.106",
+    "bv": 0.13891394140451324,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-b5d5d9_L",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.06439242649016699,
+    "printed": 0.064,
+    "printed_str": "0.064",
+    "bv": 0.07570090565985,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-42293d_L",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.116080862080451,
+    "printed": 0.116,
+    "printed_str": "0.116",
+    "bv": 0.15217187940447133,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-a56aae_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.13967312639306997,
+    "printed": 0.14,
+    "printed_str": "0.140",
+    "bv": 0.17450119869806785,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-6f5538_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.22782787311174554,
+    "printed": 0.228,
+    "printed_str": "0.228",
+    "bv": 0.2516436770757402,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-6b714e_L",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.08293462995381222,
+    "printed": 0.083,
+    "printed_str": "0.083",
+    "bv": 0.09458656912594895,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-6b714e_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.07135617344693423,
+    "printed": 0.071,
+    "printed_str": "0.071",
+    "bv": 0.0843237841698808,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-69bcb0_L",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.13326948516320608,
+    "printed": 0.133,
+    "printed_str": "0.133",
+    "bv": 0.15675874144812746,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-69bcb0_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.1126701063785006,
+    "printed": 0.113,
+    "printed_str": "0.113",
+    "bv": 0.13060679486446658,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-411dfd_L",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.09654795621129972,
+    "printed": 0.097,
+    "printed_str": "0.097",
+    "bv": 0.11750991545118414,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "PFJ-411dfd_R",
+    "dataset": "patella",
+    "site": "patella",
+    "ours": 0.08074302070026733,
+    "printed": 0.081,
+    "printed_str": "0.081",
+    "bv": 0.10537888738547296,
+    "match": true,
+    "match_bv": false
+   },
+   {
+    "id": "Diaphyseal/CKD/433045",
+    "dataset": "oslh",
+    "site": "diaphyseal tibia",
+    "ours": 0.10358539423491026,
+    "printed": 0.104,
+    "printed_str": "0.104",
+    "bv": 0.10632845902832243,
+    "match": true,
+    "match_bv": false
+   }
+  ]
+ },
+ "figure": {
+  "width_mm": 180.0,
+  "height_mm": 258.2,
+  "dpi": 300,
+  "voxel_mm": 0.06069942191243172,
+  "scan": "Diaphyseal/CKD/2422",
+  "base": "X6435585",
+  "site": "diaphyseal tibia",
+  "slice_index": 101,
+  "slice_number_1based": 102,
+  "window": [
+   306,
+   186,
+   100
+  ],
+  "text_overflows": 0,
+  "generated": "2026-09-25 16:59"
+ },
+ "computed": {
+  "main": {
+   "id": "Diaphyseal/CKD/2422",
+   "base": "X6435585",
+   "site": "diaphyseal tibia",
+   "voxel_mm": 0.06069942191243172,
+   "grid": {
+    "dim": [
+     409,
+     420,
+     168
+    ],
+    "pos": [
+     978,
+     408,
+     0
+    ]
+   },
+   "voxels": 28859040,
+   "contour_voxels": 13390236,
+   "cort_seg_voxels": 12022284,
+   "cort_seg_outside_compartment": 0,
+   "label_counts": {
+    "0": 15562975,
+    "1": 4328,
+    "2": 165673,
+    "3": 1103780,
+    "125": 0,
+    "127": 12022284
+   },
+   "compare": {
+    "mismatch": 0,
+    "ours": 1076680,
+    "ipl": 1076680,
+    "ours_only": 0,
+    "ipl_only": 0,
+    "dice": 1.0,
+    "same_grid": true,
+    "compared_voxels": 28859040,
+    "compared_grid": {
+     "dim": [
+      409,
+      420,
+      168
+     ],
+     "pos": [
+      978,
+      408,
+      0
+     ]
+    }
+   },
+   "ct_po": {
+    "ct_po": 0.08040784344652327,
+    "pore_voxels": 1076680,
+    "pore_in_mask": 1076680,
+    "mask_voxels": 13390236
+   },
+   "stage_voxels": {
+    "pores_E": 1108108,
+    "pores_M": 98499,
+    "pores_M0": 16836756,
+    "cortring_C": 13390236,
+    "cortring_C3": 13291737,
+    "pores_F0": 139706,
+    "pores_F": 41207,
+    "pores_DF": 1151626,
+    "pores_G": 1192833,
+    "pores_H": 1076680
+   },
+   "readings": [
+    {
+     "label": "mode 0, both bounds inclusive: seed v \u2264 1, weak v \u2264 3 (ipldt)",
+     "short": "seed v \u2264 1, weak v \u2264 3",
+     "mismatch": 0,
+     "ours": 1076680,
+     "ours_only": 0,
+     "ipl_only": 0
+    },
+    {
+     "label": "seed v \u2265 3, weak v \u2265 1 (mode ignored)",
+     "short": "seed v \u2265 3, weak v \u2265 1  (mode off)",
+     "mismatch": 12316298,
+     "ours": 13386552,
+     "ours_only": 12313085,
+     "ipl_only": 3213
+    },
+    {
+     "label": "seed v > 3, weak v > 1 (both bounds strict)",
+     "short": "seed v > 3, weak v > 1",
+     "mismatch": 12316611,
+     "ours": 13386257,
+     "ours_only": 12313094,
+     "ipl_only": 3517
+    },
+    {
+     "label": "weak = the band 1 \u2264 v \u2264 3, seed v \u2265 3",
+     "short": "seed v \u2265 3, weak 1 \u2264 v \u2264 3",
+     "mismatch": 157561,
+     "ours": 1150983,
+     "ours_only": 115932,
+     "ipl_only": 41629
+    },
+    {
+     "label": "weak = the band 1 \u2264 v \u2264 3, seed v \u2264 1",
+     "short": "seed v \u2264 1, weak 1 \u2264 v \u2264 3",
+     "mismatch": 146459,
+     "ours": 1062313,
+     "ours_only": 66046,
+     "ipl_only": 80413
+    },
+    {
+     "label": "weak v \u2264 3, seed v \u2265 3",
+     "short": "seed v \u2265 3, weak v \u2264 3",
+     "mismatch": 157156,
+     "ours": 1151456,
+     "ours_only": 115966,
+     "ipl_only": 41190
+    },
+    {
+     "label": "weak v \u2265 1, seed v \u2264 1",
+     "short": "seed v \u2264 1, weak v \u2265 1",
+     "mismatch": 331809,
+     "ours": 1247663,
+     "ours_only": 251396,
+     "ipl_only": 80413
+    },
+    {
+     "label": "weak v \u2264 1 (one threshold only)",
+     "short": "weak v \u2264 1  (one threshold)",
+     "mismatch": 80413,
+     "ours": 996267,
+     "ours_only": 0,
+     "ipl_only": 80413
+    },
+    {
+     "label": "weak = every voxel (no upper bound)",
+     "short": "weak = every voxel",
+     "mismatch": 3109051,
+     "ours": 4185731,
+     "ours_only": 3109051,
+     "ipl_only": 0
+    },
+    {
+     "label": "both bounds strict: seed v < 1, weak v < 3",
+     "short": "seed v < 1, weak v < 3",
+     "mismatch": 2019,
+     "ours": 1074661,
+     "ours_only": 0,
+     "ipl_only": 2019
+    },
+    {
+     "label": "seed v < 1 (strict), weak v \u2264 3",
+     "short": "seed v < 1, weak v \u2264 3",
+     "mismatch": 0,
+     "ours": 1076680,
+     "ours_only": 0,
+     "ipl_only": 0
+    },
+    {
+     "label": "seed v \u2264 1, weak v < 3 (strict)",
+     "short": "seed v \u2264 1, weak v < 3",
+     "mismatch": 2019,
+     "ours": 1074661,
+     "ours_only": 0,
+     "ipl_only": 2019
+    },
+    {
+     "label": "output = the grown set minus the seeds",
+     "short": "grown set minus the seeds",
+     "mismatch": 66046,
+     "ours": 1142726,
+     "ours_only": 66046,
+     "ipl_only": 0
+    },
+    {
+     "label": "no seeding at all (output = the whole weak set)",
+     "short": "no seeding: the whole weak set",
+     "mismatch": 83281,
+     "ours": 1159961,
+     "ours_only": 83281,
+     "ipl_only": 0
+    },
+    {
+     "label": "grow_axes ignored, full 6-connectivity",
+     "short": "grow_axes ignored: 6-connectivity",
+     "mismatch": 83281,
+     "ours": 1159961,
+     "ours_only": 83281,
+     "ipl_only": 0
+    },
+    {
+     "label": "grow_axes read as the axes NOT to grow along (x, y)",
+     "short": "grow_axes = the axes NOT grown",
+     "mismatch": 83281,
+     "ours": 1159961,
+     "ours_only": 83281,
+     "ipl_only": 0
+    }
+   ],
+   "slice": {
+    "index": 101,
+    "crop": [
+     5,
+     413,
+     2,
+     409
+    ]
+   },
+   "slicewise": {
+    "slice_set_voxels": 95419,
+    "components": 805,
+    "kept": 803,
+    "dropped": 2,
+    "largest_share": 57.87316991374883,
+    "largest_voxels": 55222,
+    "second_share": 35.58515599618524,
+    "kept_voxels_in_slice": 6242
+   },
+   "rank": {
+    "pores_M0_voxels": 16836756,
+    "components": 25292,
+    "rank1_voxels": 9994808,
+    "kept_in_compartment": 98499,
+    "second_largest": 6145174,
+    "rank1_holds_grid_corner": true,
+    "rank1_outside_compartment": 9896309
+   },
+   "nr_extract": {
+    "components": 28070,
+    "below_min": 18791,
+    "voxels_dropped": 116153,
+    "kept": 1076680
+   },
+   "pores_F_by_value": {
+    "0": 0,
+    "1": 0,
+    "2": 38808,
+    "3": 2399,
+    "125": 0,
+    "127": 0
+   },
+   "value2_in_pore": 79261,
+   "value3_in_pore": 993897,
+   "window": {
+    "slice_index": 101,
+    "origin_yx": [
+     306,
+     186
+    ],
+    "size": 100,
+    "counts": {
+     "compartment": 7645,
+     "cort_seg": 6371,
+     "pores_E": 718,
+     "pores_M": 125,
+     "pores_F0": 209,
+     "pores_F": 84,
+     "pores_DF": 854,
+     "pores_G": 938,
+     "pores_H": 900,
+     "ipl_pore": 900,
+     "dropped": 38
+    }
+   },
+   "pores_F0_before_mask": 15608510,
+   "columns": {
+    "accepted": {
+     "x": 265,
+     "y": 316,
+     "z": 101,
+     "z_run": [
+      96,
+      107
+     ],
+     "run": 12,
+     "seeds": 5,
+     "value2": 7,
+     "value3": 0,
+     "selected": true
+    },
+    "declined": {
+     "x": 277,
+     "y": 316,
+     "z": 100,
+     "z_run": [
+      94,
+      106
+     ],
+     "run": 13,
+     "seeds": 0,
+     "value2": 9,
+     "value3": 4,
+     "selected": false
+    }
+   }
+  },
+  "second": {
+   "id": "Distal/REPRO/2051",
+   "base": "X4829835",
+   "site": "ultradistal tibia",
+   "voxel_mm": 0.06069965288043022,
+   "grid": {
+    "dim": [
+     629,
+     597,
+     168
+    ],
+    "pos": [
+     807,
+     444,
+     0
+    ]
+   },
+   "voxels": 63086184,
+   "contour_voxels": 8385204,
+   "cort_seg_voxels": 7102871,
+   "cort_seg_outside_compartment": 0,
+   "label_counts": {
+    "0": 54584950,
+    "1": 1280518,
+    "2": 0,
+    "3": 117845,
+    "125": 0,
+    "127": 7102871
+   },
+   "compare": {
+    "mismatch": 0,
+    "ours": 329141,
+    "ipl": 329141,
+    "ours_only": 0,
+    "ipl_only": 0,
+    "dice": 1.0,
+    "same_grid": false,
+    "compared_voxels": 63186480,
+    "compared_grid": {
+     "dim": [
+      630,
+      597,
+      168
+     ],
+     "pos": [
+      807,
+      444,
+      0
+     ]
+    }
+   },
+   "ct_po": {
+    "ct_po": 0.039252593019800115,
+    "pore_voxels": 329141,
+    "pore_in_mask": 329141,
+    "mask_voxels": 8385204
+   },
+   "stage_voxels": {
+    "pores_E": 1398363,
+    "pores_M": 1164488,
+    "pores_M0": 55983313,
+    "cortring_C": 8385204,
+    "cortring_C3": 7220716,
+    "pores_F0": 1164488,
+    "pores_F": 0,
+    "pores_DF": 373163,
+    "pores_G": 373163,
+    "pores_H": 329141
+   },
+   "readings": [
+    {
+     "label": "mode 0, both bounds inclusive: seed v \u2264 1, weak v \u2264 3 (ipldt)",
+     "short": "seed v \u2264 1, weak v \u2264 3",
+     "mismatch": 0,
+     "ours": 329141,
+     "ours_only": 0,
+     "ipl_only": 0
+    },
+    {
+     "label": "seed v \u2265 3, weak v \u2265 1 (mode ignored)",
+     "short": "seed v \u2265 3, weak v \u2265 1  (mode off)",
+     "mismatch": 8034272,
+     "ours": 8363413,
+     "ours_only": 8034272,
+     "ipl_only": 0
+    },
+    {
+     "label": "seed v > 3, weak v > 1 (both bounds strict)",
+     "short": "seed v > 3, weak v > 1",
+     "mismatch": 8056063,
+     "ours": 8385204,
+     "ours_only": 8056063,
+     "ipl_only": 0
+    },
+    {
+     "label": "weak = the band 1 \u2264 v \u2264 3, seed v \u2265 3",
+     "short": "seed v \u2265 3, weak 1 \u2264 v \u2264 3",
+     "mismatch": 892874,
+     "ours": 1222015,
+     "ours_only": 892874,
+     "ipl_only": 0
+    },
+    {
+     "label": "weak = the band 1 \u2264 v \u2264 3, seed v \u2264 1",
+     "short": "seed v \u2264 1, weak 1 \u2264 v \u2264 3",
+     "mismatch": 871344,
+     "ours": 1200485,
+     "ours_only": 871344,
+     "ipl_only": 0
+    },
+    {
+     "label": "weak v \u2264 3, seed v \u2265 3",
+     "short": "seed v \u2265 3, weak v \u2264 3",
+     "mismatch": 892874,
+     "ours": 1222015,
+     "ours_only": 892874,
+     "ipl_only": 0
+    },
+    {
+     "label": "weak v \u2265 1, seed v \u2264 1",
+     "short": "seed v \u2264 1, weak v \u2265 1",
+     "mismatch": 3078497,
+     "ours": 3407638,
+     "ours_only": 3078497,
+     "ipl_only": 0
+    },
+    {
+     "label": "weak v \u2264 1 (one threshold only)",
+     "short": "weak v \u2264 1  (one threshold)",
+     "mismatch": 0,
+     "ours": 329141,
+     "ours_only": 0,
+     "ipl_only": 0
+    },
+    {
+     "label": "weak = every voxel (no upper bound)",
+     "short": "weak = every voxel",
+     "mismatch": 7016784,
+     "ours": 7345925,
+     "ours_only": 7016784,
+     "ipl_only": 0
+    },
+    {
+     "label": "both bounds strict: seed v < 1, weak v < 3",
+     "short": "seed v < 1, weak v < 3",
+     "mismatch": 7363,
+     "ours": 336504,
+     "ours_only": 7363,
+     "ipl_only": 0
+    },
+    {
+     "label": "seed v < 1 (strict), weak v \u2264 3",
+     "short": "seed v < 1, weak v \u2264 3",
+     "mismatch": 7363,
+     "ours": 336504,
+     "ours_only": 7363,
+     "ipl_only": 0
+    },
+    {
+     "label": "seed v \u2264 1, weak v < 3 (strict)",
+     "short": "seed v \u2264 1, weak v < 3",
+     "mismatch": 0,
+     "ours": 329141,
+     "ours_only": 0,
+     "ipl_only": 0
+    },
+    {
+     "label": "output = the grown set minus the seeds",
+     "short": "grown set minus the seeds",
+     "mismatch": 892874,
+     "ours": 1222015,
+     "ours_only": 892874,
+     "ipl_only": 0
+    },
+    {
+     "label": "no seeding at all (output = the whole weak set)",
+     "short": "no seeding: the whole weak set",
+     "mismatch": 0,
+     "ours": 329141,
+     "ours_only": 0,
+     "ipl_only": 0
+    },
+    {
+     "label": "grow_axes ignored, full 6-connectivity",
+     "short": "grow_axes ignored: 6-connectivity",
+     "mismatch": 0,
+     "ours": 329141,
+     "ours_only": 0,
+     "ipl_only": 0
+    },
+    {
+     "label": "grow_axes read as the axes NOT to grow along (x, y)",
+     "short": "grow_axes = the axes NOT grown",
+     "mismatch": 0,
+     "ours": 329141,
+     "ours_only": 0,
+     "ipl_only": 0
+    }
+   ]
+  }
+ },
+ "patella_labels": {
+  "scans": 21,
+  "source": "the configuration-A inputs of the validation harness; cascade ipldt.porosity.pore_cascade; 0 voxels differ from IPL's PORE.AIM on each",
+  "value2_max": 0,
+  "value2_zero_on": 21,
+  "value3_min": 14642,
+  "value3_max": 323956,
+  "value3_min_scan": "PFJ-a91200_L",
+  "value3_max_scan": "PFJ-351dc7_R",
+  "pores_F_max": 0,
+  "pores_F_zero_on": 21,
+  "rows": [
+   {
+    "id": "PFJ-ab6af9_R",
+    "base": "X3931708",
+    "label_counts": {
+     "0": 109087694,
+     "1": 1674860,
+     "2": 0,
+     "3": 215060,
+     "125": 0,
+     "127": 14805666
+    },
+    "pores_F": 0,
+    "pores_H": 1829360,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-0be66a_R",
+    "base": "X2420448",
+    "label_counts": {
+     "0": 37601171,
+     "1": 1120398,
+     "2": 0,
+     "3": 20065,
+     "125": 0,
+     "127": 4697118
+    },
+    "pores_F": 0,
+    "pores_H": 1125103,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-351dc7_R",
+    "base": "X9463122",
+    "label_counts": {
+     "0": 87552191,
+     "1": 3160876,
+     "2": 0,
+     "3": 323956,
+     "125": 0,
+     "127": 15904097
+    },
+    "pores_F": 0,
+    "pores_H": 3402115,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-8bcf88_L",
+    "base": "X4121991",
+    "label_counts": {
+     "0": 31802169,
+     "1": 877768,
+     "2": 0,
+     "3": 83197,
+     "125": 0,
+     "127": 5764306
+    },
+    "pores_F": 0,
+    "pores_H": 933515,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-8bcf88_R",
+    "base": "X4891377",
+    "label_counts": {
+     "0": 26059417,
+     "1": 1117185,
+     "2": 0,
+     "3": 53747,
+     "125": 0,
+     "127": 6007947
+    },
+    "pores_F": 0,
+    "pores_H": 1143428,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-d81140_L",
+    "base": "X5366335",
+    "label_counts": {
+     "0": 34180790,
+     "1": 780780,
+     "2": 0,
+     "3": 116127,
+     "125": 0,
+     "127": 6339007
+    },
+    "pores_F": 0,
+    "pores_H": 864871,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-d81140_R",
+    "base": "X1130319",
+    "label_counts": {
+     "0": 35579875,
+     "1": 872146,
+     "2": 0,
+     "3": 169424,
+     "125": 0,
+     "127": 6907691
+    },
+    "pores_F": 0,
+    "pores_H": 1006144,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-0fb201_R",
+    "base": "X5578364",
+    "label_counts": {
+     "0": 34485181,
+     "1": 1370810,
+     "2": 0,
+     "3": 102079,
+     "125": 0,
+     "127": 7152074
+    },
+    "pores_F": 0,
+    "pores_H": 1440026,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-a5ee4c_R",
+    "base": "X3744142",
+    "label_counts": {
+     "0": 36474317,
+     "1": 1207465,
+     "2": 0,
+     "3": 81044,
+     "125": 0,
+     "127": 6685438
+    },
+    "pores_F": 0,
+    "pores_H": 1261753,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-5f00b4_R",
+    "base": "X5974634",
+    "label_counts": {
+     "0": 26988906,
+     "1": 1427015,
+     "2": 0,
+     "3": 114027,
+     "125": 0,
+     "127": 7865572
+    },
+    "pores_F": 0,
+    "pores_H": 1506155,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-a91200_L",
+    "base": "X3186488",
+    "label_counts": {
+     "0": 37868074,
+     "1": 601950,
+     "2": 0,
+     "3": 14642,
+     "125": 0,
+     "127": 3739782
+    },
+    "pores_F": 0,
+    "pores_H": 603317,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-b5d5d9_L",
+    "base": "X7775442",
+    "label_counts": {
+     "0": 28294807,
+     "1": 333757,
+     "2": 0,
+     "3": 69075,
+     "125": 0,
+     "127": 4629865
+    },
+    "pores_F": 0,
+    "pores_H": 379190,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-42293d_L",
+    "base": "X3623103",
+    "label_counts": {
+     "0": 41174583,
+     "1": 1179331,
+     "2": 0,
+     "3": 76821,
+     "125": 0,
+     "127": 6815441
+    },
+    "pores_F": 0,
+    "pores_H": 1223265,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-a56aae_R",
+    "base": "X5606590",
+    "label_counts": {
+     "0": 35701815,
+     "1": 1105574,
+     "2": 0,
+     "3": 30826,
+     "125": 0,
+     "127": 5262417
+    },
+    "pores_F": 0,
+    "pores_H": 1112416,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-6f5538_R",
+    "base": "X5492058",
+    "label_counts": {
+     "0": 14779618,
+     "1": 2536172,
+     "2": 0,
+     "3": 91204,
+     "125": 0,
+     "127": 7783934
+    },
+    "pores_F": 0,
+    "pores_H": 2617440,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-6b714e_L",
+    "base": "X5484780",
+    "label_counts": {
+     "0": 22702292,
+     "1": 547837,
+     "2": 0,
+     "3": 157660,
+     "125": 0,
+     "127": 6421451
+    },
+    "pores_F": 0,
+    "pores_H": 670835,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-6b714e_R",
+    "base": "X2663245",
+    "label_counts": {
+     "0": 24004966,
+     "1": 403400,
+     "2": 0,
+     "3": 80438,
+     "125": 0,
+     "127": 4931692
+    },
+    "pores_F": 0,
+    "pores_H": 454155,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-69bcb0_L",
+    "base": "X1183449",
+    "label_counts": {
+     "0": 47299500,
+     "1": 1492471,
+     "2": 0,
+     "3": 182511,
+     "125": 0,
+     "127": 8796014
+    },
+    "pores_F": 0,
+    "pores_H": 1635181,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-69bcb0_R",
+    "base": "X1346001",
+    "label_counts": {
+     "0": 51836898,
+     "1": 986592,
+     "2": 0,
+     "3": 177057,
+     "125": 0,
+     "127": 7483149
+    },
+    "pores_F": 0,
+    "pores_H": 1124175,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-411dfd_L",
+    "base": "X3334670",
+    "label_counts": {
+     "0": 38207439,
+     "1": 679229,
+     "2": 0,
+     "3": 105596,
+     "125": 0,
+     "127": 5674736
+    },
+    "pores_F": 0,
+    "pores_H": 755632,
+    "pore_mismatch": 0
+   },
+   {
+    "id": "PFJ-411dfd_R",
+    "base": "X5143651",
+    "label_counts": {
+     "0": 35504109,
+     "1": 541686,
+     "2": 0,
+     "3": 58018,
+     "125": 0,
+     "127": 4881467
+    },
+    "pores_F": 0,
+    "pores_H": 574996,
+    "pore_mismatch": 0
+   }
+  ]
+ }
+}

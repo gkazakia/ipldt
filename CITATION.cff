@@ -1,0 +1,52 @@
+cff-version: 1.2.0
+message: "If you use ipldt or ORMIR-BQRL, please cite the paper below and this software."
+title: "ipldt 1.0.0 and ORMIR-BQRL 0.1.0: an open-source reimplementation of the Scanco IPL bone morphometry evaluation for XtremeCT II"
+abstract: "ipldt 1.0.0 is an open-source Python reimplementation of the bone morphometry evaluation that Scanco's Image Processing Language (IPL V5.42) runs on XtremeCT II HR-pQCT scans; ORMIR-BQRL 0.1.0 is the workflow built on it (one command from a Scanco AIM to masks, segmentation, cortical pore map, distance-transform maps and a report, with manual correction in 3D Slicer and re-entry). Both are released together in this repository."
+type: software
+version: 1.0.0
+date-released: 2026-09-25
+license: MIT
+repository-code: "https://github.com/zhuyihua1234/ipldt"
+keywords:
+  - HR-pQCT
+  - XtremeCT II
+  - bone microarchitecture
+  - Image Processing Language
+  - Laplace-Hamming
+  - distance transform
+  - trabecular thickness
+  - ORMIR
+authors:
+  - given-names: Yihua
+    family-names: Zhu
+  - given-names: Minhao
+    family-names: Zhou
+  - given-names: Gabriella
+    family-names: Ramil
+  - given-names: Darshini
+    family-names: Vijayakumar
+  - given-names: Richard
+    family-names: Souza
+  - given-names: Galateia J.
+    family-names: Kazakia
+# Placeholders, added when they exist: the DOI of the software archive (Zenodo), as `doi:` and an `identifiers:`
+# entry; the paper's journal, volume and DOI in `preferred-citation` below.
+preferred-citation:
+  type: article
+  title: "Voxel-for-voxel reproduction of the Scanco IPL HR-pQCT bone morphometry evaluation in open-source Python"
+  year: 2026
+  status: submitted
+  notes: "Under review; the journal, volume and DOI are added on publication."
+  authors:
+    - given-names: Yihua
+      family-names: Zhu
+    - given-names: Minhao
+      family-names: Zhou
+    - given-names: Gabriella
+      family-names: Ramil
+    - given-names: Darshini
+      family-names: Vijayakumar
+    - given-names: Richard
+      family-names: Souza
+    - given-names: Galateia J.
+      family-names: Kazakia

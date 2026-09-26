@@ -1,0 +1,46 @@
+{
+ "n": 137,
+ "ipl_ver": "V5.42",
+ "ormir_ver": "1.1.0",
+ "facts_values": {
+  "step1_exact": 137,
+  "render_exact": 137,
+  "seg_mismatch_ppm": 19.75704629502316,
+  "seg_dice_min": 0.9984336732755736,
+  "dt_exact": {
+   "TbSp": 137,
+   "TbN": 137,
+   "CtTh": 137,
+   "TbTh_trabseg": 137
+  },
+  "dt_mismatches_four_maps": 0,
+  "dt_voxels_compared_four_maps": 18348991192,
+  "metrics_A_exact": {
+   "TbSp": 137,
+   "TbN": 137,
+   "CtTh": 137
+  },
+  "metrics_B_max_rel_pct_of_five": 0.05058609324448412,
+  "ctpo_B_max_abs_rel_pct": 0.9396271320904444,
+  "stage_exact_scans": {
+   "3": 137,
+   "4": 137,
+   "5": 37,
+   "6": 137,
+   "7": 73
+  }
+ },
+ "stage_class": {
+  "3": "identical",
+  "4": "identical",
+  "5": "differs",
+  "6": "identical",
+  "7": "differs"
+ },
+ "step1": "identical on 137/137 scans",
+ "render": "identical on 137/137 scans",
+ "seg": "19.8 voxels per million differ; Dice ≥ 0.998",
+ "seg_median": 2.0,
+ "dt": "identical on 137/137 scans: all four maps (0 of 18.3 × 10⁹ voxels differ) and the pore map",
+ "metrics": "BV/TV, Tb.Th, Tb.Sp, Tb.N, Ct.Th within 0.051%; Ct.Po within 0.94%"
+}

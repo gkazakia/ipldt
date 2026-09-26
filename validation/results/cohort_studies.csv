@@ -1,0 +1,139 @@
+id,tag,cohort,site,study
+PFJ-0be66a_R,PFJ-0be66a_R,Patella,Patella,PFJSTUDY
+PFJ-0fb201_R,PFJ-0fb201_R,Patella,Patella,PFJSTUDY
+PFJ-351dc7_R,PFJ-351dc7_R,Patella,Patella,PFJSTUDY
+PFJ-411dfd_L,PFJ-411dfd_L,Patella,Patella,PFJSTUDY
+PFJ-411dfd_R,PFJ-411dfd_R,Patella,Patella,PFJSTUDY
+PFJ-42293d_L,PFJ-42293d_L,Patella,Patella,PFJSTUDY
+PFJ-5f00b4_R,PFJ-5f00b4_R,Patella,Patella,PFJSTUDY
+PFJ-69bcb0_L,PFJ-69bcb0_L,Patella,Patella,PFJSTUDY
+PFJ-69bcb0_R,PFJ-69bcb0_R,Patella,Patella,PFJSTUDY
+PFJ-6b714e_L,PFJ-6b714e_L,Patella,Patella,PFJSTUDY
+PFJ-6b714e_R,PFJ-6b714e_R,Patella,Patella,PFJSTUDY
+PFJ-6f5538_R,PFJ-6f5538_R,Patella,Patella,PFJSTUDY
+PFJ-8bcf88_L,PFJ-8bcf88_L,Patella,Patella,PFJSTUDY
+PFJ-8bcf88_R,PFJ-8bcf88_R,Patella,Patella,PFJSTUDY
+PFJ-a56aae_R,PFJ-a56aae_R,Patella,Patella,PFJSTUDY
+PFJ-a5ee4c_R,PFJ-a5ee4c_R,Patella,Patella,PFJSTUDY
+PFJ-a91200_L,PFJ-a91200_L,Patella,Patella,PFJSTUDY
+PFJ-ab6af9_R,PFJ-ab6af9_R,Patella,Patella,PFJSTUDY
+PFJ-b5d5d9_L,PFJ-b5d5d9_L,Patella,Patella,PFJSTUDY
+PFJ-d81140_L,PFJ-d81140_L,Patella,Patella,PFJSTUDY
+PFJ-d81140_R,PFJ-d81140_R,Patella,Patella,PFJSTUDY
+Diaphyseal/BMAT/610892,Diaphyseal_BMAT_610892,Diaphyseal Tibia,D Tibia,BMATSTUDY
+Diaphyseal/CKD/131714,Diaphyseal_CKD_131714,Diaphyseal Tibia,D Tibia,CKDSTUDY
+Diaphyseal/CKD/220364,Diaphyseal_CKD_220364,Diaphyseal Radius,D Radius,CKDSTUDY
+Diaphyseal/CKD/2422,Diaphyseal_CKD_2422,Diaphyseal Tibia,D Tibia,CKDSTUDY
+Diaphyseal/CKD/263312,Diaphyseal_CKD_263312,Diaphyseal Radius,D Radius,CKDSTUDY
+Diaphyseal/CKD/264031,Diaphyseal_CKD_264031,Diaphyseal Tibia,D Tibia,CKDSTUDY
+Diaphyseal/CKD/312922,Diaphyseal_CKD_312922,Diaphyseal Tibia,D Tibia,CKDSTUDY
+Diaphyseal/CKD/315196,Diaphyseal_CKD_315196,Diaphyseal Tibia,D Tibia,CKDSTUDY
+Diaphyseal/CKD/331338,Diaphyseal_CKD_331338,Diaphyseal Radius,D Radius,CKDSTUDY
+Diaphyseal/CKD/341269,Diaphyseal_CKD_341269,Diaphyseal Radius,D Radius,CKDSTUDY
+Diaphyseal/CKD/357300,Diaphyseal_CKD_357300,Diaphyseal Radius,D Radius,CKDSTUDY
+Diaphyseal/CKD/433045,Diaphyseal_CKD_433045,Diaphyseal Tibia,D Tibia,CKDSTUDY
+Diaphyseal/CKD/449824,Diaphyseal_CKD_449824,Diaphyseal Tibia,D Tibia,CKDSTUDY
+Diaphyseal/CKD/490293,Diaphyseal_CKD_490293,Diaphyseal Tibia,D Tibia,CKDSTUDY
+Diaphyseal/CKD/551488,Diaphyseal_CKD_551488,Diaphyseal Radius,D Radius,CKDSTUDY
+Diaphyseal/CKD/558517,Diaphyseal_CKD_558517,Diaphyseal Radius,D Radius,CKDSTUDY
+Diaphyseal/CKD/581203,Diaphyseal_CKD_581203,Diaphyseal Radius,D Radius,CKDSTUDY
+Diaphyseal/CKD/797034,Diaphyseal_CKD_797034,Diaphyseal Radius,D Radius,CKDSTUDY
+Diaphyseal/CKD/991161,Diaphyseal_CKD_991161,Diaphyseal Tibia,D Tibia,CKDSTUDY
+Diaphyseal/REPRO/105956,Diaphyseal_REPRO_105956,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/134330,Diaphyseal_REPRO_134330,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/189563,Diaphyseal_REPRO_189563,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/211122,Diaphyseal_REPRO_211122,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/229741,Diaphyseal_REPRO_229741,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/231656,Diaphyseal_REPRO_231656,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/246089,Diaphyseal_REPRO_246089,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/282547,Diaphyseal_REPRO_282547,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/305604,Diaphyseal_REPRO_305604,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/314619,Diaphyseal_REPRO_314619,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/330187,Diaphyseal_REPRO_330187,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/335949,Diaphyseal_REPRO_335949,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/352455,Diaphyseal_REPRO_352455,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/368516,Diaphyseal_REPRO_368516,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/392589,Diaphyseal_REPRO_392589,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/407979,Diaphyseal_REPRO_407979,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/453933,Diaphyseal_REPRO_453933,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/508753,Diaphyseal_REPRO_508753,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/511347,Diaphyseal_REPRO_511347,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/546324,Diaphyseal_REPRO_546324,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/570800,Diaphyseal_REPRO_570800,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/574404,Diaphyseal_REPRO_574404,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/5876,Diaphyseal_REPRO_5876,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/589348,Diaphyseal_REPRO_589348,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/593666,Diaphyseal_REPRO_593666,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/655328,Diaphyseal_REPRO_655328,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/760494,Diaphyseal_REPRO_760494,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/787166,Diaphyseal_REPRO_787166,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/797620,Diaphyseal_REPRO_797620,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/797786,Diaphyseal_REPRO_797786,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/799620,Diaphyseal_REPRO_799620,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/800721,Diaphyseal_REPRO_800721,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/876976,Diaphyseal_REPRO_876976,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/880988,Diaphyseal_REPRO_880988,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/907071,Diaphyseal_REPRO_907071,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/930535,Diaphyseal_REPRO_930535,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/941610,Diaphyseal_REPRO_941610,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/948276,Diaphyseal_REPRO_948276,Diaphyseal Tibia,D Tibia,REPROSTUDY
+Diaphyseal/REPRO/950609,Diaphyseal_REPRO_950609,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/962411,Diaphyseal_REPRO_962411,Diaphyseal Radius,D Radius,REPROSTUDY
+Distal/CKD/113739,Distal_CKD_113739,Distal Tibia,UD Tibia,CKDSTUDY
+Distal/CKD/114224,Distal_CKD_114224,Distal Tibia,UD Tibia,CKDSTUDY
+Distal/CKD/128972,Distal_CKD_128972,Distal Radius,UD Radius,CKDSTUDY
+Distal/CKD/345857,Distal_CKD_345857,Distal Tibia,UD Tibia,CKDSTUDY
+Distal/CKD/379176,Distal_CKD_379176,Distal Radius,UD Radius,CKDSTUDY
+Distal/CKD/386723,Distal_CKD_386723,Distal Tibia,UD Tibia,CKDSTUDY
+Distal/CKD/407187,Distal_CKD_407187,Distal Tibia,UD Tibia,CKDSTUDY
+Distal/CKD/487451,Distal_CKD_487451,Distal Radius,UD Radius,CKDSTUDY
+Distal/CKD/517426,Distal_CKD_517426,Distal Radius,UD Radius,CKDSTUDY
+Distal/CKD/524300,Distal_CKD_524300,Distal Radius,UD Radius,CKDSTUDY
+Distal/CKD/670761,Distal_CKD_670761,Distal Tibia,UD Tibia,CKDSTUDY
+Distal/CKD/717613,Distal_CKD_717613,Distal Radius,UD Radius,CKDSTUDY
+Distal/CKD/779503,Distal_CKD_779503,Distal Radius,UD Radius,CKDSTUDY
+Distal/CKD/802246,Distal_CKD_802246,Distal Radius,UD Radius,CKDSTUDY
+Distal/CKD/853269,Distal_CKD_853269,Distal Tibia,UD Tibia,CKDSTUDY
+Distal/CKD/950636,Distal_CKD_950636,Distal Tibia,UD Tibia,CKDSTUDY
+Distal/CKD/951475,Distal_CKD_951475,Distal Tibia,UD Tibia,CKDSTUDY
+Distal/CKD/969383,Distal_CKD_969383,Distal Radius,UD Radius,CKDSTUDY
+Distal/REPRO/139411,Distal_REPRO_139411,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/169172,Distal_REPRO_169172,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/188992,Distal_REPRO_188992,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/197603,Distal_REPRO_197603,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/204801,Distal_REPRO_204801,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/2051,Distal_REPRO_2051,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/2095,Distal_REPRO_2095,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/237035,Distal_REPRO_237035,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/243813,Distal_REPRO_243813,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/247104,Distal_REPRO_247104,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/256984,Distal_REPRO_256984,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/319997,Distal_REPRO_319997,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/346361,Distal_REPRO_346361,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/354224,Distal_REPRO_354224,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/441968,Distal_REPRO_441968,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/444084,Distal_REPRO_444084,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/449250,Distal_REPRO_449250,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/462076,Distal_REPRO_462076,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/467802,Distal_REPRO_467802,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/472790,Distal_REPRO_472790,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/476576,Distal_REPRO_476576,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/478243,Distal_REPRO_478243,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/512539,Distal_REPRO_512539,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/512830,Distal_REPRO_512830,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/570636,Distal_REPRO_570636,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/612066,Distal_REPRO_612066,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/631616,Distal_REPRO_631616,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/676439,Distal_REPRO_676439,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/697852,Distal_REPRO_697852,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/701639,Distal_REPRO_701639,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/702705,Distal_REPRO_702705,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/721429,Distal_REPRO_721429,Distal Tibia,UD Tibia,REPROSTUDY
+Distal/REPRO/763554,Distal_REPRO_763554,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/775813,Distal_REPRO_775813,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/784915,Distal_REPRO_784915,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/802851,Distal_REPRO_802851,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/809980,Distal_REPRO_809980,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/815742,Distal_REPRO_815742,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/850517,Distal_REPRO_850517,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/855911,Distal_REPRO_855911,Distal Tibia,UD Tibia,REPROSTUDY

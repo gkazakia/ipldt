@@ -1,0 +1,543 @@
+{
+ "figure": "fig2_step1",
+ "scan_shown": "one patella scan, mid-slice",
+ "z_mid": 252,
+ "frame": [
+  804,
+  90,
+  738,
+  348
+ ],
+ "vox_mm": 0.0607,
+ "panels": [
+  {
+   "tag": "00_all",
+   "letter": "A",
+   "title": "Periosteal contour (input)",
+   "what": "rendered from the periosteal\ncontour file",
+   "mismatches": null,
+   "ours_only": null,
+   "ipl_only": null,
+   "same_grid": true,
+   "voxels_ours": 27484219,
+   "voxels_ipl": 27484219,
+   "note": "input: IPL's periosteal rendering is the chain's input",
+   "slice_differing": 0
+  },
+  {
+   "tag": "01_seggauss",
+   "letter": "B",
+   "title": "Dense bone",
+   "what": "Gaussian \u03c3 2, support 3;\n500\u20133,000 mg HA/cm\u00b3",
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 6926948,
+   "voxels_ipl": 6926948,
+   "slice_differing": 0
+  },
+  {
+   "tag": "02_trab0",
+   "letter": "C",
+   "title": "Trabecular candidate",
+   "what": "periosteal region minus\ndense bone",
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20557271,
+   "voxels_ipl": 20557271,
+   "slice_differing": 0
+  },
+  {
+   "tag": "15_open15",
+   "letter": "D",
+   "title": "Morphological cleaning",
+   "what": "fill, largest component, erode 3,\ndilate 3, close 15, open 15",
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20163367,
+   "voxels_ipl": 20163367,
+   "slice_differing": 0
+  },
+  {
+   "tag": "16_corners",
+   "letter": "E",
+   "title": "Corner recovery",
+   "what": "opening residue; components of\n\u2265 200,000 voxels are kept",
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 154379,
+   "voxels_ipl": 154379,
+   "slice_differing": 0
+  },
+  {
+   "tag": "25_slicewise",
+   "letter": "F",
+   "title": "Trabecular region",
+   "what": "close 50, 6-voxel peel,\nslice-wise \u2265 50% rule",
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20329639,
+   "voxels_ipl": 20329639,
+   "slice_differing": 0
+  },
+  {
+   "tag": "28_cortfinal",
+   "letter": "G",
+   "title": "Cortical mask",
+   "what": "periosteal region minus\ntrabecular region",
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 7154580,
+   "voxels_ipl": 7154580,
+   "slice_differing": 0
+  },
+  {
+   "tag": "29_trabfinal",
+   "letter": "H",
+   "title": "Trabecular mask",
+   "what": "periosteal region minus\ncortical mask",
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20329639,
+   "voxels_ipl": 20329639,
+   "slice_differing": 0
+  }
+ ],
+ "all_stages": {
+  "00_all": {
+   "mismatches": null,
+   "ours_only": null,
+   "ipl_only": null,
+   "same_grid": true,
+   "voxels_ours": 27484219,
+   "voxels_ipl": 27484219,
+   "note": "input: IPL's periosteal rendering is the chain's input"
+  },
+  "01_seggauss": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 6926948,
+   "voxels_ipl": 6926948
+  },
+  "02_trab0": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20557271,
+   "voxels_ipl": 20557271
+  },
+  "03_peel6": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 19755690,
+   "voxels_ipl": 19755690
+  },
+  "04_inv": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 23683062,
+   "voxels_ipl": 23683062
+  },
+  "05_rank1": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 23425237,
+   "voxels_ipl": 23425237
+  },
+  "06_bgrm": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 7470704,
+   "voxels_ipl": 7470704
+  },
+  "07_trab1": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20013515,
+   "voxels_ipl": 20013515
+  },
+  "08_trabrank": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 19959727,
+   "voxels_ipl": 19959727
+  },
+  "09_ero3": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 15752082,
+   "voxels_ipl": 15752082
+  },
+  "10_erorank": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 15730845,
+   "voxels_ipl": 15730845
+  },
+  "11_dil3": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 19463848,
+   "voxels_ipl": 19463848
+  },
+  "12_close15": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 21034566,
+   "voxels_ipl": 21034566
+  },
+  "13_close15peel": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20317746,
+   "voxels_ipl": 20317746
+  },
+  "14_bbc": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20317746,
+   "voxels_ipl": 20317746
+  },
+  "15_open15": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20163367,
+   "voxels_ipl": 20163367
+  },
+  "16_corners": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 154379,
+   "voxels_ipl": 154379
+  },
+  "17_cornero": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 6550,
+   "voxels_ipl": 6550
+  },
+  "18_corncl": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 0,
+   "voxels_ipl": 0
+  },
+  "19_cornmajor": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 0,
+   "voxels_ipl": 0
+  },
+  "20_corncl2": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 0,
+   "voxels_ipl": 0
+  },
+  "21_corners2": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 0,
+   "voxels_ipl": 0
+  },
+  "22_trabadd": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20163367,
+   "voxels_ipl": 20163367
+  },
+  "23_close50": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20333641,
+   "voxels_ipl": 20333641
+  },
+  "24_close50peel": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20329639,
+   "voxels_ipl": 20329639
+  },
+  "25_slicewise": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20329639,
+   "voxels_ipl": 20329639
+  },
+  "26_cort": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 7154580,
+   "voxels_ipl": 7154580
+  },
+  "27_cortslice": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 7154580,
+   "voxels_ipl": 7154580
+  },
+  "28_cortfinal": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 7154580,
+   "voxels_ipl": 7154580
+  },
+  "29_trabfinal": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": true,
+   "voxels_ours": 20329639,
+   "voxels_ipl": 20329639
+  },
+  "30_cortgobj": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": false,
+   "voxels_ours": 7154297,
+   "voxels_ipl": 7154297
+  },
+  "31_trabgobj": {
+   "mismatches": 0,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "same_grid": false,
+   "voxels_ours": 20328498,
+   "voxels_ipl": 20328498
+  }
+ },
+ "slice_differing": {
+  "00_all": 0,
+  "01_seggauss": 0,
+  "02_trab0": 0,
+  "03_peel6": 0,
+  "04_inv": 0,
+  "05_rank1": 0,
+  "06_bgrm": 0,
+  "07_trab1": 0,
+  "08_trabrank": 0,
+  "09_ero3": 0,
+  "10_erorank": 0,
+  "11_dil3": 0,
+  "12_close15": 0,
+  "13_close15peel": 0,
+  "14_bbc": 0,
+  "15_open15": 0,
+  "16_corners": 0,
+  "17_cornero": 0,
+  "18_corncl": 0,
+  "19_cornmajor": 0,
+  "20_corncl2": 0,
+  "21_corners2": 0,
+  "22_trabadd": 0,
+  "23_close50": 0,
+  "24_close50peel": 0,
+  "25_slicewise": 0,
+  "26_cort": 0,
+  "27_cortslice": 0,
+  "28_cortfinal": 0,
+  "29_trabfinal": 0,
+  "30_cortgobj": 0,
+  "31_trabgobj": 0
+ },
+ "thresholds": {
+  "lower_native": 4524,
+  "upper_native": 17173,
+  "lower_mgha": 500.0,
+  "upper_mgha": 3000.0
+ },
+ "params": {
+  "sigma": 2.0,
+  "support": 3,
+  "lower_mgha": 500.0,
+  "upper_mgha": 3000.0,
+  "peel0": 6,
+  "erode": 3,
+  "dilate": 3,
+  "close1": 15,
+  "open_": 15,
+  "corner_erode": 3,
+  "corner_min": 200000,
+  "corner_dilate": 3,
+  "corner_max": 500000,
+  "close2": 50,
+  "slicewise_lo": 50.0,
+  "slicewise_up": 100.0
+ },
+ "largest_component_stage17": 3500,
+ "n_components_stage17": 64,
+ "ipldt_seconds_step1_this_scan": 13.968664407730103,
+ "scans": {
+  "n": 137,
+  "n_exact_cort": 137,
+  "n_exact_trab": 137,
+  "differing_cort_total": 0,
+  "differing_trab_total": 0,
+  "ipl_cort_voxels_total": 928920014,
+  "ipl_trab_voxels_total": 1844751954,
+  "per_site": {
+   "patella": {
+    "n": 21,
+    "exact_cort": 21,
+    "exact_trab": 21
+   },
+   "UD radius": {
+    "n": 29,
+    "exact_cort": 29,
+    "exact_trab": 29
+   },
+   "UD tibia": {
+    "n": 29,
+    "exact_cort": 29,
+    "exact_trab": 29
+   },
+   "D radius": {
+    "n": 29,
+    "exact_cort": 29,
+    "exact_trab": 29
+   },
+   "D tibia": {
+    "n": 29,
+    "exact_cort": 29,
+    "exact_trab": 29
+   }
+  },
+  "step1_seconds_median": 10.818296909332275
+ },
+ "facts_checked": [
+  "B.oslh.rendering.cort.exact_scans",
+  "B.oslh.rendering.cort.mismatches",
+  "B.oslh.rendering.cort.n_scans",
+  "B.oslh.rendering.cort.voxels_ipl",
+  "B.oslh.rendering.trab.exact_scans",
+  "B.oslh.rendering.trab.mismatches",
+  "B.oslh.rendering.trab.n_scans",
+  "B.oslh.rendering.trab.voxels_ipl",
+  "B.patella.step1.cort.exact_scans",
+  "B.patella.step1.cort.mismatches",
+  "B.patella.step1.cort.n_scans",
+  "B.patella.step1.cort.voxels_ipl",
+  "B.patella.step1.trab.exact_scans",
+  "B.patella.step1.trab.mismatches",
+  "B.patella.step1.trab.n_scans",
+  "B.patella.step1.trab.voxels_ipl",
+  "B.site.D_radius.rendering.cort.exact_scans",
+  "B.site.D_radius.rendering.cort.mismatches",
+  "B.site.D_radius.rendering.cort.n_scans",
+  "B.site.D_radius.rendering.cort.voxels_ipl",
+  "B.site.D_radius.rendering.trab.exact_scans",
+  "B.site.D_radius.rendering.trab.mismatches",
+  "B.site.D_radius.rendering.trab.n_scans",
+  "B.site.D_radius.rendering.trab.voxels_ipl",
+  "B.site.D_tibia.rendering.cort.exact_scans",
+  "B.site.D_tibia.rendering.cort.mismatches",
+  "B.site.D_tibia.rendering.cort.n_scans",
+  "B.site.D_tibia.rendering.cort.voxels_ipl",
+  "B.site.D_tibia.rendering.trab.exact_scans",
+  "B.site.D_tibia.rendering.trab.mismatches",
+  "B.site.D_tibia.rendering.trab.n_scans",
+  "B.site.D_tibia.rendering.trab.voxels_ipl",
+  "B.site.UD_radius.rendering.cort.exact_scans",
+  "B.site.UD_radius.rendering.cort.mismatches",
+  "B.site.UD_radius.rendering.cort.n_scans",
+  "B.site.UD_radius.rendering.cort.voxels_ipl",
+  "B.site.UD_radius.rendering.trab.exact_scans",
+  "B.site.UD_radius.rendering.trab.mismatches",
+  "B.site.UD_radius.rendering.trab.n_scans",
+  "B.site.UD_radius.rendering.trab.voxels_ipl",
+  "B.site.UD_tibia.rendering.cort.exact_scans",
+  "B.site.UD_tibia.rendering.cort.mismatches",
+  "B.site.UD_tibia.rendering.cort.n_scans",
+  "B.site.UD_tibia.rendering.cort.voxels_ipl",
+  "B.site.UD_tibia.rendering.trab.exact_scans",
+  "B.site.UD_tibia.rendering.trab.mismatches",
+  "B.site.UD_tibia.rendering.trab.n_scans",
+  "B.site.UD_tibia.rendering.trab.voxels_ipl",
+  "cohort.n_total",
+  "cohort.oslh.n",
+  "cohort.patella.n",
+  "cohort.site.D_radius.n",
+  "cohort.site.D_tibia.n",
+  "cohort.site.UD_radius.n",
+  "cohort.site.UD_tibia.n"
+ ],
+ "sources": {
+  "exports": "<IPLDT_LAB_ROOT>/Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs",
+  "greyscale": "<IPLDT_LAB_ROOT>/PFJOA/XCT_masks_full_grab/PFJ-0be66a_R/X2420448.AIM",
+  "patella_records": "validation/results/from_ipl_contour_ceil_dt/records",
+  "oslh_records": [
+   "validation/results/oslh_auto_v4/records",
+   "validation/results/oslh_noedit_v3/records"
+  ],
+  "facts": "manuscript/facts/facts.json"
+ }
+}

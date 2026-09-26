@@ -1,0 +1,1129 @@
+{
+ "meta": {
+  "built": "2026-09-18 16:41",
+  "n": 21,
+  "formula": "BV/TV = |SEG AND rendered trabecular contour| / |rendered trabecular contour| (validation/validate_dataset.py bvtv)",
+  "inputs": "IPL's <base>_SEG_decompressed.AIM and IPL's TRAB_MASK rendered on the SEG grid (validate_against_ipl.Subject.gobj('trab'))",
+  "printed_source": "IPL's evaluation result sheet of each patella (three decimals; not distributed)",
+  "equals_ceil_dt_ipl": 21,
+  "printed_available": 21,
+  "printed_agree_after_rounding": 18,
+  "printed_agree_after_rounding_B": 18,
+  "max_abs_diff_to_printed": 0.0005579893573507411
+ },
+ "records": {
+  "PFJ-ab6af9_R": {
+   "subject": "PFJ-ab6af9_R",
+   "base": "X3931708",
+   "seg_grid": [
+    [
+     699,
+     348,
+     504
+    ],
+    [
+     958,
+     133,
+     0
+    ]
+   ],
+   "bv_voxels": 11430870,
+   "tv_voxels": 35988981,
+   "bvtv": 0.3176213852790108,
+   "bvtv_rounded_3": 0.318,
+   "el_size_mm": [
+    0.06069915369153023,
+    0.06070027872920036,
+    0.060698412358760834
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 11430870,
+    "tv_ipl": 35988981,
+    "ipl": 0.3176213852790108,
+    "ours_B": 0.3176213297064454,
+    "bv_ours_B": 11430868,
+    "tv_ours_B": 35988981
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.318,
+    "BVTV_decimals": 3,
+    "TbN": 2.165,
+    "TbN_decimals": 3,
+    "TbTh": 0.216,
+    "TbTh_decimals": 3,
+    "TbSp": 0.396,
+    "TbSp_decimals": 3,
+    "CtTh": 2.292,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.142,
+    "Tb1NSD_decimals": 3,
+    "slices": 504
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": -0.0003786147209892121,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-0be66a_R": {
+   "subject": "PFJ-0be66a_R",
+   "base": "X2420448",
+   "seg_grid": [
+    [
+     735,
+     342,
+     168
+    ],
+    [
+     801,
+     97,
+     168
+    ]
+   ],
+   "bv_voxels": 6087803,
+   "tv_voxels": 20328498,
+   "bvtv": 0.29947136281293385,
+   "bvtv_rounded_3": 0.299,
+   "el_size_mm": [
+    0.06069973483681679,
+    0.060700856149196625,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 6087803,
+    "tv_ipl": 20328498,
+    "ipl": 0.29947136281293385,
+    "ours_B": 0.29947136281293385,
+    "bv_ours_B": 6087803,
+    "tv_ours_B": 20328498
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.299,
+    "BVTV_decimals": 3,
+    "TbN": 2.037,
+    "TbN_decimals": 3,
+    "TbTh": 0.224,
+    "TbTh_decimals": 3,
+    "TbSp": 0.438,
+    "TbSp_decimals": 3,
+    "CtTh": 2.325,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.159,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": 0.00047136281293386206,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-351dc7_R": {
+   "subject": "PFJ-351dc7_R",
+   "base": "X9463122",
+   "seg_grid": [
+    [
+     737,
+     448,
+     320
+    ],
+    [
+     738,
+     0,
+     168
+    ]
+   ],
+   "bv_voxels": 7027552,
+   "tv_voxels": 16618986,
+   "bvtv": 0.42286286299296477,
+   "bvtv_rounded_3": 0.423,
+   "el_size_mm": [
+    0.06070026755332947,
+    0.06069956347346306,
+    0.06069687753915787
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 7027552,
+    "tv_ipl": 16618986,
+    "ipl": 0.42286286299296477,
+    "ours_B": 0.42286274264867907,
+    "bv_ours_B": 7027550,
+    "tv_ours_B": 16618986
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.423,
+    "BVTV_decimals": 3,
+    "TbN": 2.562,
+    "TbN_decimals": 3,
+    "TbTh": 0.233,
+    "TbTh_decimals": 3,
+    "TbSp": 0.308,
+    "TbSp_decimals": 3,
+    "CtTh": 4.353,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.1,
+    "Tb1NSD_decimals": 3,
+    "slices": 320
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": -0.00013713700703521514,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-8bcf88_L": {
+   "subject": "PFJ-8bcf88_L",
+   "base": "X4121991",
+   "seg_grid": [
+    [
+     705,
+     316,
+     168
+    ],
+    [
+     802,
+     7,
+     0
+    ]
+   ],
+   "bv_voxels": 4982273,
+   "tv_voxels": 13936177,
+   "bvtv": 0.35750643809991794,
+   "bvtv_rounded_3": 0.358,
+   "el_size_mm": [
+    0.06069985777139664,
+    0.06069938838481903,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 4982273,
+    "tv_ipl": 13936177,
+    "ipl": 0.35750643809991794,
+    "ours_B": 0.35750643809991794,
+    "bv_ours_B": 4982273,
+    "tv_ours_B": 13936177
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.357,
+    "BVTV_decimals": 3,
+    "TbN": 2.498,
+    "TbN_decimals": 3,
+    "TbTh": 0.227,
+    "TbTh_decimals": 3,
+    "TbSp": 0.339,
+    "TbSp_decimals": 3,
+    "CtTh": 2.918,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.109,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": false,
+   "diff_to_printed": 0.0005064380999179607,
+   "printed_agrees_after_rounding_B": false
+  },
+  "PFJ-8bcf88_R": {
+   "subject": "PFJ-8bcf88_R",
+   "base": "X4891377",
+   "seg_grid": [
+    [
+     736,
+     262,
+     168
+    ],
+    [
+     895,
+     9,
+     0
+    ]
+   ],
+   "bv_voxels": 4182705,
+   "tv_voxels": 9987331,
+   "bvtv": 0.41880107908709546,
+   "bvtv_rounded_3": 0.419,
+   "el_size_mm": [
+    0.06070026755332947,
+    0.06069999933242798,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 4182705,
+    "tv_ipl": 9987331,
+    "ipl": 0.41880107908709546,
+    "ours_B": 0.41880117921394616,
+    "bv_ours_B": 4182706,
+    "tv_ours_B": 9987331
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.419,
+    "BVTV_decimals": 3,
+    "TbN": 2.679,
+    "TbN_decimals": 3,
+    "TbTh": 0.239,
+    "TbTh_decimals": 3,
+    "TbSp": 0.301,
+    "TbSp_decimals": 3,
+    "CtTh": 2.599,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.096,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": -0.00019892091290452107,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-d81140_L": {
+   "subject": "PFJ-d81140_L",
+   "base": "X5366335",
+   "seg_grid": [
+    [
+     759,
+     316,
+     168
+    ],
+    [
+     763,
+     7,
+     0
+    ]
+   ],
+   "bv_voxels": 6094364,
+   "tv_voxels": 18224455,
+   "bvtv": 0.33440582996857793,
+   "bvtv_rounded_3": 0.334,
+   "el_size_mm": [
+    0.06069909408688545,
+    0.06070061773061752,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 6094364,
+    "tv_ipl": 18224455,
+    "ipl": 0.33440582996857793,
+    "ours_B": 0.33440582996857793,
+    "bv_ours_B": 6094364,
+    "tv_ours_B": 18224455
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.334,
+    "BVTV_decimals": 3,
+    "TbN": 2.076,
+    "TbN_decimals": 3,
+    "TbTh": 0.223,
+    "TbTh_decimals": 3,
+    "TbSp": 0.42,
+    "TbSp_decimals": 3,
+    "CtTh": 2.923,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.156,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": 0.00040582996857790876,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-d81140_R": {
+   "subject": "PFJ-d81140_R",
+   "base": "X1130319",
+   "seg_grid": [
+    [
+     726,
+     349,
+     168
+    ],
+    [
+     874,
+     39,
+     0
+    ]
+   ],
+   "bv_voxels": 6537183,
+   "tv_voxels": 18796492,
+   "bvtv": 0.3477873956480816,
+   "bvtv_rounded_3": 0.348,
+   "el_size_mm": [
+    0.06070013344287872,
+    0.06069944053888321,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 6537183,
+    "tv_ipl": 18796492,
+    "ipl": 0.3477873956480816,
+    "ours_B": 0.3477873956480816,
+    "bv_ours_B": 6537183,
+    "tv_ours_B": 18796492
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.348,
+    "BVTV_decimals": 3,
+    "TbN": 2.304,
+    "TbN_decimals": 3,
+    "TbTh": 0.227,
+    "TbTh_decimals": 3,
+    "TbSp": 0.372,
+    "TbSp_decimals": 3,
+    "CtTh": 3.288,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.132,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": -0.00021260435191838845,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-0fb201_R": {
+   "subject": "PFJ-0fb201_R",
+   "base": "X5578364",
+   "seg_grid": [
+    [
+     725,
+     346,
+     168
+    ],
+    [
+     717,
+     190,
+     168
+    ]
+   ],
+   "bv_voxels": 6361662,
+   "tv_voxels": 17753011,
+   "bvtv": 0.35834270592182926,
+   "bvtv_rounded_3": 0.358,
+   "el_size_mm": [
+    0.0606994554400444,
+    0.06069859489798546,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 6361662,
+    "tv_ipl": 17753011,
+    "ipl": 0.35834270592182926,
+    "ours_B": 0.3583426495933563,
+    "bv_ours_B": 6361661,
+    "tv_ours_B": 17753011
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.358,
+    "BVTV_decimals": 3,
+    "TbN": 2.371,
+    "TbN_decimals": 3,
+    "TbTh": 0.22,
+    "TbTh_decimals": 3,
+    "TbSp": 0.354,
+    "TbSp_decimals": 3,
+    "CtTh": 3.313,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.122,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": 0.0003427059218292783,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-a5ee4c_R": {
+   "subject": "PFJ-a5ee4c_R",
+   "base": "X3744142",
+   "seg_grid": [
+    [
+     711,
+     364,
+     168
+    ],
+    [
+     844,
+     7,
+     0
+    ]
+   ],
+   "bv_voxels": 6792600,
+   "tv_voxels": 19599685,
+   "bvtv": 0.34656679431327597,
+   "bvtv_rounded_3": 0.347,
+   "el_size_mm": [
+    0.06069999933242798,
+    0.06069892644882202,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 6792600,
+    "tv_ipl": 19599685,
+    "ipl": 0.34656679431327597,
+    "ours_B": 0.34656679431327597,
+    "bv_ours_B": 6792600,
+    "tv_ours_B": 19599685
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.347,
+    "BVTV_decimals": 3,
+    "TbN": 2.559,
+    "TbN_decimals": 3,
+    "TbTh": 0.211,
+    "TbTh_decimals": 3,
+    "TbSp": 0.325,
+    "TbSp_decimals": 3,
+    "CtTh": 3.809,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.101,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": -0.00043320568672400306,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-5f00b4_R": {
+   "subject": "PFJ-5f00b4_R",
+   "base": "X5974634",
+   "seg_grid": [
+    [
+     672,
+     315,
+     168
+    ],
+    [
+     983,
+     7,
+     168
+    ]
+   ],
+   "bv_voxels": 4432429,
+   "tv_voxels": 10747478,
+   "bvtv": 0.41241573139298354,
+   "bvtv_rounded_3": 0.412,
+   "el_size_mm": [
+    0.06069999933242798,
+    0.060699690133333206,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 4432429,
+    "tv_ipl": 10747478,
+    "ipl": 0.41241573139298354,
+    "ours_B": 0.41241573139298354,
+    "bv_ours_B": 4432429,
+    "tv_ours_B": 10747478
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.412,
+    "BVTV_decimals": 3,
+    "TbN": 2.795,
+    "TbN_decimals": 3,
+    "TbTh": 0.222,
+    "TbTh_decimals": 3,
+    "TbSp": 0.277,
+    "TbSp_decimals": 3,
+    "CtTh": 3.595,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.082,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": 0.0004157313929835649,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-a91200_L": {
+   "subject": "PFJ-a91200_L",
+   "base": "X3186488",
+   "seg_grid": [
+    [
+     707,
+     347,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ],
+   "bv_voxels": 5977520,
+   "tv_voxels": 20682363,
+   "bvtv": 0.28901533156535353,
+   "bvtv_rounded_3": 0.289,
+   "el_size_mm": [
+    0.06069929897785187,
+    0.06069944053888321,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 5977520,
+    "tv_ipl": 20682363,
+    "ipl": 0.28901533156535353,
+    "ours_B": 0.2890152832149789,
+    "bv_ours_B": 5977519,
+    "tv_ours_B": 20682363
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.289,
+    "BVTV_decimals": 3,
+    "TbN": 2.194,
+    "TbN_decimals": 3,
+    "TbTh": 0.218,
+    "TbTh_decimals": 3,
+    "TbSp": 0.41,
+    "TbSp_decimals": 3,
+    "CtTh": 1.996,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.15,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": 1.533156535354907e-05,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-b5d5d9_L": {
+   "subject": "PFJ-b5d5d9_L",
+   "base": "X7775442",
+   "seg_grid": [
+    [
+     609,
+     316,
+     168
+    ],
+    [
+     773,
+     63,
+     168
+    ]
+   ],
+   "bv_voxels": 3706683,
+   "tv_voxels": 12934806,
+   "bvtv": 0.2865665708476803,
+   "bvtv_rounded_3": 0.287,
+   "el_size_mm": [
+    0.060698870569467545,
+    0.06070061773061752,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 3706683,
+    "tv_ipl": 12934806,
+    "ipl": 0.2865665708476803,
+    "ours_B": 0.2865665708476803,
+    "bv_ours_B": 3706683,
+    "tv_ours_B": 12934806
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.287,
+    "BVTV_decimals": 3,
+    "TbN": 2.063,
+    "TbN_decimals": 3,
+    "TbTh": 0.215,
+    "TbTh_decimals": 3,
+    "TbSp": 0.442,
+    "TbSp_decimals": 3,
+    "CtTh": 2.154,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.219,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": -0.0004334291523196976,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-42293d_L": {
+   "subject": "PFJ-42293d_L",
+   "base": "X3623103",
+   "seg_grid": [
+    [
+     807,
+     354,
+     168
+    ],
+    [
+     730,
+     63,
+     168
+    ]
+   ],
+   "bv_voxels": 7515608,
+   "tv_voxels": 21432167,
+   "bvtv": 0.35066953332343853,
+   "bvtv_rounded_3": 0.351,
+   "el_size_mm": [
+    0.06069938838481903,
+    0.06070055067539215,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 7515608,
+    "tv_ipl": 21432167,
+    "ipl": 0.35066953332343853,
+    "ours_B": 0.35066957998227616,
+    "bv_ours_B": 7515609,
+    "tv_ours_B": 21432167
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.351,
+    "BVTV_decimals": 3,
+    "TbN": 2.262,
+    "TbN_decimals": 3,
+    "TbTh": 0.237,
+    "TbTh_decimals": 3,
+    "TbSp": 0.384,
+    "TbSp_decimals": 3,
+    "CtTh": 3.137,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.138,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": -0.00033046667656144724,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-a56aae_R": {
+   "subject": "PFJ-a56aae_R",
+   "base": "X5606590",
+   "seg_grid": [
+    [
+     807,
+     304,
+     168
+    ],
+    [
+     861,
+     9,
+     168
+    ]
+   ],
+   "bv_voxels": 5740439,
+   "tv_voxels": 15511794,
+   "bvtv": 0.37006931628927,
+   "bvtv_rounded_3": 0.37,
+   "el_size_mm": [
+    0.06070024520158768,
+    0.06069871783256531,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 5740439,
+    "tv_ipl": 15511794,
+    "ipl": 0.37006931628927,
+    "ours_B": 0.3700691228880425,
+    "bv_ours_B": 5740436,
+    "tv_ours_B": 15511794
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.37,
+    "BVTV_decimals": 3,
+    "TbN": 2.523,
+    "TbN_decimals": 3,
+    "TbTh": 0.223,
+    "TbTh_decimals": 3,
+    "TbSp": 0.332,
+    "TbSp_decimals": 3,
+    "CtTh": 2.898,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.112,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": 6.931628926998279e-05,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-6f5538_R": {
+   "subject": "PFJ-6f5538_R",
+   "base": "X5492058",
+   "seg_grid": [
+    [
+     741,
+     197,
+     168
+    ],
+    [
+     746,
+     0,
+     168
+    ]
+   ],
+   "bv_voxels": 787763,
+   "tv_voxels": 1793109,
+   "bvtv": 0.4393280051575225,
+   "bvtv_rounded_3": 0.439,
+   "el_size_mm": [
+    0.06069960072636604,
+    0.06069902703166008,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 787763,
+    "tv_ipl": 1793109,
+    "ipl": 0.4393280051575225,
+    "ours_B": 0.4393280051575225,
+    "bv_ours_B": 787763,
+    "tv_ours_B": 1793109
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.439,
+    "BVTV_decimals": 3,
+    "TbN": 2.786,
+    "TbN_decimals": 3,
+    "TbTh": 0.23,
+    "TbTh_decimals": 3,
+    "TbSp": 0.277,
+    "TbSp_decimals": 3,
+    "CtTh": 6.382,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.086,
+    "Tb1NSD_decimals": 3,
+    "slices": 97
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": 0.00032800515752251513,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-6b714e_L": {
+   "subject": "PFJ-6b714e_L",
+   "base": "X5484780",
+   "seg_grid": [
+    [
+     619,
+     279,
+     168
+    ],
+    [
+     768,
+     15,
+     0
+    ]
+   ],
+   "bv_voxels": 3867587,
+   "tv_voxels": 10243690,
+   "bvtv": 0.37755798935735074,
+   "bvtv_rounded_3": 0.378,
+   "el_size_mm": [
+    0.06069967895746231,
+    0.060701388865709305,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 3867587,
+    "tv_ipl": 10243690,
+    "ipl": 0.37755798935735074,
+    "ours_B": 0.37755798935735074,
+    "bv_ours_B": 3867587,
+    "tv_ours_B": 10243690
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.377,
+    "BVTV_decimals": 3,
+    "TbN": 2.627,
+    "TbN_decimals": 3,
+    "TbTh": 0.22,
+    "TbTh_decimals": 3,
+    "TbSp": 0.304,
+    "TbSp_decimals": 3,
+    "CtTh": 2.982,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.091,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": false,
+   "diff_to_printed": 0.0005579893573507411,
+   "printed_agrees_after_rounding_B": false
+  },
+  "PFJ-6b714e_R": {
+   "subject": "PFJ-6b714e_R",
+   "base": "X2663245",
+   "seg_grid": [
+    [
+     616,
+     277,
+     168
+    ],
+    [
+     1026,
+     7,
+     0
+    ]
+   ],
+   "bv_voxels": 3748601,
+   "tv_voxels": 9664574,
+   "bvtv": 0.3878702775725035,
+   "bvtv_rounded_3": 0.388,
+   "el_size_mm": [
+    0.060700319707393646,
+    0.0606982447206974,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 3748601,
+    "tv_ipl": 9664574,
+    "ipl": 0.3878702775725035,
+    "ours_B": 0.3878702775725035,
+    "bv_ours_B": 3748601,
+    "tv_ours_B": 9664574
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.388,
+    "BVTV_decimals": 3,
+    "TbN": 2.768,
+    "TbN_decimals": 3,
+    "TbTh": 0.217,
+    "TbTh_decimals": 3,
+    "TbSp": 0.285,
+    "TbSp_decimals": 3,
+    "CtTh": 2.301,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.083,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": -0.00012972242749653695,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-69bcb0_L": {
+   "subject": "PFJ-69bcb0_L",
+   "base": "X1183449",
+   "seg_grid": [
+    [
+     788,
+     424,
+     168
+    ],
+    [
+     680,
+     24,
+     0
+    ]
+   ],
+   "bv_voxels": 7726851,
+   "tv_voxels": 22123182,
+   "bvtv": 0.34926490230926094,
+   "bvtv_rounded_3": 0.349,
+   "el_size_mm": [
+    0.060699623078107834,
+    0.060698848217725754,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 7726851,
+    "tv_ipl": 22123182,
+    "ipl": 0.34926490230926094,
+    "ours_B": 0.34926485710780664,
+    "bv_ours_B": 7726850,
+    "tv_ours_B": 22123182
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.349,
+    "BVTV_decimals": 3,
+    "TbN": 2.216,
+    "TbN_decimals": 3,
+    "TbTh": 0.238,
+    "TbTh_decimals": 3,
+    "TbSp": 0.394,
+    "TbSp_decimals": 3,
+    "CtTh": 3.721,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.141,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": 0.0002649023092609615,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-69bcb0_R": {
+   "subject": "PFJ-69bcb0_R",
+   "base": "X1346001",
+   "seg_grid": [
+    [
+     784,
+     448,
+     168
+    ],
+    [
+     723,
+     51,
+     0
+    ]
+   ],
+   "bv_voxels": 8312231,
+   "tv_voxels": 26282267,
+   "bvtv": 0.3162676568197104,
+   "bvtv_rounded_3": 0.316,
+   "el_size_mm": [
+    0.06069974973797798,
+    0.06070021912455559,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 8312231,
+    "tv_ipl": 26282267,
+    "ipl": 0.3162676568197104,
+    "ours_B": 0.31626758072277406,
+    "bv_ours_B": 8312229,
+    "tv_ours_B": 26282267
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.316,
+    "BVTV_decimals": 3,
+    "TbN": 1.836,
+    "TbN_decimals": 3,
+    "TbTh": 0.23,
+    "TbTh_decimals": 3,
+    "TbSp": 0.49,
+    "TbSp_decimals": 3,
+    "CtTh": 3.093,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.196,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": 0.00026765681971041566,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-411dfd_L": {
+   "subject": "PFJ-411dfd_L",
+   "base": "X3334670",
+   "seg_grid": [
+    [
+     702,
+     368,
+     168
+    ],
+    [
+     827,
+     87,
+     0
+    ]
+   ],
+   "bv_voxels": 7176178,
+   "tv_voxels": 20901138,
+   "bvtv": 0.34333910431097103,
+   "bvtv_rounded_3": 0.343,
+   "el_size_mm": [
+    0.06069944053888321,
+    0.060698412358760834,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 7176178,
+    "tv_ipl": 20901138,
+    "ipl": 0.34333910431097103,
+    "ours_B": 0.34333910431097103,
+    "bv_ours_B": 7176178,
+    "tv_ours_B": 20901138
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.343,
+    "BVTV_decimals": 3,
+    "TbN": 2.397,
+    "TbN_decimals": 3,
+    "TbTh": 0.216,
+    "TbTh_decimals": 3,
+    "TbSp": 0.348,
+    "TbSp_decimals": 3,
+    "CtTh": 2.837,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.11,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": true,
+   "diff_to_printed": 0.0003391043109710057,
+   "printed_agrees_after_rounding_B": true
+  },
+  "PFJ-411dfd_R": {
+   "subject": "PFJ-411dfd_R",
+   "base": "X5143651",
+   "seg_grid": [
+    [
+     754,
+     316,
+     168
+    ],
+    [
+     850,
+     11,
+     0
+    ]
+   ],
+   "bv_voxels": 6286543,
+   "tv_voxels": 17986381,
+   "bvtv": 0.3495168372114435,
+   "bvtv_rounded_3": 0.35,
+   "el_size_mm": [
+    0.06069986894726753,
+    0.06070061773061752,
+    0.06069643050432205
+   ],
+   "ceil_dt_record": {
+    "bv_ipl": 6286543,
+    "tv_ipl": 17986381,
+    "ipl": 0.3495168372114435,
+    "ours_B": 0.34951700400430746,
+    "bv_ours_B": 6286546,
+    "tv_ours_B": 17986381
+   },
+   "equals_ceil_dt_ipl": true,
+   "printed": {
+    "extracted_with": "pypdf",
+    "BVTV": 0.349,
+    "BVTV_decimals": 3,
+    "TbN": 2.471,
+    "TbN_decimals": 3,
+    "TbTh": 0.215,
+    "TbTh_decimals": 3,
+    "TbSp": 0.337,
+    "TbSp_decimals": 3,
+    "CtTh": 2.286,
+    "CtTh_decimals": 3,
+    "Tb1NSD": 0.106,
+    "Tb1NSD_decimals": 3,
+    "slices": 168
+   },
+   "printed_agrees_after_rounding": false,
+   "diff_to_printed": 0.0005168372114435216,
+   "printed_agrees_after_rounding_B": false
+  }
+ }
+}

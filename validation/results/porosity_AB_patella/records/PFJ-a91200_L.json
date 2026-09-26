@@ -1,0 +1,1815 @@
+{
+ "id": "PFJ-a91200_L",
+ "tag": "PFJ-a91200_L",
+ "group": null,
+ "base": "X3186488",
+ "dataset": "patella",
+ "corr": false,
+ "timings": {
+  "read": 1.16703200340271,
+  "render_B": 4.8641884326934814,
+  "step1": 17.915802478790283,
+  "lh": 3.971207857131958,
+  "seg": 4.197009086608887,
+  "porosity": 7.451882600784302,
+  "total": 35.36254119873047
+ },
+ "notes": [
+  "extra file not used: X3186488_CORT_SP_decompressed.AIM"
+ ],
+ "warnings": [],
+ "meta": {
+  "site_index": 60,
+  "region": "",
+  "bone": "Patella",
+  "bone_key": "Patella",
+  "study_label": "PFJStudy"
+ },
+ "grey": {
+  "grid": [
+   [
+    715,
+    356,
+    168
+   ],
+   [
+    874,
+    47,
+    168
+   ]
+  ],
+  "el_size_mm": [
+   0.06069929897785187,
+   0.06069944053888321,
+   0.06069643050432205
+  ]
+ },
+ "inputs": {
+  "grey": {
+   "size": 85529088,
+   "type": "0x00020002",
+   "dim": [
+    715,
+    356,
+    168
+   ],
+   "pos": [
+    874,
+    47,
+    168
+   ]
+  },
+  "periosteal": null,
+  "cort_render": null,
+  "trab_render": null,
+  "raw_cort": {
+   "size": 41341124,
+   "type": "0x00010001",
+   "dim": [
+    707,
+    348,
+    168
+   ],
+   "pos": [
+    879,
+    52,
+    168
+   ]
+  },
+  "raw_trab": {
+   "size": 42227842,
+   "type": "0x00010001",
+   "dim": [
+    712,
+    353,
+    168
+   ],
+   "pos": [
+    876,
+    49,
+    168
+   ]
+  },
+  "trab_seg": {
+   "size": 41227752,
+   "type": "0x00010001",
+   "dim": [
+    707,
+    347,
+    168
+   ],
+   "pos": [
+    879,
+    52,
+    168
+   ]
+  },
+  "cort_seg": {
+   "size": 41227752,
+   "type": "0x00010001",
+   "dim": [
+    707,
+    347,
+    168
+   ],
+   "pos": [
+    879,
+    52,
+    168
+   ]
+  },
+  "seg": {
+   "size": 41230165,
+   "type": "0x00010001",
+   "dim": [
+    707,
+    347,
+    168
+   ],
+   "pos": [
+    879,
+    52,
+    168
+   ]
+  },
+  "pore": {
+   "size": 42241659,
+   "type": "0x00010001",
+   "dim": [
+    712,
+    353,
+    168
+   ],
+   "pos": [
+    877,
+    50,
+    168
+   ]
+  },
+  "map:TRAB_TH": {
+   "size": 41232636,
+   "type": "0x00010001",
+   "dim": [
+    707,
+    347,
+    168
+   ],
+   "pos": [
+    879,
+    52,
+    168
+   ]
+  },
+  "map:TRAB_SP": {
+   "size": 41232909,
+   "type": "0x00010001",
+   "dim": [
+    707,
+    347,
+    168
+   ],
+   "pos": [
+    879,
+    52,
+    168
+   ]
+  },
+  "map:TRAB_1N": {
+   "size": 41232717,
+   "type": "0x00010001",
+   "dim": [
+    707,
+    347,
+    168
+   ],
+   "pos": [
+    879,
+    52,
+    168
+   ]
+  },
+  "map:CORT_TH": {
+   "size": 41343595,
+   "type": "0x00010001",
+   "dim": [
+    707,
+    348,
+    168
+   ],
+   "pos": [
+    879,
+    52,
+    168
+   ]
+  },
+  "map:TRAB_TH_old": {
+   "size": 41230223,
+   "type": "0x00010001",
+   "dim": [
+    707,
+    347,
+    168
+   ],
+   "pos": [
+    879,
+    52,
+    168
+   ]
+  }
+ },
+ "duplicates": [
+  {
+   "size": 337408
+  },
+  {
+   "size": 802816
+  },
+  {
+   "size": 893952
+  },
+  {
+   "size": 42244676
+  },
+  {
+   "size": 2444288
+  },
+  {
+   "size": 386560
+  },
+  {
+   "size": 5766656
+  },
+  {
+   "size": 12417536
+  },
+  {
+   "size": 240640
+  },
+  {
+   "size": 2265600
+  },
+  {
+   "size": 10533888
+  },
+  {
+   "size": 6042112
+  },
+  {
+   "size": 6089728
+  }
+ ],
+ "preset": {
+  "name": "tibia",
+  "params": {
+   "sigma": 2.0,
+   "support": 3,
+   "lower_mgha": 500.0,
+   "upper_mgha": 3000.0,
+   "peel0": 6,
+   "erode": 3,
+   "dilate": 3,
+   "close1": 15,
+   "open_": 15,
+   "corner_erode": 3,
+   "corner_min": 200000,
+   "corner_dilate": 3,
+   "corner_max": 500000,
+   "close2": 50,
+   "slicewise_lo": 50.0,
+   "slicewise_up": 100.0
+  },
+  "source": "layout rule"
+ },
+ "seg_missing": false,
+ "variants": {
+  "lh_border": "duplicate",
+  "seg_variant": "periosteal_first",
+  "trab_seg_mask": "gobj",
+  "source": "seg_proclog",
+  "evidence": {
+   "fill_offset_duplicate": true,
+   "gobj_mask_index": 7915,
+   "cl_label_index": 10044,
+   "laplace_hamming": true,
+   "gobj_mask_entries": 2,
+   "gobj_mask_after_extract": true
+  },
+  "lh_pad_offset": "ceil",
+  "lh_dtype": "float32",
+  "lp_cut_off_freq": 0.3
+ },
+ "periosteal": {
+  "voxels": 26354782,
+  "grid": [
+   [
+    712,
+    353,
+    168
+   ],
+   [
+    876,
+    49,
+    168
+   ]
+  ]
+ },
+ "ipl_renderings": {
+  "cort": {
+   "voxels": 5670417,
+   "grid": [
+    [
+     707,
+     348,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ],
+   "corr": false
+  },
+  "trab": {
+   "voxels": 20682363,
+   "grid": [
+    [
+     712,
+     353,
+     168
+    ],
+    [
+     876,
+     49,
+     168
+    ]
+   ],
+   "corr": false
+  }
+ },
+ "ipl_maps": {
+  "TRAB_TH": {
+   "grid": [
+    [
+     707,
+     347,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ],
+   "support": 5846478,
+   "max": 10,
+   "dtype": "uint8"
+  },
+  "TRAB_SP": {
+   "grid": [
+    [
+     707,
+     347,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ],
+   "support": 14350908,
+   "max": 23,
+   "dtype": "uint8"
+  },
+  "TRAB_1N": {
+   "grid": [
+    [
+     707,
+     347,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ],
+   "support": 19113434,
+   "max": 23,
+   "dtype": "uint8"
+  },
+  "CORT_TH": {
+   "grid": [
+    [
+     707,
+     348,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ],
+   "support": 5563995,
+   "max": 65,
+   "dtype": "uint8"
+  },
+  "TRAB_TH_old": {
+   "grid": [
+    [
+     707,
+     347,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ],
+   "support": 5879486,
+   "max": 9,
+   "dtype": "uint8"
+  }
+ },
+ "trab_th_grid_rule": "seg",
+ "ipl_support": {
+  "TRAB_TH": {
+   "outside_ipl_rendering": 0,
+   "outside_ipl_seg_grid": 0
+  },
+  "TRAB_SP": {
+   "outside_ipl_rendering": 0,
+   "outside_ipl_seg_grid": 0
+  },
+  "TRAB_1N": {
+   "outside_ipl_rendering": 0,
+   "outside_ipl_seg_grid": 0
+  },
+  "CORT_TH": {
+   "outside_ipl_rendering": 0
+  },
+  "TRAB_TH_old": {
+   "outside_ipl_rendering": 0,
+   "outside_ipl_seg_grid": 0
+  }
+ },
+ "B": {
+  "step1": {
+   "preset": "tibia",
+   "calibration": {
+    "slope": 1626.85303,
+    "intercept": -394.984009,
+    "mu_scaling": 8192.0
+   },
+   "thresholds": {
+    "lower_native": 4507,
+    "upper_native": 17095,
+    "lower_mgha": 500.0,
+    "upper_mgha": 3000.0
+   },
+   "seg_gauss_box": {
+    "dim": [
+     707,
+     348,
+     168
+    ],
+    "pos": [
+     879,
+     52,
+     168
+    ]
+   },
+   "counts": {
+    "00_all": 26354782,
+    "01_seggauss": 5874574,
+    "02_trab0": 20480210,
+    "03_peel6": 19577357,
+    "04_inv": 22647091,
+    "05_rank1": 22545007,
+    "06_bgrm": 6675341,
+    "07_trab1": 19679441,
+    "08_trabrank": 19639945,
+    "09_ero3": 16163671,
+    "10_erorank": 16138667,
+    "11_dil3": 19399489,
+    "12_close15": 21332588,
+    "13_close15peel": 20626022,
+    "14_bbc": 20626022,
+    "15_open15": 20434512,
+    "16_corners": 191510,
+    "17_cornero": 16286,
+    "18_corncl": 0,
+    "19_cornmajor": 0,
+    "20_corncl2": 0,
+    "21_corners2": 0,
+    "22_trabadd": 20434512,
+    "23_close50": 20684345,
+    "24_close50peel": 20683984,
+    "25_slicewise": 20683984,
+    "26_cort": 5670798,
+    "27_cortslice": 5670798,
+    "28_cortfinal": 5670798,
+    "29_trabfinal": 20683984
+   },
+   "peel_counts": {
+    "0": 26354782,
+    "6": 24828872
+   },
+   "grids": {
+    "00_all": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "01_seggauss": [
+     [
+      701,
+      342,
+      162
+     ],
+     [
+      882,
+      55,
+      171
+     ]
+    ],
+    "02_trab0": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "03_peel6": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "04_inv": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "05_rank1": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "06_bgrm": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "07_trab1": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "08_trabrank": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "09_ero3": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "10_erorank": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "11_dil3": [
+     [
+      720,
+      361,
+      176
+     ],
+     [
+      872,
+      45,
+      164
+     ]
+    ],
+    "12_close15": [
+     [
+      720,
+      361,
+      176
+     ],
+     [
+      872,
+      45,
+      164
+     ]
+    ],
+    "13_close15peel": [
+     [
+      720,
+      361,
+      176
+     ],
+     [
+      872,
+      45,
+      164
+     ]
+    ],
+    "14_bbc": [
+     [
+      692,
+      322,
+      168
+     ],
+     [
+      886,
+      67,
+      168
+     ]
+    ],
+    "15_open15": [
+     [
+      692,
+      322,
+      168
+     ],
+     [
+      886,
+      67,
+      168
+     ]
+    ],
+    "16_corners": [
+     [
+      692,
+      322,
+      168
+     ],
+     [
+      886,
+      67,
+      168
+     ]
+    ],
+    "17_cornero": [
+     [
+      692,
+      322,
+      168
+     ],
+     [
+      886,
+      67,
+      168
+     ]
+    ],
+    "18_corncl": [
+     [
+      692,
+      322,
+      168
+     ],
+     [
+      886,
+      67,
+      168
+     ]
+    ],
+    "19_cornmajor": [
+     [
+      700,
+      330,
+      176
+     ],
+     [
+      882,
+      63,
+      164
+     ]
+    ],
+    "20_corncl2": [
+     [
+      700,
+      330,
+      176
+     ],
+     [
+      882,
+      63,
+      164
+     ]
+    ],
+    "21_corners2": [
+     [
+      700,
+      330,
+      176
+     ],
+     [
+      882,
+      63,
+      164
+     ]
+    ],
+    "22_trabadd": [
+     [
+      700,
+      330,
+      176
+     ],
+     [
+      882,
+      63,
+      164
+     ]
+    ],
+    "23_close50": [
+     [
+      700,
+      330,
+      176
+     ],
+     [
+      882,
+      63,
+      164
+     ]
+    ],
+    "24_close50peel": [
+     [
+      700,
+      330,
+      176
+     ],
+     [
+      882,
+      63,
+      164
+     ]
+    ],
+    "25_slicewise": [
+     [
+      700,
+      330,
+      176
+     ],
+     [
+      882,
+      63,
+      164
+     ]
+    ],
+    "26_cort": [
+     [
+      712,
+      353,
+      176
+     ],
+     [
+      876,
+      49,
+      164
+     ]
+    ],
+    "27_cortslice": [
+     [
+      712,
+      353,
+      176
+     ],
+     [
+      876,
+      49,
+      164
+     ]
+    ],
+    "28_cortfinal": [
+     [
+      707,
+      348,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "29_trabfinal": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ]
+   },
+   "time_s": 10.434288263320923
+  },
+  "preset_trials": {
+   "tibia": {
+    "cort_mismatches": {
+     "raw_cort": 0
+    },
+    "cort_dice": {
+     "raw_cort": 1.0
+    },
+    "trab_mismatches": 0,
+    "trab_dice": 1.0,
+    "score": 0
+   }
+  },
+  "cort_gobj_from_ipl_trab": {
+   "voxels_ours": 5672053,
+   "voxels_ipl": 5670417,
+   "mismatches": 1686,
+   "ours_only": 1661,
+   "ipl_only": 25,
+   "dice": 0.9998513551281158,
+   "grid_ours": [
+    [
+     712,
+     353,
+     168
+    ],
+    [
+     876,
+     49,
+     168
+    ]
+   ],
+   "grid_ipl": [
+    [
+     707,
+     348,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ],
+   "grids_equal": false,
+   "union_voxels": 42224448,
+   "slices": [
+    168,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209,
+    210,
+    211,
+    212,
+    213,
+    214,
+    215,
+    216,
+    217,
+    218,
+    219,
+    220,
+    221,
+    222,
+    223,
+    224,
+    225,
+    226,
+    227
+   ],
+   "time_s": 2.3000731468200684
+  },
+  "renderings": {
+   "cort": {
+    "voxels_ours": 5670417,
+    "voxels_ipl": 5670417,
+    "mismatches": 0,
+    "ours_only": 0,
+    "ipl_only": 0,
+    "dice": 1.0,
+    "grid_ours": [
+     [
+      707,
+      348,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grid_ipl": [
+     [
+      707,
+      348,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grids_equal": true,
+    "union_voxels": 41334048
+   },
+   "trab": {
+    "voxels_ours": 20682363,
+    "voxels_ipl": 20682363,
+    "mismatches": 0,
+    "ours_only": 0,
+    "ipl_only": 0,
+    "dice": 1.0,
+    "grid_ours": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "grid_ipl": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "grids_equal": true,
+    "union_voxels": 42224448
+   }
+  },
+  "cort_rendering_candidates": {
+   "raw_cort": {
+    "voxels_ours": 5670417,
+    "voxels_ipl": 5670417,
+    "mismatches": 0,
+    "ours_only": 0,
+    "ipl_only": 0,
+    "dice": 1.0,
+    "grid_ours": [
+     [
+      707,
+      348,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grid_ipl": [
+     [
+      707,
+      348,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grids_equal": true,
+    "union_voxels": 41334048
+   }
+  },
+  "masks": {
+   "cort": {
+    "voxels": 5670798,
+    "grid": [
+     [
+      707,
+      348,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ]
+   },
+   "trab": {
+    "voxels": 20683984,
+    "grid": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ]
+   }
+  },
+  "cort_object": {
+   "rule": "raw_cort",
+   "voxels": 5670798,
+   "grid": [
+    [
+     707,
+     348,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ]
+  },
+  "raw_masks": {
+   "cort": {
+    "voxels_ours": 5670798,
+    "voxels_ipl": 5670798,
+    "mismatches": 0,
+    "ours_only": 0,
+    "ipl_only": 0,
+    "dice": 1.0,
+    "grid_ours": [
+     [
+      707,
+      348,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grid_ipl": [
+     [
+      707,
+      348,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grids_equal": true,
+    "union_voxels": 41334048
+   },
+   "trab": {
+    "voxels_ours": 20683984,
+    "voxels_ipl": 20683984,
+    "mismatches": 0,
+    "ours_only": 0,
+    "ipl_only": 0,
+    "dice": 1.0,
+    "grid_ours": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "grid_ipl": [
+     [
+      712,
+      353,
+      168
+     ],
+     [
+      876,
+      49,
+      168
+     ]
+    ],
+    "grids_equal": true,
+    "union_voxels": 42224448
+   }
+  },
+  "seg": {
+   "lh_voxels": 10163029,
+   "overlap": 18,
+   "seg_box": [
+    [
+     707,
+     347,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ],
+   "variant": "periosteal_first",
+   "trab_seg_mask": "gobj",
+   "grid": [
+    [
+     707,
+     347,
+     168
+    ],
+    [
+     879,
+     52,
+     168
+    ]
+   ],
+   "voxels": 9717283,
+   "trab_seg_voxels": 5977519,
+   "cort_seg_voxels": 3739782,
+   "SEG": {
+    "voxels_ours": 9717283,
+    "voxels_ipl": 9717284,
+    "mismatches": 3,
+    "ours_only": 1,
+    "ipl_only": 2,
+    "dice": 0.9999998456358714,
+    "grid_ours": [
+     [
+      707,
+      347,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grid_ipl": [
+     [
+      707,
+      347,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grids_equal": true,
+    "union_voxels": 41215272,
+    "where": [
+     [
+      1326,
+      142,
+      205,
+      -1
+     ],
+     [
+      1327,
+      214,
+      305,
+      -1
+     ],
+     [
+      1121,
+      312,
+      324,
+      1
+     ]
+    ],
+    "label_mismatches": 0
+   },
+   "TRAB_SEG": {
+    "voxels_ours": 5977519,
+    "voxels_ipl": 5977520,
+    "mismatches": 3,
+    "ours_only": 1,
+    "ipl_only": 2,
+    "dice": 0.9999997490597897,
+    "grid_ours": [
+     [
+      707,
+      347,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grid_ipl": [
+     [
+      707,
+      347,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grids_equal": true,
+    "union_voxels": 41215272,
+    "where": [
+     [
+      1326,
+      142,
+      205,
+      -1
+     ],
+     [
+      1327,
+      214,
+      305,
+      -1
+     ],
+     [
+      1121,
+      312,
+      324,
+      1
+     ]
+    ]
+   },
+   "CORT_SEG": {
+    "voxels_ours": 3739782,
+    "voxels_ipl": 3739782,
+    "mismatches": 0,
+    "ours_only": 0,
+    "ipl_only": 0,
+    "dice": 1.0,
+    "grid_ours": [
+     [
+      707,
+      347,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grid_ipl": [
+     [
+      707,
+      347,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "grids_equal": true,
+    "union_voxels": 41215272
+   }
+  },
+  "seg_alternatives": {
+   "variant=gobj_first,border=duplicate": {
+    "lh_voxels": 10163029,
+    "overlap": 18,
+    "seg_box": [
+     [
+      707,
+      347,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "variant": "gobj_first",
+    "trab_seg_mask": "gobj",
+    "grid": [
+     [
+      707,
+      347,
+      168
+     ],
+     [
+      879,
+      52,
+      168
+     ]
+    ],
+    "voxels": 9720026,
+    "trab_seg_voxels": 5979586,
+    "cort_seg_voxels": 3740458,
+    "SEG": {
+     "voxels_ours": 9720026,
+     "voxels_ipl": 9717284,
+     "mismatches": 2746,
+     "ours_only": 2744,
+     "ipl_only": 2,
+     "dice": 0.9998587253071541,
+     "grid_ours": [
+      [
+       707,
+       347,
+       168
+      ],
+      [
+       879,
+       52,
+       168
+      ]
+     ],
+     "grid_ipl": [
+      [
+       707,
+       347,
+       168
+      ],
+      [
+       879,
+       52,
+       168
+      ]
+     ],
+     "grids_equal": true,
+     "union_voxels": 41215272,
+     "slices": [
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      199,
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230
+     ],
+     "label_mismatches": 0
+    },
+    "TRAB_SEG": {
+     "voxels_ours": 5979586,
+     "voxels_ipl": 5977520,
+     "mismatches": 2070,
+     "ours_only": 2068,
+     "ipl_only": 2,
+     "dice": 0.9998268811868022,
+     "grid_ours": [
+      [
+       676,
+       304,
+       168
+      ],
+      [
+       888,
+       79,
+       168
+      ]
+     ],
+     "grid_ipl": [
+      [
+       707,
+       347,
+       168
+      ],
+      [
+       879,
+       52,
+       168
+      ]
+     ],
+     "grids_equal": false,
+     "union_voxels": 41215272,
+     "slices": [
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      205,
+      305,
+      324,
+      331,
+      332,
+      333,
+      334,
+      335
+     ]
+    },
+    "CORT_SEG": {
+     "voxels_ours": 3740458,
+     "voxels_ipl": 3739782,
+     "mismatches": 676,
+     "ours_only": 676,
+     "ipl_only": 0,
+     "dice": 0.9999096285680673,
+     "grid_ours": [
+      [
+       707,
+       347,
+       168
+      ],
+      [
+       879,
+       52,
+       168
+      ]
+     ],
+     "grid_ipl": [
+      [
+       707,
+       347,
+       168
+      ],
+      [
+       879,
+       52,
+       168
+      ]
+     ],
+     "grids_equal": true,
+     "union_voxels": 41215272,
+     "slices": [
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      199,
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230
+     ]
+    }
+   }
+  }
+ },
+ "cort_object_rule": {
+  "value": "raw_cort",
+  "source": "layout",
+  "candidates": {
+   "raw_cort": 0
+  },
+  "from_ipl_trab": 1686
+ },
+ "A": {
+  "skipped": "--skip-dt"
+ },
+ "trab_th_definition": {
+  "value": "seg",
+  "source": "layout"
+ },
+ "seg_variant_used": {
+  "value": "periosteal_first",
+  "proclog": "periosteal_first",
+  "rule": "best",
+  "mismatches_B": {
+   "periosteal_first": 3,
+   "gobj_first": 2746
+  },
+  "mismatches_C": null
+ },
+ "porosity": {
+  "available": true,
+  "ipl_pore_voxels": 603317,
+  "ipl_pore_grid": [
+   [
+    712,
+    353,
+    168
+   ],
+   [
+    877,
+    50,
+    168
+   ]
+  ],
+  "ipl_cort_seg": true,
+  "contour_grid_source": "CORT_MASK | TRAB_MASK union box",
+  "contour_grid": {
+   "dim": [
+    712,
+    353,
+    168
+   ],
+   "pos": [
+    876,
+    49,
+    168
+   ]
+  },
+  "A": {
+   "pore_voxels": 603317,
+   "grid": [
+    [
+     712,
+     353,
+     168
+    ],
+    [
+     876,
+     49,
+     168
+    ]
+   ],
+   "contour_voxels": 5670417,
+   "ct_po": 0.10639728965259522,
+   "mismatch": 0,
+   "ours": 603317,
+   "ipl": 603317,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "dice": 1.0,
+   "same_grid": false,
+   "compared_voxels": 42403536,
+   "compared_grid": {
+    "dim": [
+     713,
+     354,
+     168
+    ],
+    "pos": [
+     876,
+     49,
+     168
+    ]
+   },
+   "ct_po_ipl": 0.10639728965259522,
+   "ct_po_diff": 0.0
+  },
+  "B": {
+   "pore_voxels": 603317,
+   "grid": [
+    [
+     712,
+     353,
+     168
+    ],
+    [
+     876,
+     49,
+     168
+    ]
+   ],
+   "contour_voxels": 5670417,
+   "ct_po": 0.10639728965259522,
+   "mismatch": 0,
+   "ours": 603317,
+   "ipl": 603317,
+   "ours_only": 0,
+   "ipl_only": 0,
+   "dice": 1.0,
+   "same_grid": false,
+   "compared_voxels": 42403536,
+   "compared_grid": {
+    "dim": [
+     713,
+     354,
+     168
+    ],
+    "pos": [
+     876,
+     49,
+     168
+    ]
+   },
+   "ct_po_ipl": 0.10639728965259522,
+   "ct_po_diff": 0.0
+  }
+ },
+ "memory": {
+  "rss_gb": 0.709914624,
+  "peak_rss_gb": 8.4333568,
+  "gpu_pool_used_gb": 0.0,
+  "gpu_pool_total_gb": 0.0
+ },
+ "dt_backend": null
+}

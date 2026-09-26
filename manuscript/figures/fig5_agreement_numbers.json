@@ -1,0 +1,512 @@
+{
+ "figure": "Figure 5",
+ "script": "manuscript/figures/fig5_agreement.py",
+ "n": 137,
+ "cohorts": {
+  "patella": 21,
+  "UD radius": 29,
+  "UD tibia": 29,
+  "diaphyseal": 58
+ },
+ "sites": {
+  "patella": 21,
+  "UD radius": 29,
+  "UD tibia": 29,
+  "D radius": 29,
+  "D tibia": 29
+ },
+ "sources": {
+  "patella": 21,
+  "oslh_auto_v4": 62,
+  "oslh_noedit_v3": 54
+ },
+ "facts": {
+  "facts_json": "manuscript/facts/facts.json",
+  "bmd_ctpo_json": "manuscript/facts/FACTS_BMD_CTPO.json",
+  "built": "2026-09-25",
+  "set": "137"
+ },
+ "crosscheck_worst_relative_deviation": 4.957285601872601e-10,
+ "panels_A_E": {
+  "BV/TV": {
+   "n": 137,
+   "slope": 1.0000131425745058,
+   "intercept": -6.985613931250727e-07,
+   "r2": 0.999999980266985,
+   "icc21": 0.9999999899576487,
+   "identical": 85
+  },
+  "Tb.Th": {
+   "n": 137,
+   "slope": 1.0000384157119313,
+   "intercept": -6.688868510584991e-06,
+   "r2": 0.9999998244869076,
+   "icc21": 0.9999999104489157,
+   "identical": 81
+  },
+  "Tb.Sp": {
+   "n": 137,
+   "slope": 1.0000002310337082,
+   "intercept": -2.1647652311782573e-07,
+   "r2": 0.9999999999807804,
+   "icc21": 0.9999999999904339,
+   "identical": 73
+  },
+  "Tb.N": {
+   "n": 137,
+   "slope": 1.0000002928129719,
+   "intercept": 6.036623128962378e-07,
+   "r2": 0.9999999997242446,
+   "icc21": 0.9999999998618914,
+   "identical": 73
+  },
+  "Ct.Th": {
+   "n": 137,
+   "slope": 1.0,
+   "intercept": 0.0,
+   "r2": 1.0,
+   "icc21": 1.0,
+   "identical": 137
+  }
+ },
+ "panels_G_K": {
+  "BV/TV": {
+   "bias": 1.8950948225147872e-06,
+   "sd_diff": 1.4854189430042326e-05,
+   "loa_low": -2.7219116460368172e-05,
+   "loa_high": 3.1009306105397744e-05,
+   "max_abs_diff": 0.00013224820548635163,
+   "max_rel_pct": 0.05058609324448412
+  },
+  "Tb.Th": {
+   "bias": 1.3057243745908308e-06,
+   "sd_diff": 9.422931601367774e-06,
+   "loa_low": -1.7163221564090007e-05,
+   "loa_high": 1.9774670313271666e-05,
+   "max_abs_diff": 8.903868583265417e-05,
+   "max_rel_pct": 0.04047842795069186
+  },
+  "Tb.Sp": {
+   "bias": 1.4711055755157361e-08,
+   "sd_diff": 3.6198059376017706e-06,
+   "loa_low": -7.080108581944314e-06,
+   "loa_high": 7.109530693454628e-06,
+   "max_abs_diff": 2.7824657758301896e-05,
+   "max_rel_pct": 0.003764646419354735
+  },
+  "Tb.N": {
+   "bias": 1.0034761024415633e-06,
+   "sd_diff": 1.0781663948735201e-05,
+   "loa_low": -2.012858523707943e-05,
+   "loa_high": 2.2135537441962557e-05,
+   "max_abs_diff": 0.00011864350645929278,
+   "max_rel_pct": 0.008769670452411286
+  },
+  "Ct.Th": {
+   "bias": 0.0,
+   "sd_diff": 0.0,
+   "loa_low": 0.0,
+   "loa_high": 0.0,
+   "max_abs_diff": 0.0,
+   "max_rel_pct": 0.0
+  }
+ },
+ "panel_F": {
+  "voxels_compared": 18348991192,
+  "differing": 0,
+  "comparisons": 548,
+  "nonidentical_comparisons": 0,
+  "nonzero_cells": []
+ },
+ "panel_L": {
+  "n": 137,
+  "identical": 37,
+  "median": 2.0,
+  "dice_min": 0.9984336732755736,
+  "differing": 91763,
+  "voxels_compared": 4644570784,
+  "per_cohort": {
+   "patella": {
+    "n": 21,
+    "identical": 2,
+    "median": 2.0,
+    "max": 5,
+    "total": 50
+   },
+   "UD radius": {
+    "n": 29,
+    "identical": 0,
+    "median": 132.0,
+    "max": 2232,
+    "total": 7187
+   },
+   "UD tibia": {
+    "n": 29,
+    "identical": 0,
+    "median": 42.0,
+    "max": 41480,
+    "total": 84487
+   },
+   "diaphyseal": {
+    "n": 58,
+    "identical": 35,
+    "median": 0.0,
+    "max": 4,
+    "total": 39
+   }
+  }
+ },
+ "checks": [
+  {
+   "what": "BV/TV slope",
+   "printed": "1.000013",
+   "facts": "1.000013",
+   "key": "metrics.B.pooled.BVTV.slope",
+   "ok": true
+  },
+  {
+   "what": "BV/TV r2",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.BVTV.r2",
+   "ok": true
+  },
+  {
+   "what": "BV/TV icc21",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.BVTV.icc21",
+   "ok": true
+  },
+  {
+   "what": "BV/TV equal",
+   "printed": "85/137",
+   "facts": "85/137",
+   "key": "metrics.B.pooled.BVTV.exact, metrics.B.pooled.BVTV.n",
+   "ok": true
+  },
+  {
+   "what": "BV/TV bias",
+   "printed": "$1.9\\times10^{-6}$",
+   "facts": "$1.9\\times10^{-6}$",
+   "key": "metrics.B.pooled.BVTV.bias",
+   "ok": true
+  },
+  {
+   "what": "BV/TV loa_low",
+   "printed": "$-2.7\\times10^{-5}$",
+   "facts": "$-2.7\\times10^{-5}$",
+   "key": "metrics.B.pooled.BVTV.loa_low",
+   "ok": true
+  },
+  {
+   "what": "BV/TV loa_high",
+   "printed": "$3.1\\times10^{-5}$",
+   "facts": "$3.1\\times10^{-5}$",
+   "key": "metrics.B.pooled.BVTV.loa_high",
+   "ok": true
+  },
+  {
+   "what": "BV/TV max_rel_pct",
+   "printed": "0.051",
+   "facts": "0.051",
+   "key": "metrics.B.pooled.BVTV.max_rel_pct",
+   "ok": true
+  },
+  {
+   "what": "Tb.Th slope",
+   "printed": "1.000038",
+   "facts": "1.000038",
+   "key": "metrics.B.pooled.TbTh_trabseg.slope",
+   "ok": true
+  },
+  {
+   "what": "Tb.Th r2",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.TbTh_trabseg.r2",
+   "ok": true
+  },
+  {
+   "what": "Tb.Th icc21",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.TbTh_trabseg.icc21",
+   "ok": true
+  },
+  {
+   "what": "Tb.Th equal",
+   "printed": "81/137",
+   "facts": "81/137",
+   "key": "metrics.B.pooled.TbTh_trabseg.exact, metrics.B.pooled.TbTh_trabseg.n",
+   "ok": true
+  },
+  {
+   "what": "Tb.Th bias",
+   "printed": "$1.3\\times10^{-6}$",
+   "facts": "$1.3\\times10^{-6}$",
+   "key": "metrics.B.pooled.TbTh_trabseg.bias",
+   "ok": true
+  },
+  {
+   "what": "Tb.Th loa_low",
+   "printed": "$-1.7\\times10^{-5}$",
+   "facts": "$-1.7\\times10^{-5}$",
+   "key": "metrics.B.pooled.TbTh_trabseg.loa_low",
+   "ok": true
+  },
+  {
+   "what": "Tb.Th loa_high",
+   "printed": "$2.0\\times10^{-5}$",
+   "facts": "$2.0\\times10^{-5}$",
+   "key": "metrics.B.pooled.TbTh_trabseg.loa_high",
+   "ok": true
+  },
+  {
+   "what": "Tb.Th max_rel_pct",
+   "printed": "0.040",
+   "facts": "0.040",
+   "key": "metrics.B.pooled.TbTh_trabseg.max_rel_pct",
+   "ok": true
+  },
+  {
+   "what": "Tb.Sp slope",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.TbSp.slope",
+   "ok": true
+  },
+  {
+   "what": "Tb.Sp r2",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.TbSp.r2",
+   "ok": true
+  },
+  {
+   "what": "Tb.Sp icc21",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.TbSp.icc21",
+   "ok": true
+  },
+  {
+   "what": "Tb.Sp equal",
+   "printed": "73/137",
+   "facts": "73/137",
+   "key": "metrics.B.pooled.TbSp.exact, metrics.B.pooled.TbSp.n",
+   "ok": true
+  },
+  {
+   "what": "Tb.Sp bias",
+   "printed": "$1.5\\times10^{-8}$",
+   "facts": "$1.5\\times10^{-8}$",
+   "key": "metrics.B.pooled.TbSp.bias",
+   "ok": true
+  },
+  {
+   "what": "Tb.Sp loa_low",
+   "printed": "$-7.1\\times10^{-6}$",
+   "facts": "$-7.1\\times10^{-6}$",
+   "key": "metrics.B.pooled.TbSp.loa_low",
+   "ok": true
+  },
+  {
+   "what": "Tb.Sp loa_high",
+   "printed": "$7.1\\times10^{-6}$",
+   "facts": "$7.1\\times10^{-6}$",
+   "key": "metrics.B.pooled.TbSp.loa_high",
+   "ok": true
+  },
+  {
+   "what": "Tb.Sp max_rel_pct",
+   "printed": "0.004",
+   "facts": "0.004",
+   "key": "metrics.B.pooled.TbSp.max_rel_pct",
+   "ok": true
+  },
+  {
+   "what": "Tb.N slope",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.TbN.slope",
+   "ok": true
+  },
+  {
+   "what": "Tb.N r2",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.TbN.r2",
+   "ok": true
+  },
+  {
+   "what": "Tb.N icc21",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.TbN.icc21",
+   "ok": true
+  },
+  {
+   "what": "Tb.N equal",
+   "printed": "73/137",
+   "facts": "73/137",
+   "key": "metrics.B.pooled.TbN.exact, metrics.B.pooled.TbN.n",
+   "ok": true
+  },
+  {
+   "what": "Tb.N bias",
+   "printed": "$1.0\\times10^{-6}$",
+   "facts": "$1.0\\times10^{-6}$",
+   "key": "metrics.B.pooled.TbN.bias",
+   "ok": true
+  },
+  {
+   "what": "Tb.N loa_low",
+   "printed": "$-2.0\\times10^{-5}$",
+   "facts": "$-2.0\\times10^{-5}$",
+   "key": "metrics.B.pooled.TbN.loa_low",
+   "ok": true
+  },
+  {
+   "what": "Tb.N loa_high",
+   "printed": "$2.2\\times10^{-5}$",
+   "facts": "$2.2\\times10^{-5}$",
+   "key": "metrics.B.pooled.TbN.loa_high",
+   "ok": true
+  },
+  {
+   "what": "Tb.N max_rel_pct",
+   "printed": "0.009",
+   "facts": "0.009",
+   "key": "metrics.B.pooled.TbN.max_rel_pct",
+   "ok": true
+  },
+  {
+   "what": "Ct.Th slope",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.CtTh.slope",
+   "ok": true
+  },
+  {
+   "what": "Ct.Th r2",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.CtTh.r2",
+   "ok": true
+  },
+  {
+   "what": "Ct.Th icc21",
+   "printed": "1.000000",
+   "facts": "1.000000",
+   "key": "metrics.B.pooled.CtTh.icc21",
+   "ok": true
+  },
+  {
+   "what": "Ct.Th equal",
+   "printed": "137/137",
+   "facts": "137/137",
+   "key": "metrics.B.pooled.CtTh.exact, metrics.B.pooled.CtTh.n",
+   "ok": true
+  },
+  {
+   "what": "Ct.Th all differences 0",
+   "printed": "all 137 differences = 0",
+   "facts": "all 137 differences = 0",
+   "key": "metrics.B.pooled.CtTh.exact",
+   "ok": true
+  },
+  {
+   "what": "F voxels compared",
+   "printed": "18,348,991,192",
+   "facts": "18,348,991,192",
+   "key": "A.pooled.voxels_compared.four_maps",
+   "ok": true
+  },
+  {
+   "what": "F differing voxels",
+   "printed": "0",
+   "facts": "0",
+   "key": "A.pooled.mismatches.four_maps",
+   "ok": true
+  },
+  {
+   "what": "F identical comparisons",
+   "printed": "548 of 548",
+   "facts": "548 of 548",
+   "key": "A.pooled.exact_comparisons.four_maps, 4 x cohort.n_total",
+   "ok": true
+  },
+  {
+   "what": "F non-zero cells (map, scan, voxels)",
+   "printed": "[]",
+   "facts": "[]",
+   "key": "A.oslh.map.*.nonexact_scans",
+   "ok": true
+  },
+  {
+   "what": "L identical",
+   "printed": "37/137",
+   "facts": "37/137",
+   "key": "B.pooled.SEG.exact_scans, n_scans",
+   "ok": true
+  },
+  {
+   "what": "L median",
+   "printed": "2",
+   "facts": "2",
+   "key": "B.pooled.SEG.per_scan.median",
+   "ok": true
+  },
+  {
+   "what": "L min Dice",
+   "printed": "0.9984",
+   "facts": "0.9984",
+   "key": "B.pooled.SEG.dice.min",
+   "ok": true
+  },
+  {
+   "what": "L differing voxels (legend)",
+   "printed": "91,763",
+   "facts": "91,763",
+   "key": "B.pooled.SEG.mismatches",
+   "ok": true
+  },
+  {
+   "what": "L voxels compared (legend)",
+   "printed": "4,644,570,784",
+   "facts": "4,644,570,784",
+   "key": "B.pooled.SEG.voxels_compared",
+   "ok": true
+  },
+  {
+   "what": "legend n patella",
+   "printed": "21",
+   "facts": "21",
+   "key": "cohort.patella.n",
+   "ok": true
+  },
+  {
+   "what": "legend n UD radius",
+   "printed": "29",
+   "facts": "29",
+   "key": "cohort.site.UD_radius.n",
+   "ok": true
+  },
+  {
+   "what": "legend n UD tibia",
+   "printed": "29",
+   "facts": "29",
+   "key": "cohort.site.UD_tibia.n",
+   "ok": true
+  },
+  {
+   "what": "legend n diaphyseal",
+   "printed": "58",
+   "facts": "58",
+   "key": "cohort.site.D_radius.n + cohort.site.D_tibia.n",
+   "ok": true
+  }
+ ],
+ "disagreements": []
+}

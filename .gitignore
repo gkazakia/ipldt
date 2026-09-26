@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.eggs/
+.pytest_cache/
+*.nbi
+*.nbc
+
+# Images and image-derived arrays: never committed (patient data)
+*.AIM
+*.aim
+*.AIM;*
+*.ISQ
+*.isq
+*.GOBJ
+*.gobj
+*.RSQ
+*.nii
+*.nii.gz
+*.nrrd
+*.seg.nrrd
+*.mha
+*.mhd
+*.raw
+*.npz
+*.npy
+*.dcm
+
+# Vendor material and logs
+*.COM
+*.COM;*
+*.LOG
+*.log
+*.pdf
+*.PDF
+
+# Caches and scratch output of the harness and the figure scripts
+validation/cache/
+validation/results/oslh/
+validation/results/*/logs/
+validation/results/from_ipl_contour_run/
+validation/results/against_ipl_run/
+validation/results/patella_bvtv_A_run/
+validation/results/figures/
+validation/results/joint_hist_*.npz
+validation/results/**/validate/
+manuscript/figures/cache/
+manuscript/drafts/
+
+# Local data pointers and private staging material
+IPLDT_LAB_ROOT_is_not_set/
+_private/
+*.key

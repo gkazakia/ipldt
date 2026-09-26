@@ -1,0 +1,93 @@
+{
+ "thickness": {
+  "crop": {
+   "centres": 194,
+   "kept": 97,
+   "removed": 97,
+   "d_min": 2,
+   "d_max": 5,
+   "s_max": 2.598076211353316,
+   "map_max": 5,
+   "ipl_max": 5
+  },
+  "differing_voxels_whole_grid": 0,
+  "voxels_compared": 42230160,
+  "n_centres_volume": 1651627,
+  "n_centres_inside_contour": 1067671,
+  "n_centres_removed": 583956,
+  "diameters_volume": [
+   1,
+   8
+  ],
+  "map_support_volume": 5951078,
+  "ipl_support_volume": 5951078,
+  "colour_scale_max": 5
+ },
+ "spacing": {
+  "crop": {
+   "centres": 160,
+   "kept": 81,
+   "removed": 79,
+   "d_min": 2,
+   "d_max": 8,
+   "s_max": 3.570714214271425,
+   "map_max": 8,
+   "ipl_max": 8
+  },
+  "differing_voxels_whole_grid": 0,
+  "voxels_compared": 42230160,
+  "n_centres_volume": 1451013,
+  "n_centres_inside_contour": 1004081,
+  "n_centres_removed": 446932,
+  "diameters_volume": [
+   1,
+   19
+  ],
+  "map_support_volume": 13760672,
+  "ipl_support_volume": 13760672,
+  "colour_scale_max": 8
+ },
+ "figure": {
+  "width_mm": 180.0,
+  "height_mm": 70.3,
+  "panel_mm": 23.46,
+  "crop_voxels": 48,
+  "slice_index": 84,
+  "window_origin_yx": [
+   38,
+   430
+  ],
+  "voxel_mm": 0.06069973483681679,
+  "font_pt": 7.0
+ },
+ "parameters": {
+  "ridge_epsilon": 0.9,
+  "assign_epsilon": 0.5,
+  "peel_iter": -1,
+  "version": 3,
+  "row_a_object": "seg",
+  "backend": "gpu"
+ },
+ "reports": {
+  "thickness": {
+   "Th_mm": 0.22734476093811196,
+   "Th_sd_mm": 0.060594422091360664,
+   "Th_max_mm": 0.4855978786945343,
+   "Th_n_voxels": 5951078,
+   "valid_fraction": 0.5517969280399848,
+   "voxel_size_mm": 0.06069973483681679,
+   "Th_skew": 0.21459720910307425,
+   "Th_kurtosis": -0.23034709907630635
+  },
+  "spacing": {
+   "Sp_mm": 0.4380003975404191,
+   "Sp_sd_mm": 0.17024678981328653,
+   "Sp_max_mm": 1.153294961899519,
+   "Sp_n_voxels": 13760672,
+   "valid_fraction": 0.9662921648135853,
+   "voxel_size_mm": 0.06069973483681679,
+   "Sp_skew": 0.6303471482060232,
+   "Sp_kurtosis": 0.290002365862124
+  }
+ }
+}
