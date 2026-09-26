@@ -66,7 +66,7 @@ if REPO not in sys.path:
 
 import ipldt  # noqa: E402
 
-DATA_ROOT = os.environ.get("IPLDT_DATA_ROOT") or lab_path("PFJOA/XCT_masks_full_grab")
+DATA_ROOT = os.environ.get("IPLDT_DATA_ROOT") or lab_path("patellae")
 CACHE_DIR = os.path.join(HERE, "cache")
 RESULTS_DIR = os.path.join(HERE, "results")
 FIG_DIR = os.path.join(RESULTS_DIR, "figures")
@@ -381,7 +381,7 @@ def records_to_frame(records):
 
 def sample_table(records):
     """Per-subject sample statistics in physical units: IPL vs ours for each metric
-    (Tb.Th / Tb.Sp / Ct.Th / Tb.Th old = mean map in mm; Tb.N = 1 / mean 1/Tb.N map)."""
+    (Tb.Th / Tb.Sp / Ct.Th / Tb.Th on TRAB_SEG = mean map in mm; Tb.N = 1 / mean 1/Tb.N map)."""
     import pandas as pd
     rows = {}
     for r in records:

@@ -5,7 +5,7 @@ volume dict as step1_load_aim returns it and a periosteal mask image on the imag
 CORT / TRAB images are uint8 0/127 on the image grid, partition the periosteal rendering, and form a cortical
 ring around a trabecular disc on every slice; the info dict carries the Step1Params, the native thresholds,
 the seg_gauss box and the per-stage counts; the site parameter and the calibration fallback work.
-Slow (needs the XCT_masks_full_grab folder): the pipeline-level proof -- step 3 fed with IPL's own periosteal
+Slow (needs the patella folder): the pipeline-level proof -- step 3 fed with IPL's own periosteal
 contour (the raw CORT_MASK | TRAB_MASK rasters of PFJ-0be66a_R, which equal IPL's rendered periosteal gobj)
 returns IPL's raw X2420448_CORT_MASK.AIM / TRAB_MASK.AIM voxel for voxel (0 mismatches)."""
 import os

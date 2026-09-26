@@ -7,7 +7,8 @@ added: vertical channels and small cavities of marrow density inside the dense s
 SEG has voids inside the cortical contour and the pore cascade has something to find.
 
 Every porosity check is against the calls ipldt.ormir.run_pipeline makes in its STEP 5c: ipldt.porosity's
-pore_cascade and ct_po on the rendered cortical contour and CORT_SEG, both as char volumes on the AIM grid.
+pore_cascade_ipl_grid (the cascade on IPL's render grid of the cortical contour, see test_porosity_grid) and ct_po
+on the rendered cortical contour and CORT_SEG, both handed over as char volumes on the AIM grid.
 The AIM checks read every written volume back through ipldt.io.read_aim and compare it with the NIfTI run and,
 byte for byte, with run_pipeline(map_format='aim').
 
@@ -144,19 +145,22 @@ def mask(path):
 
 def pore_like_run_pipeline(G_cort, cort_seg):
     """ipldt.ormir.run_pipeline's STEP 5c on the given rasters: the rendered cortical contour and CORT_SEG as
-    char volumes on the AIM grid, ipldt.porosity.pore_cascade, then ct_po.  Returns (PORE bool on the AIM grid,
-    ct_po's dict)."""
+    char volumes on the AIM grid, ipldt.porosity.pore_cascade_ipl_grid (the cascade on the contour's /gobj_to_aim
+    grid), then ct_po.  Returns (PORE bool on the AIM grid, ct_po's dict, the cascade's (R, S, U) grids)."""
     cr = engine.volume(np.asarray(G_cort, bool).astype(np.uint8) * 127, DIM, POS)
     cs = engine.volume(np.asarray(cort_seg, bool).astype(np.uint8) * 127, DIM, POS)
-    pore = porosity.pore_cascade(cr, cs)["pore"]
-    return align_to(pore, DIM, POS) != 0, porosity.ct_po(pore, cr)
+    out = porosity.pore_cascade_ipl_grid(cr, cs)
+    pore = out["pore"]
+    return align_to(pore, DIM, POS) != 0, porosity.ct_po(pore, cr), (out["render_grid"], out["seg_grid"], out["grid"])
 
 
 def check_porosity_against_engine(rep):
     """The report's porosity block and PORE file equal run_pipeline's STEP 5c on the run's own CORT_GOBJ / CORT_SEG."""
     po = rep["porosity"]
     assert set(po) == PORO_KEYS
-    pore_ref, ref = pore_like_run_pipeline(mask(rep["outputs"]["CORT_GOBJ"]), mask(rep["outputs"]["CORT_SEG"]))
+    pore_ref, ref, grids = pore_like_run_pipeline(mask(rep["outputs"]["CORT_GOBJ"]), mask(rep["outputs"]["CORT_SEG"]))
+    g = lambda t: {"dim_xyz": list(t[0]), "pos_xyz": list(t[1])}                     # noqa: E731
+    assert rep["parameters"]["porosity"]["grids"] == {"render": g(grids[0]), "cort_seg": g(grids[1]), "cascade": g(grids[2])}
     assert po["Ct_Po"] == ref["ct_po"]
     assert po["Ct_Po_pore_voxels"] == ref["pore_voxels"] and po["Ct_Po_compartment_voxels"] == ref["mask_voxels"]
     assert po["Ct_Po_compartment_voxels"] == rep["compartments"]["CORT_GOBJ_voxels"]
@@ -233,6 +237,7 @@ def test_porosity_parity_with_run_pipeline(run_nii, aim_path, disc, tmp_path, mo
     out2 = str(tmp_path / "engine")
     rp = engine.run_pipeline(aim_path, out2, site="tibia", compute_bmd=False, log=engine.Logger(echo=False))
     assert rp["porosity"] == rep["porosity"]
+    assert rp["porosity_grids"] == rep["parameters"]["porosity"]["grids"] and rp["porosity_grids"]["cascade"]["dim_xyz"] != list(DIM)
     assert np.array_equal(vol(rep["outputs"]["PORE"]), vol(os.path.join(out2, "PHANTOM_PORE.nii.gz")))
     assert rp["morphometry"] == rep["morphometry"]
 

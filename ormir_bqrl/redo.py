@@ -1,5 +1,5 @@
 """ormir_bqrl.redo -- `run_from_masks(aim_path, run_dir, ...)`: the manual-correction re-entry, Scanco Script 34's
-semantics stated precisely (design section 6).  Let P, T, C be the given rasters (bool on the AIM grid after
+semantics stated precisely (ormir_bqrl/README.md, "Correcting masks in 3D Slicer").  Let P, T, C be the given rasters (bool on the AIM grid after
 ormir_bqrl.slicer.read_mask) and R(m) = ipldt.ormir.render_on_own_box(m), IPL's /gobj_to_aim of the contour of m
 (what IPL sees of any contour, because IPL has no rasters, only GOBJs):
 

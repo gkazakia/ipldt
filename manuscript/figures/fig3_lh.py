@@ -64,10 +64,10 @@ from ipldt import ipl_ops as ops  # noqa: E402
 
 # ------------------------------------------------------------------------------------------------ inputs
 # the displayed scan (a patella of the validation set) and IPL's files of it
-DATA = lab_path("PFJOA/XCT_masks_full_grab/PFJ-0be66a_R")
+DATA = lab_path("patellae/PFJ-0be66a_R")
 BASE = "X2420448"
-IPL_EXPORTS = lab_path("Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs")   # IPL's own STEP-2 intermediates
-PATELLA_DATA_ROOT = lab_path("PFJOA/XCT_masks_full_grab")
+IPL_EXPORTS = lab_path("ipl_test_runs/run15/aims_and_logs")   # IPL's own STEP-2 intermediates
+PATELLA_DATA_ROOT = lab_path("patellae")
 REC_PATELLA = os.path.join(REPO, "validation", "results", "from_ipl_contour_ceil", "records")
 # radius / tibia: the 62 counted measurements of oslh_auto_vN and the 54 diaphyseal measurements of
 # oslh_noedit_vN -- 116 scans; the same list as manuscript/facts/facts.json
@@ -83,11 +83,11 @@ SEG_LIST_MAX = 200                                     # the records store voxel
 def scan_folder(r):
     """The measurement folder of a radius / tibia record under the non-public data roots (validation/datapaths.py):
     the published records carry no local paths, so the folder is rebuilt from the record id."""
-    for root in (lab_path("Cross_validation_IPL/OS_LH_AUTO"), lab_path("Cross_validation_IPL/OS_LH_NOEDIT")):
+    for root in (lab_path("radius_tibia/set1"), lab_path("radius_tibia/set2")):
         p = os.path.join(root, *r["id"].split("/")).replace("\\", "/")
         if os.path.isdir(p):
             return p
-    return os.path.join(lab_path("Cross_validation_IPL/OS_LH_AUTO"), *r["id"].split("/")).replace("\\", "/")
+    return os.path.join(lab_path("radius_tibia/set1"), *r["id"].split("/")).replace("\\", "/")
 
 
 def oslh_files():
@@ -186,8 +186,8 @@ def load_slice_data():
     trab_raw = read_aim(os.path.join(DATA, f"{BASE}_TRAB_MASK.AIM"))
     prx = (ops.on_grid(cort_raw, gdim, gpos) != 0) | (ops.on_grid(trab_raw, gdim, gpos) != 0)
     # the rendered compartment contours: IPL's renderings, which equal ipldt's own on this scan (0 voxels differ; records)
-    g_cort = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_P15_CORT_G2A.AIM")), gdim, gpos) != 0
-    g_trab = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_P15_TRAB_G2A.AIM")), gdim, gpos) != 0
+    g_cort = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_T15_CORT_G2A.AIM")), gdim, gpos) != 0
+    g_trab = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_T15_TRAB_G2A.AIM")), gdim, gpos) != 0
     cort_seg, trab_seg = ormir.ipl_seg_assembly(bm, prx, g_cort, g_trab)
     seg = np.zeros(bm.shape, np.uint8)
     seg[trab_seg] = SEG_TRAB
@@ -213,8 +213,8 @@ def load_slice_data():
 
     # IPL's own exported intermediates of this scan: the normalised short and the thresholded volume
     say("IPL's exported normalised response and thresholded volume at the differing voxels")
-    short_ipl = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_P15_LHNORM.AIM")), gdim, gpos)
-    thr_ipl = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_P15_LHSEG.AIM")), gdim, gpos) != 0
+    short_ipl = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_T15_LHNORM.AIM")), gdim, gpos)
+    thr_ipl = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_T15_LHSEG.AIM")), gdim, gpos) != 0
     raw_thr_mism = bm != thr_ipl
     vox = []
     for (x, y, z, sgn) in found:

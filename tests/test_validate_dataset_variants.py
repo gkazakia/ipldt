@@ -2,21 +2,21 @@
 
 WHAT IS PINNED HERE
   * a measurement that ships a SEG keeps reading its variants from the SEG's processing log and never looks at an
-    evaluation log, even when one is sitting in the same folder (two of the three OS_LH folders that ship an
+    evaluation log, even when one is sitting in the same folder (two of the three radius / tibia folders that ship an
     evaluation log DO ship a SEG, so this is the case that must not change);
   * that SEG processing log now also decides trab_seg_mask, from the same fact the evaluation log decides it by --
     a D3P_GobjOrAimMaskAimPeel_OW after D3P_Cl_ExtractNumber_CPP means TRAB_SEG was cropped to the trabecular
     contour, its absence means it was not -- which selects eleven measurements of the cohort and no others;
   * a measurement that ships NO SEG reads them from IPL's own evaluation log instead, including the two commands
-    that ERRORED in Diaphyseal/BMAT/610892's second run -- '/fill_offset_duplicate -input cort' (so the
+    that did not take effect in Diaphyseal/BMAT/610892's second run -- '/fill_offset_duplicate -input cort' (so the
     Laplace-Hamming input has no duplicated border) and '/gobj_maskaimpeel_ow -input_output trab_gauss' (so
     TRAB_SEG was never cropped to the trabecular contour);
   * when two evaluation runs exist, the run is chosen from the DELIVERED files' own processing logs, not assumed;
   * assemble_seg's new trab_masked flag changes the trabecular branch and only the trabecular branch.
 
 The synthetic logs below are minimal stand-ins written for these tests: only the lines the parser reads (the job
-stamps, the session marker, the STEP 2 command names with the options it uses, one short error marker per failed
-command and the '-> Set' line), with synthetic dates, names and counts; the two `slow` tests at the end assert the
+stamps, the session marker, the STEP 2 command names with the options it uses, one short error marker per command that did
+not take effect and the '-> Set' line), with synthetic dates, names and counts; the two `slow` tests at the end assert the
 same things against the real cohort and skip themselves when it is not mounted.
 """
 import os
@@ -34,7 +34,7 @@ for _p in (REPO, VALIDATION):
 vd = pytest.importorskip("validate_dataset", reason="validation/validate_dataset.py needs the validation extras")
 
 COHORT = os.environ.get("OSLH_ROOT", os.path.join(os.environ.get("IPLDT_LAB_ROOT") or "IPLDT_LAB_ROOT_is_not_set",
-                                                 "Cross_validation_IPL", "OS_LH"))
+                                                 "radius_tibia", "delivery"))
 
 
 # ----------------------------------------------------------------------------- synthetic evaluation logs
@@ -325,7 +325,7 @@ def test_assemble_seg_default_is_masked():
 def test_real_610892_reads_its_variants_from_the_second_evaluation_run():
     folder = os.path.join(COHORT, "Diaphyseal", "BMAT", "610892")
     if not os.path.isdir(folder):
-        pytest.skip(f"OS_LH cohort not mounted: {folder}")
+        pytest.skip(f"radius / tibia cohort not mounted: {folder}")
     import ipldt
     products = {f"map:{m}": ipldt.read_aim(os.path.join(folder, f"X1469636_{m}_COMPRESSED.AIM"))["proclog"]
                 for m in ("TRAB_TH", "TRAB_SP", "TRAB_1N", "CORT_TH")}
@@ -341,12 +341,12 @@ def test_real_610892_reads_its_variants_from_the_second_evaluation_run():
 @pytest.mark.slow
 def test_real_581203_ships_both_evaluation_logs_and_still_uses_its_seg():
     """581203 is the cross-check between the two sources: it ships BOTH evaluation logs AND a SEG.  Its SEG processing
-    log must be the source, and it must reach the same answer the failed run's transcript does -- lh_border 'none'
+    log must be the source, and it must reach the same answer that run's transcript does -- lh_border 'none'
     and trab_seg_mask 'none' -- because the delivered SEG came from that run (its CORT_TH's printed 2.126924 is the
     later run's, not the first run's 2.125546)."""
     folder = os.path.join(COHORT, "Diaphyseal", "CKD", "581203")
     if not os.path.isdir(folder):
-        pytest.skip(f"OS_LH cohort not mounted: {folder}")
+        pytest.skip(f"radius / tibia cohort not mounted: {folder}")
     import ipldt
     assert len(vd.find_eval_logs(folder)) == 2
     seg = ipldt.read_aim(os.path.join(folder, "X9114091_SEG_DECOMPRESSED.AIM"))
@@ -366,7 +366,7 @@ def test_real_cohort_trab_seg_mask_detection_is_the_eleven_and_nothing_else():
     117).  The two halves of the same failure never disagree: D3P_FillOffsetDuplicate is present exactly where the
     masking entry is."""
     if not os.path.isdir(COHORT):
-        pytest.skip(f"OS_LH cohort not mounted: {COHORT}")
+        pytest.skip(f"radius / tibia cohort not mounted: {COHORT}")
     import struct
 
     def proclog(path):
@@ -376,13 +376,13 @@ def test_real_cohort_trab_seg_mask_detection_is_the_eleven_and_nothing_else():
             body = fh.read(hsize + lsize)
         return body[hsize:hsize + lsize].decode("latin-1", "replace")
 
-    expected_none = {"Diaphyseal/BMAT/610892", "Diaphyseal/CKD/2422", "Diaphyseal/CKD/558517", "Diaphyseal/CKD/449824",
+    expected_none = {"Diaphyseal/BMAT/610892", "Diaphyseal/CKD/251016", "Diaphyseal/CKD/558517", "Diaphyseal/CKD/449824",
                      "Diaphyseal/CKD/581203", "Diaphyseal/CKD/433045", "Diaphyseal/CKD/341269", "Distal/CKD/386723",
                      "Distal/CKD/802246", "Distal/REPRO/472790", "Distal/REPRO/512830", "rerun/581203"}
     # the ids above are this tree's measurement pseudonyms: a cohort laid out under the scanner's own measurement
     # numbers cannot be compared with them (and a failure would print those numbers), so the test skips
     if not all(os.path.isdir(os.path.join(COHORT, *i.split("/"))) for i in expected_none):
-        pytest.skip("the OS_LH cohort is not laid out under the measurement pseudonyms of this tree")
+        pytest.skip("the radius / tibia cohort is not laid out under the measurement pseudonyms of this tree")
     got, mixed = set(), []
     for m in vd.discover("oslh", COHORT, None, None):
         names = {f.upper(): f for f in os.listdir(m.folder)}
@@ -396,18 +396,18 @@ def test_real_cohort_trab_seg_mask_detection_is_the_eleven_and_nothing_else():
         if seg and bool(ev["fill_offset_duplicate"]) != bool(ev["gobj_mask_after_extract"]):
             mixed.append(m.id)
     assert got == expected_none
-    assert mixed == [], "the two halves of the failed run must never disagree"
+    assert mixed == [], "the two records of the missing crop must never disagree"
 
 
 @pytest.mark.slow
 def test_real_cohort_gobj_mask_names_agree_with_the_positional_rule():
     """The SEG processing log NAMES the gobj of every D3P_GobjOrAimMaskAimPeel_OW, so the trabecular crop can be
-    identified by name as well as by position.  Over all 122 OS_LH SEG logs the two readings must agree: every
+    identified by name as well as by position.  Over all 122 radius / tibia SEG logs the two readings must agree: every
     measurement with a post-extract entry names a '_trab_mask.gobj', and no '_trab_mask.gobj' appears anywhere in
     the logs of those that have none (their only entry names the periosteal '<base>.gobj').  This is what closes
     the positional rule's one stated ambiguity -- a log whose sole late masking entry were a periosteal mask."""
     if not os.path.isdir(COHORT):
-        pytest.skip(f"OS_LH cohort not mounted: {COHORT}")
+        pytest.skip(f"radius / tibia cohort not mounted: {COHORT}")
     import struct
 
     def proclog(path):

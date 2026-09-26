@@ -1,6 +1,6 @@
 # FACTS -- the numbers of the ipldt / ORMIR-BQRL manuscript (n = 137)
 
-Built by `manuscript/facts/build_facts.py` on 2026-09-25 (n = 137, public build) from the validation records only. `facts.json` holds every value at full precision under the key printed in the `key` column; this file rounds. Cite keys, not prose.
+Built by `manuscript/facts/build_facts.py` on 2026-09-26 (n = 137, public build) from the validation records only. `facts.json` holds every value at full precision under the key printed in the `key` column; this file rounds. Cite keys, not prose.
 
 **Sources.** Patella configuration A: `validation/results/records.json` (105 = 21 subjects x 5 maps), `validation/results/sample_means.csv` and, for BV/TV, `validation/results/patella_bvtv_A/records.json` (`validation/patella_bvtv_A.py`: the ratio on IPL's SEG and IPL's rendered trabecular contour, with IPL's printed sheet value beside it). Patella configuration B, every stage (STEP 1, contours, SEG, dt maps, metrics, BV/TV): `validation/results/from_ipl_contour_ceil_dt/records/*.json`, the dt-inclusive run of 2026-09-18 under the shipped engine (LH pad offset 'ceil', float32); its SEG stage is asserted identical to the SEG-only run `validation/results/from_ipl_contour_ceil/records/*.json`. Radius/tibia, A and B: `validation/results/oslh_auto_v4/records/*.json` (63 files, 62 counted) and `validation/results/oslh_noedit_v3/records/*.json` (54 files, 54 counted) matching `^[A-Za-z]+_[A-Za-z]+_\d+\.json$`; `Diaphyseal_CKD_991161` is not used; n = 116. Study names: `validation/results/cohort_studies.csv` and meta.study_label. Parameters: `ipldt/step1.py`, `ipldt/ormir.py`, `ipldt/core.py`.
 
@@ -83,7 +83,7 @@ Radius/tibia STEP-1 masks are validated through their renderings (IPL's raw mask
 |   diaphyseal | 35/58 | 39 | 20 | 19 | 0 / 0 / 4 | 0.99999978 | 1 | 58/58 | 0.038 | B.site.diaphyseal.SEG.* |
 |   ultradistal | 0/58 | 91,674 | 85,544 | 6,130 | 1 / 72 / 41,480 | 0.99843367 | 0.99999594 | 54/58 | 34.709 | B.site.ultradistal.SEG.* |
 
-- Radius/tibia: the three scans with the largest SEG residual carry 82,462 voxels = 89.9 % of the total (Distal_REPRO_2095 UD tibia 41,480, Distal_REPRO_2051 UD tibia 23,797, Distal_REPRO_612066 UD tibia 17,185); the other 113 scans total 9,251 voxels (median 2, max 2,232) (`B.oslh.SEG.top3_*`, `B.oslh.SEG.without_top3.*`).
+- Radius/tibia: the three scans with the largest SEG residual carry 82,462 voxels = 89.9 % of the total (Distal_REPRO_322919 UD tibia 41,480, Distal_REPRO_444590 UD tibia 23,797, Distal_REPRO_612066 UD tibia 17,185); the other 113 scans total 9,251 voxels (median 2, max 2,232) (`B.oslh.SEG.top3_*`, `B.oslh.SEG.without_top3.*`).
 - Scans with <= 10 / <= 100 / <= 1,000 differing SEG voxels, pooled: 89 / 111 / 132 of 137 (`B.pooled.SEG.per_scan.le_*`).
 - Label mismatches (set in both, different label): patella 0, radius/tibia 0.
 - Patella TRAB_SEG: 33 voxels (13 ours only / 20 IPL only), exact 6/21, min Dice 0.99999973; CORT_SEG: 17 voxels (10 / 7), exact 9/21, min Dice 0.9999998 (`B.patella.TRAB_SEG.*`, `B.patella.CORT_SEG.*`). Radius/tibia: no TRAB_SEG files delivered; CORT_SEG comparisons are in FACTS_BMD_CTPO (pore.B.cort_seg.*).
@@ -315,7 +315,7 @@ Radius/tibia medians per site group (s; the pooled medians above move with the s
 | ultradistal | 45,211,320 | 1.1 | 18.1 | 6.5 | 4 | 3.9 | 39.1 | 19.5 | B.site.ultradistal.time_s.* |
 
 - Peak resident memory of the radius/tibia validation worker: 10.35 GB; per validation run oslh_auto_v4 10.35 GB, oslh_noedit_v3 4.69 GB (`B.oslh.peak_rss_gb.*`; validation process, not the pipeline alone; each record carries its worker's running peak).
-- GPU == CPU: tests/test_gpu_cpu.py (26 tests: maps, centres, reports identical for dt_thickness / dt_spacing / dt_number, versions 1-3, with and without gobj, assign_epsilon sweep; ridge_gpu == ridge, draw_spheres_gpu == CPU) and tests/test_ridge_precision.py (GPU bit identity of the ridge test) (`software.gpu_cpu_identity.evidence`). Test suite: 317 tests collected, measured 2026-09-25 (`software.tests.collected_total`).
+- GPU == CPU: tests/test_gpu_cpu.py (26 tests: maps, centres, reports identical for dt_thickness / dt_spacing / dt_number, versions 1-3, with and without gobj, assign_epsilon sweep; ridge_gpu == ridge, draw_spheres_gpu == CPU) and tests/test_ridge_precision.py (GPU bit identity of the ridge test) (`software.gpu_cpu_identity.evidence`). Test suite: 330 tests collected, measured 2026-09-26 (`software.tests.collected_total`).
 
 ## 5. IPL parameter values the package uses
 
@@ -387,7 +387,7 @@ Radius/tibia medians per site group (s; the pooled medians above move with the s
 | software.ipldt.version | 1.0.0 | ipldt/__init__.py (__version__); pyproject.toml |
 | software.ormir_bqrl.version | 0.1.0 | ormir_bqrl/__init__.py (__version__); README.md |
 | software.ormir_xct.version | 1.1.0 | installed package in the ormir env (ormir_xct.__version__) |
-| software.tests.collected_total | 317 | pytest --collect-only -q tests (2026-09-25) |
+| software.tests.collected_total | 330 | pytest --collect-only -q tests (2026-09-26) |
 | software.tests.gpu_cpu_identity | 26 | pytest --collect-only tests/test_gpu_cpu.py (26 of the 43 collected together with test_ridge_precision.py's 17; 2026-09-18) |
 | software.tests.ridge_precision | 17 | pytest --collect-only tests/test_ridge_precision.py (2026-09-18) |
 | software.gpu_cpu_identity.evidence | tests/test_gpu_cpu.py (26 tests: maps, centres, reports identical for dt_thickness / dt_spacing / dt_number, versions 1-3, with and without gobj, assign_epsilon sweep; ridge_gpu == ridge, draw_spheres_gpu == CPU) and tests/test_ridge_precision.py (GPU bit identity of the ridge test) | tests/ |

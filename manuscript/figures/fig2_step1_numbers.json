@@ -531,8 +531,8 @@
   "cohort.site.UD_tibia.n"
  ],
  "sources": {
-  "exports": "<IPLDT_LAB_ROOT>/Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs",
-  "greyscale": "<IPLDT_LAB_ROOT>/PFJOA/XCT_masks_full_grab/PFJ-0be66a_R/X2420448.AIM",
+  "exports": "<IPLDT_LAB_ROOT>/ipl_test_runs/run15/aims_and_logs",
+  "greyscale": "<IPLDT_LAB_ROOT>/patellae/PFJ-0be66a_R/X2420448.AIM",
   "patella_records": "validation/results/from_ipl_contour_ceil_dt/records",
   "oslh_records": [
    "validation/results/oslh_auto_v4/records",

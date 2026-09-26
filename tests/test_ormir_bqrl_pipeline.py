@@ -1,4 +1,4 @@
-"""ORMIR-BQRL `run()` and `run_from_masks()` on a synthetic AIM (design sections 5, 6, 9).
+"""ORMIR-BQRL `run()` and `run_from_masks()` on a synthetic AIM.
 
 The phantom (written as a real v020 short AIM with VAX-float element sizes and a calibration processing log, so
 the file goes through ITK ScancoImageIO, ORMIR's file_reader and ipldt.io.read_aim like a scan): a cylinder r <= 40
@@ -8,7 +8,7 @@ The periosteal disc has a half-integer centre, so IPL's contour rendering is the
 test against ipldt.ormir.run_pipeline is exact and the labelmap union equals the injected raster.
 
 Skips without SimpleITK / itk / ormir_xct (step1_load_aim needs them; no test calls the autocontour).  The GPU is
-never required (backend 'auto').  The slow test needs the XCT_masks_full_grab folder (PFJ-0be66a_R).
+never required (backend 'auto').  The slow test needs the patella folder (PFJ-0be66a_R).
 """
 import json
 import math
@@ -436,7 +436,7 @@ def test_periosteal_edit_reruns_step1(run_out, aim_path, tmp_path):
     out, rep = run_out
     labels = edit_labelmap(vol(rep["outputs"]["labelmap"]), "shrink_periosteal")
     P = labels > 0
-    p = str(tmp_path / "edited_all.seg.nrrd")
+    p = str(tmp_path / "edited_masks.seg.nrrd")
     slicer.write_seg_nrrd(p, labels, grid_of(rep))
     q = engine.Logger(echo=False)
     r = run_from_masks(aim_path, out, periosteal=p, compute_bmd=False, log=q)

@@ -303,8 +303,8 @@
  },
  "figure": {
   "width_mm": 180.0,
-  "height_mm": 231.9,
-  "panel_mm": 32.84,
+  "height_mm": 227.9,
+  "panel_mm": 32.04,
   "font_pt": 7.0,
   "window": {
    "slice_index": 84,

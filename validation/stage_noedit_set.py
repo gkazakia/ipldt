@@ -1,25 +1,26 @@
-"""Stage the 54 diaphyseal OS_LH measurements whose delivered evaluation carries no operator correction, at the
+"""Stage the 54 diaphyseal radius / tibia measurements whose delivered evaluation carries no operator correction, at the
 evaluation run that is AUTOMATIC, with the cortical pore cascade's inputs added, as normal single-version folders the harness reads unchanged.
 
-Source   <IPLDT_LAB_ROOT>/Cross_validation_IPL/OS_LH/<Group>/<Sub>/<meas>/     (the local delivery, read-only)
-         <IPLDT_LAB_ROOT>/PFJOA/XCT_full_grab/noedit_all/<Tag>/              (every VMS version, read-only)
+Source   <IPLDT_LAB_ROOT>/radius_tibia/delivery/<Group>/<Sub>/<meas>/     (the local delivery, read-only)
+         <IPLDT_LAB_ROOT>/radius_tibia/scanner_versions_set2/<Tag>/              (every stored version, read-only)
 Decode   the internal decode of the two-run measurements (IPLDT_TWO_RUNS; not distributed)
-Target   <IPLDT_LAB_ROOT>/Cross_validation_IPL/OS_LH_NOEDIT/<Group>/<Sub>/<meas>/
+Target   <IPLDT_LAB_ROOT>/radius_tibia/set2/<Group>/<Sub>/<meas>/
 The inputs are not public; the script documents how the validation set was assembled.
 
 What the decode established, and what this script does with it:
   51 measurements  the local delivery IS the automatic run (every product follows the run's own STEP 1 contours,
-                   TRAB_MASK.GOBJ;2 and CORT_MASK.GOBJ;1, 0 voxels on 51/51; the ;1 trabecular contour on 47 of them
-                   is a 2022 contour-editor save the run never read).  Staged: every local file, hardlinked, plus
-                   the fetched <base>_PORE.AIM;1, <base>_CORT_SEG.AIM;1 and <base>_TRAB_SEG.AIM;1 (single version; pore_cascade of those
-                   reproduces PORE;1 with 0 voxels on 51/51).
-  5876             as the 51, except that the local <base>_CT.AIM was rendered from the periosteal contour ;2, an
-                   operator save 31 min into the run; IPL's evaluation read ;1.  <base>_CT.AIM is re-rendered
-                   from <base>.GOBJ;1 on the same grid.
-  610892 581203 433045   the local delivery is the Script 34 REDO (run ;2); run ;1 is the automatic, complete,
-                   internally consistent evaluation.  Staged from run ;1 exactly as the internal decode lists, with the
-                   two compartment renderings generated from the ;1 contour objects (the fetched and local
-                   _CORT_MASK_CT.AIM render the REDO's CORT_MASK.GOBJ;2).  No *_DECOMPRESSED / *_COMPRESSED export
+                   the second stored version of TRAB_MASK.GOBJ and the first of CORT_MASK.GOBJ, 0 voxels on 51/51;
+                   the first stored trabecular contour of 47 of them is a 2022 contour-editor save the run never
+                   read).  Staged: every local file, hardlinked, plus the first stored version of the fetched
+                   <base>_PORE.AIM, <base>_CORT_SEG.AIM and <base>_TRAB_SEG.AIM (single version; pore_cascade of
+                   those reproduces that PORE with 0 voxels on 51/51).
+  353308           as the 51, except that the local <base>_CT.AIM was rendered from the second stored version of the
+                   periosteal contour, an operator save 31 min into the run; IPL's evaluation read the first.
+                   <base>_CT.AIM is re-rendered from the first stored version of <base>.GOBJ on the same grid.
+  610892 581203 433045   the local delivery is the Script 34 REDO (run 2); run 1 is the automatic, complete,
+                   internally consistent evaluation.  Staged from run 1 exactly as the internal decode lists, with the
+                   two compartment renderings generated from run 1's contour objects (the fetched and local
+                   _CORT_MASK_CT.AIM render the REDO's second stored version of CORT_MASK.GOBJ).  No *_DECOMPRESSED / *_COMPRESSED export
                    is staged: they are run-2 products and the oslh layout reads those names first.
 
 Products are HARDLINKED (same NTFS volume); only the rendered rasters are new bytes.
@@ -37,12 +38,17 @@ sys.path.insert(0, HERE)
 from ipldt.io import read_aim, write_aim                                   # noqa: E402
 from stage_automatic_set import render_gobj                                # noqa: E402
 
-LOCAL = os.environ.get("OSLH_ROOT") or lab_path("Cross_validation_IPL/OS_LH")
-FETCH = lab_path("PFJOA/XCT_full_grab/noedit_all")
-DST = lab_path("Cross_validation_IPL/OS_LH_NOEDIT")
-MANIFEST = os.environ.get("IPLDT_NOEDIT_MANIFEST") or os.path.join(FETCH, "manifest_noedit.csv")   # the fetch manifest
-TWO_RUNS = os.environ.get("IPLDT_TWO_RUNS") or os.path.join(FETCH, "two_runs.json")                # internal decode
-PERIOSTEAL_V1 = {"Diaphyseal/REPRO/5876": 1}       # IPL's evaluation read <base>.GOBJ;1; the local _CT.AIM renders ;2
+LOCAL = os.environ.get("OSLH_ROOT") or lab_path("radius_tibia/delivery")
+FETCH = lab_path("radius_tibia/scanner_versions_set2")
+DST = lab_path("radius_tibia/set2")
+MANIFEST = os.environ.get("IPLDT_NOEDIT_MANIFEST") or os.path.join(FETCH, "manifest.csv")   # the fetch manifest
+TWO_RUNS = os.environ.get("IPLDT_TWO_RUNS") or os.path.join(FETCH, "run_decode.json")                # internal decode
+PERIOSTEAL_V1 = {"Diaphyseal/REPRO/353308": 1}       # IPL's evaluation read version 1 of <base>.GOBJ; the local _CT.AIM renders version 2
+
+
+def vms_name(name, version):
+    """<name> with the scanner's version suffix appended (the fetch keeps every stored version of a file)."""
+    return f"{name};{version}"
 
 
 def link(src, dst, force):
@@ -84,7 +90,7 @@ def main():
         src_f = os.path.join(FETCH, tag)
         entry = dict(id=mid, tag=tag, base=base, dst=dst.replace("\\", "/"))
 
-        if mid in two:                                          # run ;1 from the fetch, per the decode
+        if mid in two:                                          # run 1 from the fetch, per the decode
             e = two[mid]
             for f in e["files_to_stage"]:
                 s = os.path.join(src_f, f["source"])
@@ -93,7 +99,7 @@ def main():
                     if not os.path.exists(s):
                         problems.append(f"{mid}: missing {f['source']}"); continue
                     stats[link(s, t, a.force)] += 1
-                else:                                           # render the ;1 contour on the periosteal grid
+                else:                                           # render run 1's contour on the periosteal grid
                     if os.path.exists(t) and not a.force:
                         stats["kept"] += 1; continue
                     grid = os.path.join(dst, f"{base}_CT.AIM")
@@ -101,7 +107,7 @@ def main():
                     stats["rendered"] += 1
                     entry.setdefault("rendered", {})[f["target"]] = dict(source=f["source"], voxels=n)
             entry["run"] = e["chosen_run"]
-            entry["source"] = "fetch run ;%s (the local delivery is the Script 34 REDO)" % e["chosen_run"]
+            entry["source"] = "fetch run %s (the local delivery is the Script 34 REDO)" % e["chosen_run"]
         else:                                                   # the local delivery IS the automatic run
             src_l = os.path.join(LOCAL, *mid.split("/"))
             for name in sorted(os.listdir(src_l)):
@@ -109,19 +115,19 @@ def main():
                 if os.path.isfile(p):
                     stats[link(p, os.path.join(dst, name), a.force)] += 1
             for prod in ("PORE", "CORT_SEG", "TRAB_SEG"):   # TRAB_SEG: configuration A's Tb.Th object (2026-09-25)
-                s = os.path.join(src_f, f"{base}_{prod}.AIM;1")
+                s = os.path.join(src_f, vms_name(f"{base}_{prod}.AIM", 1))
                 if not os.path.exists(s):
-                    problems.append(f"{mid}: missing {base}_{prod}.AIM;1"); continue
+                    problems.append(f"{mid}: missing {os.path.basename(s)}"); continue
                 stats[link(s, os.path.join(dst, f"{base}_{prod}.AIM"), a.force)] += 1
-            entry["source"] = "local delivery (automatic) + fetched PORE;1, CORT_SEG;1"
+            entry["source"] = "local delivery (automatic) + fetched PORE, CORT_SEG (version 1)"
             if mid in PERIOSTEAL_V1:
                 ct = os.path.join(dst, f"{base}_CT.AIM")
                 tmp = ct + ".v1"
-                n = render_onto(os.path.join(src_f, f"{base}.GOBJ;{PERIOSTEAL_V1[mid]}"), ct, tmp)
-                os.remove(ct)                                   # drop the hardlink to the ;2 rendering
+                n = render_onto(os.path.join(src_f, vms_name(f"{base}.GOBJ", PERIOSTEAL_V1[mid])), ct, tmp)
+                os.remove(ct)                                   # drop the hardlink to the version-2 rendering
                 os.replace(tmp, ct)
                 stats["rendered"] += 1
-                entry["source"] += "; <base>_CT.AIM re-rendered from <base>.GOBJ;1 (%d voxels)" % n
+                entry["source"] += "; <base>_CT.AIM re-rendered from version 1 of <base>.GOBJ (%d voxels)" % n
         staged.append(entry)
 
     out = os.path.join(a.dst, "staged_manifest.json")

@@ -869,14 +869,14 @@
  },
  "figure": {
   "width_mm": 180.0,
-  "height_mm": 261.0,
+  "height_mm": 241.33445887445885,
   "dpi": 300,
   "vox_mm": 0.0607
  },
  "sources": {
-  "masks": "<IPLDT_LAB_ROOT>/PFJOA/XCT_masks_full_grab",
-  "ipl_renderings_and_contours": "<IPLDT_LAB_ROOT>/Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs",
-  "phantom": "<IPLDT_PROBE19_MIRROR>",
+  "masks": "<IPLDT_LAB_ROOT>/patellae",
+  "ipl_renderings_and_contours": "<IPLDT_LAB_ROOT>/ipl_test_runs/run15/aims_and_logs",
+  "phantom": "<IPLDT_RUN19_MIRROR>",
   "cohort_cache": "manuscript/figures/cache/S4_contour_cohort.json"
  }
 }

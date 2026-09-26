@@ -4,7 +4,7 @@ with ipldt.ipl_ops and verified end to end against IPL's exported intermediates.
 
 THE CHAIN (36 IPL commands from /gobj_to_aim to the two /togobj_from_aim, /write, /delete, /rename not counted;
 34 change state -- the two '/set 127 0' no-ops on trab_open / trab_bbc do not -- and 32 of those carry the 32
-tags 00..31 of the P16 probe export: the /gobj_maskaimpeel_ow peel 0 of the greyscale and its /bounding_box_cut
+tags 00..31 of the T16 test-run export: the /gobj_maskaimpeel_ow peel 0 of the greyscale and its /bounding_box_cut
 -> aim_bbc carry no tag and are folded into 01; the 30 volume tags 00..29 are the keys of the returned `stages`,
 30_cortgobj / 31_trabgobj are the renderings of the two contour files):
   00_all        /gobj_to_aim of the periosteal gobj, peel 0                    [input: the rendered contour]
@@ -24,15 +24,15 @@ tags 00..31 of the P16 probe export: the /gobj_maskaimpeel_ow peel 0 of the grey
 PARAMETERS: Step1Params.  Everything is literal in the script except IPL_PEEL0 (peel0, 6 in every
 evaluation), IPL_MISC1_0 (corner_min: 200000 tibia / 800 radius) and IPL_MISC1_1 (close2: 50 tibia / 30
 radius).  TIBIA is the Script 32 preset, RADIUS the Script 33 preset.  Both have a stage-by-stage oracle:
-TIBIA the P16 export of PFJ-0be66a_R (X2420448, a tibia), RADIUS the P17 exports of PFJ-0be66a_R, PFJ-42293d_L and PFJ-6f5538_R
-(2026-09-14: every stage 01..29 exact, isolated and cumulative); the stage tags keep the probe-16 tibia names
+TIBIA the T16 export of PFJ-0be66a_R (X2420448, a tibia), RADIUS the T17 exports of PFJ-0be66a_R, PFJ-42293d_L and PFJ-6f5538_R
+(2026-09-14: every stage 01..29 exact, isolated and cumulative); the stage tags keep the test-run-16 tibia names
 ('23_close50') for either preset.
 
 VERIFICATION (PFJ-0be66a_R / X2420448, tibia, whole volumes compared by global position, grids compared too):
   isolated (every command fed IPL's previous stage): stages 01..29 all 0 mismatches, identical grids;
   cumulative from the greyscale + IPL's stage 00: stages 01..29 all 0 mismatches, identical grids; 28 equals
-  X2420448_P16_28_CORTFINAL and the September evaluation's raw X2420448_CORT_MASK.AIM (7,154,580 voxels,
-  738x343x168 @ 798,97,168), 29 equals P16_29 and X2420448_TRAB_MASK.AIM (20,329,639 voxels, 743x348x168
+  X2420448_T16_28_CORTFINAL and the September evaluation's raw X2420448_CORT_MASK.AIM (7,154,580 voxels,
+  738x343x168 @ 798,97,168), 29 equals T16_29 and X2420448_TRAB_MASK.AIM (20,329,639 voxels, 743x348x168
   @ 795,94,168), 0 mismatches each.  Log cross-checks: native thresholds 4524 / 17173 from the proclog;
   |peel 6| 25,892,693; 6-cc counts and largest sizes of 04 / 07 / 09 / 17 = 2145 / 550 / 1695 / 64 and
   23,425,237 / 19,959,727 / 15,730,845 / 3,500.  Stages 25 and 27 (/cl_slicewise_extractow) are no-ops on
@@ -44,7 +44,7 @@ contour on a grid disjoint from the greyscale, or an all-zero greyscale inside t
 before /seg_gauss (IPL's behaviour for an empty aim_bbc is unobserved; without the check the whole greyscale
 would be smoothed and the union grids of the later stages could grow without bound).
 
-PROBE 18 (designed phantoms, scanner run 2026-09-13; details in the ipl_ops docstrings) settled what the
+TEST RUN 18 (designed phantoms, scanner run 2026-09-13; details in the ipl_ops docstrings) settled what the
 PFJ-0be66a oracle could not: /cl_slicewise_extractow's denominator (slice total), its inclusive 50 % tie and
 4-connectivity; /cl_nr_extract's inclusive bounds; /seg_gauss's bounds inclusive at 4524 and 17173; every
 chamfer threshold and boundary convention; the dilation's grid growth at N = 1 and 15.  Three readings were
@@ -55,10 +55,10 @@ refuted and corrected: /subtract_aims stores a negative difference as -127 (stag
 tie-break is an unstable sort, not 'lower label first' (rank 1..1 only is used here).
 OPEN: other sigma / support values of /seg_gauss.  PFJ-411dfd_R's 3 voxels are explained and implemented (2026-09-14
 evening: /open's dilation half reuses the erosion's edge-inclusive mirror margin of N + 2, ipl_ops.open_; the cohort
-masks are exact on 21 / 21 since); probe 20 (predictions written 2026-09-14 18:12:42, before the implementation and
+masks are exact on 21 / 21 since); test run 20 (predictions written 2026-09-14 18:12:42, before the implementation and
 before any run) was its prospective confirmation and CONFIRMED it on 2026-09-15 -- IPL matched the mechanism's own
 prediction on 46 of 46 exports carrying readings, 12 of them separating it from every alternative, 11 contrast
-hypotheses refuted (probe-20 verification).  Probe 20 also pinned -continuous_at_boundary as a
+hypotheses refuted (test-run-20 verification).  Test run 20 also pinned -continuous_at_boundary as a
 PER-AXIS fill in x, y, z order (ipl_ops.dilation / .close now take it; STEP 1 uses the default, the empty border,
 which is unchanged), and settled thin volumes up to one repeat of the mirror (export 'z156', 12 slices with margin
 17, 0 mismatching voxels): only a mirrored margin deeper than TWICE an axis is still untested on IPL, and that is
@@ -130,9 +130,9 @@ def _plain_field(name, value, is_float):
     return int(x)
 
 
-TIBIA = Step1Params()                                    # Script 32 (verified stage by stage on PFJ-0be66a_R, probe 16)
+TIBIA = Step1Params()                                    # Script 32 (verified stage by stage on PFJ-0be66a_R, test run 16)
 RADIUS = Step1Params(corner_min=800, close2=30)          # Script 33 (verified stage by stage on PFJ-0be66a_R, PFJ-42293d_L,
-                                                         # PFJ-6f5538_R, probe 17, 2026-09-14)
+                                                         # PFJ-6f5538_R, test run 17, 2026-09-14)
 
 
 def _count(v):
@@ -148,7 +148,7 @@ def cort_trab_separation(grey, periosteal, params=TIBIA, keep_stages=False, log=
     periosteal  the rendered periosteal contour (IPL's /gobj_to_aim -peel_iter 0) as a volume on the gobj's
                 grid; any non-zero value counts as inside.
     params      Step1Params (TIBIA = Script 32, RADIUS = Script 33).
-    keep_stages every intermediate stage is returned under its P16 tag (about 30 char volumes).
+    keep_stages every intermediate stage is returned under its T16 tag (about 30 char volumes).
     log         optional callable(str) receiving one line per stage.
     Raises ValueError when the periosteal contour selects no non-zero greyscale voxel (empty contour, grids
     that do not overlap) or when the greyscale carries no density calibration.

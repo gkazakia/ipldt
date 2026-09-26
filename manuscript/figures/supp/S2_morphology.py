@@ -2,7 +2,7 @@
 morphology of IPL (-metric 11) as ipldt reimplements it.
 
 Panels
-  A  the chamfer 3-4-5 metric on a 13 x 13 grid (synthetic): the raw distance of every voxel to one voxel and
+  A  the chamfer 3-4-5 metric on a 9 x 9 grid (synthetic): the raw distance of every voxel to one voxel and
      the ball raw < 3N + 2 that every metric-11 command uses (N = 3);
   B  IPL's dilation ball on scanner output: a synthetic 5 x 5 x 5 block dilated by 15 in IPL, in the plane
      through its centre, outlined with the reimplemented ball and the Euclidean and 3N + 3 alternatives;
@@ -28,9 +28,9 @@ S2_morphology_numbers.json (every number drawn).  The computed crops and counts 
 manuscript/figures/cache/S2_morphology_cache.{npz,json} after the first run (about 1 min: 46 full-volume
 opens for panels K and L); --recompute redoes everything.
 
-Inputs (read only): IPL's stage exports of the patella scan's compartment separation (P16_DIR), IPL's dilation
-of the synthetic block volume and the volume's manifest (P18_DIR), the stage-14 / stage-15 exports of the second
-patella scan (P17_DIR) and IPL's /open N of its stage 14 for N = 11 .. 18 (P20_DIR).  Every ipldt number is
+Inputs (read only): IPL's stage exports of the patella scan's compartment separation (T16_DIR), IPL's dilation
+of the synthetic block volume and the volume's manifest (T18_DIR), the stage-14 / stage-15 exports of the second
+patella scan (T17_DIR) and IPL's /open N of its stage 14 for N = 11 .. 18 (T20_DIR).  Every ipldt number is
 computed here by calling ipldt.ipl_ops on those files; nothing under ipldt/ is modified.
 """
 from __future__ import annotations
@@ -61,13 +61,13 @@ import ipldt.ipl_ops as ops  # noqa: E402
 from ipldt.io import read_aim, align_to  # noqa: E402
 
 # ------------------------------------------------------------------------------------------------ inputs
-P16_DIR = lab_path("Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs")   # patella 1, STEP 1 exports
-P16_BASE = "X2420448_P16_"
-P18_DIR = lab_path("Python/scripts/IPL/probes/p18_step1_edges")                  # synthetic block volume
-P17_DIR = lab_path("Python/scripts/IPL/probes/p17_step1_radius/aims_and_logs")   # patella 2, stages 14 / 15
-P20_DIR = lab_path("Python/scripts/IPL/probes/p20_open_mechanism/aims_and_logs") # patella 2, /open 11..18
-P17_BASE = "X5143651_P17_"
-P20_BASE = "X5143651_P20_"
+T16_DIR = lab_path("ipl_test_runs/run15/aims_and_logs")   # patella 1, STEP 1 exports
+T16_BASE = "X2420448_T16_"
+T18_DIR = lab_path("ipl_test_runs/run18")                  # synthetic block volume
+T17_DIR = lab_path("ipl_test_runs/run17/aims_and_logs")   # patella 2, stages 14 / 15
+T20_DIR = lab_path("ipl_test_runs/run20/aims_and_logs") # patella 2, /open 11..18
+T17_BASE = "X5143651_T17_"
+T20_BASE = "X5143651_T20_"
 CACHE = os.path.join(REPO, "manuscript", "figures", "cache", "S2_morphology_cache")
 OUT = os.path.join(HERE, "S2_morphology")
 
@@ -134,7 +134,7 @@ def aim(path):
 
 
 def p16(tag):
-    return aim(os.path.join(P16_DIR, P16_BASE + tag + ".AIM"))
+    return aim(os.path.join(T16_DIR, T16_BASE + tag + ".AIM"))
 
 
 def setv(v):
@@ -206,14 +206,14 @@ def compute_metric():
 
 def compute_ball():
     """Panels B, C: IPL's /dilation 15 of the isolated 5^3 block of the synthetic volume vs the five readings."""
-    man = json.load(open(os.path.join(P18_DIR, "phantom18_manifest.json")))
+    man = json.load(open(os.path.join(T18_DIR, "phantom18_manifest.json")))
     cl = man["cl"]
     px, py, pz = cl["pos"]
     D = cl["regions"]["d15"]["blocks"]["D"]
     M = 17
     box = (px + D["x"][0] - M, px + D["x"][1] + M, py + D["y"][0] - M, py + D["y"][1] + M,
            pz + D["z"][0] - M, pz + D["z"][1] + M)
-    dil15 = aim(os.path.join(P18_DIR, "outputs", "X2420448_P18_DIL15.AIM"))
+    dil15 = aim(os.path.join(T18_DIR, "outputs", "X2420448_T18_DIL15.AIM"))
     ipl_w = crop_global(dil15, box) != 0                      # (z, y, x), 39^3
     w = ipl_w.shape
     bx, by, bz = (D[k][1] - D[k][0] + 1 for k in "xyz")
@@ -337,8 +337,8 @@ def point_ball(N):
 
 def compute_mirror():
     """Panel J: the /open buffer of the second patella scan -- mirror margin, survivors, extra survivors, restored voxels."""
-    inp = aim(os.path.join(P17_DIR, P17_BASE + "14_BBC.AIM"))
-    opn = aim(os.path.join(P17_DIR, P17_BASE + "15_OPEN15.AIM"))
+    inp = aim(os.path.join(T17_DIR, T17_BASE + "14_BBC.AIM"))
+    opn = aim(os.path.join(T17_DIR, T17_BASE + "15_OPEN15.AIM"))
     N = N_OPEN
     T = ops.metric11_threshold(N)
     MARGIN = N + 2
@@ -415,10 +415,10 @@ def compute_mirror():
 
 def compute_conventions():
     """Panels K, L: every margin convention against IPL's /open N of the second patella scan, N = 11 .. 18."""
-    inp = aim(os.path.join(P17_DIR, P17_BASE + "14_BBC.AIM"))
+    inp = aim(os.path.join(T17_DIR, T17_BASE + "14_BBC.AIM"))
     M = setv(inp)
-    ipl = {N: aim(os.path.join(P17_DIR, P17_BASE + "15_OPEN15.AIM")) if N == N_OPEN
-           else aim(os.path.join(P20_DIR, P20_BASE + f"OPEN{N}.AIM")) for N in NSCAN_N}
+    ipl = {N: aim(os.path.join(T17_DIR, T17_BASE + "15_OPEN15.AIM")) if N == N_OPEN
+           else aim(os.path.join(T20_DIR, T20_BASE + f"OPEN{N}.AIM")) for N in NSCAN_N}
     rows = {}
     for N in NSCAN_N:
         convs = CONVENTIONS if N == N_OPEN else [c for c in CONVENTIONS if c[0] in NSCAN_CONVENTIONS]
@@ -567,9 +567,9 @@ def draw(R):
     rowH_end = ynH + 3 * NOTE_DY + 0.2 + 5.6
     imgI_w = wI - 7.0
     imgI_h = imgI_w * FACE_Z / FACE_W
-    ynI = y3 + TITLE_H + imgI_h + 8.6
+    ynI = y3 + TITLE_H + imgI_h + 9.4
     rowI_end = ynI + 4 * NOTE_DY + 0.2 + 5.6
-    imgJ_h = 31.0
+    imgJ_h = 30.0
     catJ = R["J"]["cat"]
     imgJ_w = imgJ_h * catJ.shape[1] / catJ.shape[0]
     ynJ = y3 + TITLE_H + imgJ_h + 6.0
@@ -593,6 +593,9 @@ def draw(R):
          "raw distance from one voxel; a step costs\n3 (face), 4 (edge) or 5 (corner, out of plane)", checks)
     ax = ax_mm(fig, xA + 6.5, y1 + TITLE_H, img1, img1)
     plane, Rr, T = A["plane"], A["R"], A["threshold"]
+    SHOW = 4                                     # the grid shown: offsets -4..4 (9 x 9), the whole ball (radius 3) and
+    plane = plane[Rr - SHOW:Rr + SHOW + 1, Rr - SHOW:Rr + SHOW + 1]   # one ring beyond it, so the numerals print at 6.5 pt
+    Rr = SHOW
     n = plane.shape[0]
     inside = plane < T
     rgb = np.ones(plane.shape + (3,))
@@ -601,12 +604,12 @@ def draw(R):
     for iy in range(n):
         for ix in range(n):
             centre = (iy, ix) == (Rr, Rr)
-            ax.text(ix - Rr, iy - Rr, str(plane[iy, ix]), ha="center", va="center", fontsize=5.4,
+            ax.text(ix - Rr, iy - Rr, str(plane[iy, ix]), ha="center", va="center", fontsize=6.5,
                     color=C_INK if inside[iy, ix] else C_MUTED, fontweight="bold" if centre else "normal")
     ax.add_patch(patches.Rectangle((0.5, -0.5), 1, 1, fill=False, ec=C_BLUE, lw=1.0))        # face step: 3
     ax.add_patch(patches.Rectangle((0.5, -1.5), 1, 1, fill=False, ec=C_GREEN, lw=1.0))       # edge step: 4
-    ax.set_xticks([-6, -3, 0, 3, 6])
-    ax.set_yticks([-6, -3, 0, 3, 6])
+    ax.set_xticks([-4, -2, 0, 2, 4])
+    ax.set_yticks([-4, -2, 0, 2, 4])
     tick_style(ax)
     ax.set_xlabel("x offset from the voxel (voxels)", fontsize=6.5, labelpad=1.5)
     ax.set_ylabel("y offset (voxels)", fontsize=6.5, labelpad=1.5)
@@ -825,9 +828,9 @@ def draw(R):
     tick_style(ax)
     ax.set_xlabel(f"x (voxels), row y = {Jn['section_y']}", fontsize=6.5, labelpad=1.5)
     ax.set_ylabel("z (slice)", fontsize=6.5, labelpad=1.5)
-    ax.text(x1 + 1.2, (last + 0.5 + z1 + 0.5) / 2, "margin", fontsize=6.0, va="center", ha="left",
+    ax.text(x1 + 1.2, (last + 0.5 + z1 + 0.5) / 2, "margin", fontsize=6.4, va="center", ha="left",
             color=C_INK2, rotation=90, clip_on=False)
-    ax.text(x1 + 1.2, (z0 - 0.5 + last + 0.5) / 2, "volume", fontsize=6.0, va="center", ha="left", color=C_INK2,
+    ax.text(x1 + 1.2, (z0 - 0.5 + last + 0.5) / 2, "volume", fontsize=6.4, va="center", ha="left", color=C_INK2,
             rotation=90, clip_on=False)
     n_rest = len(Jn["restored"])
     n_resp = len(Jn["responsible"])
@@ -838,10 +841,10 @@ def draw(R):
                 [patches.Patch(fc=C_FILL, ec="none", label="object, in the volume"),
                  patches.Patch(fc=C_MIRROR, ec="#7f8b94", hatch="////", lw=0, label="mirror image,\nin the margin"),
                  patches.Patch(fc=C_BLUE, ec="none", label="erosion survivor,\nin the volume"),
-                 patches.Patch(fc=C_SKY, ec="none", label="survivor in the margin,\npartner survives"),
-                 patches.Patch(fc=C_VERM, ec="none", label="survivor in the margin,\npartner eroded"),
+                 patches.Patch(fc=C_SKY, ec="none", label="margin survivor,\npartner survives"),
+                 patches.Patch(fc=C_VERM, ec="none", label="margin survivor,\npartner eroded"),
                  Line2D([], [], color=C_VERM, lw=0.7, label="its dilation ball\n(this section)")],
-                loc="upper left", ncol=1, fontsize=6.2, handlelength=1.3, labelspacing=0.45)
+                loc="upper left", ncol=1, fontsize=6.4, handlelength=1.3, labelspacing=0.35)
     P["J"] = {k: v for k, v in Jn.items()}
 
     # ================================================================= row 4: K the conventions, L the N-scan
@@ -880,8 +883,8 @@ def draw(R):
     # ---- L: the N-scan
     head(fig, xL, y4, wL, "L", "Opening distance N",
          f"/open N of the same volume for N = {NSCAN_N[0]}–{NSCAN_N[-1]}, each\nconvention against IPL's export; N = {N_OPEN} is the standard", checks)
-    axes_w = 44.0
-    ax = ax_mm(fig, xL + 10.0, y4 + TITLE_H + 1.0, axes_w, axes4_h)
+    axes_w = 42.5
+    ax = ax_mm(fig, xL + 11.5, y4 + TITLE_H + 1.0, axes_w, axes4_h)
     series = [(CONVENTIONS[0][0], "edge-inclusive mirror,\ndepth N + 2 (IPL)", C_BLUE, "o"),
               (CONVENTIONS[6][0], "unpadded erosion,\nbackground margin", C_VERM, "s"),
               (CONVENTIONS[5][0], "edge-exclusive mirror,\ndepth N + 2", C_GREEN, "^"),
@@ -908,11 +911,11 @@ def draw(R):
     ax.grid(True, axis="y", color=C_GRID, lw=0.4)
     ax.set_axisbelow(True)
     ax.axvline(N_OPEN, color=C_AXIS, lw=0.7, ls=(0, (2.5, 2.0)), zorder=1)
-    ax.text(N_OPEN + 0.12, 600, "standard\nN = 15", fontsize=6.3, color=C_INK2, ha="left", va="center", linespacing=1.1)
+    ax.text(N_OPEN + 0.12, 600, "standard\nN = 15", fontsize=6.4, color=C_INK2, ha="left", va="center", linespacing=1.1)
     ax.set_xlabel("opening distance N (voxels)", fontsize=6.5, labelpad=1.5)
     ax.set_ylabel("voxels differing from IPL", fontsize=6.5, labelpad=1.5)
-    legend_axes(fig, xL + 10.0 + axes_w + 1.5, y4 + TITLE_H + 0.5, wL - axes_w - 11.5, axes4_h + 1, handles,
-                loc="upper left", ncol=1, fontsize=6.2, handlelength=1.6, labelspacing=0.45)
+    legend_axes(fig, xL + 11.5 + axes_w + 1.5, y4 + TITLE_H + 0.5, wL - axes_w - 13.0, axes4_h + 1, handles,
+                loc="upper left", ncol=1, fontsize=6.4, handlelength=1.6, labelspacing=0.35)
 
     bad = check_text_widths(fig, checks)
     return fig, P, bad

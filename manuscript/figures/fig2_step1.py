@@ -20,7 +20,7 @@ The slice crops and stage comparisons of panels A-H are cached in manuscript/fig
 (about 2 min: 32 AIM exports read, the ipldt chain run once, the two renderings computed); --recompute redoes it.
 
 Inputs (read only):
-  * IPL's stage exports of the patella scan and its greyscale AIM (P16_DIR, GRAB below);
+  * IPL's stage exports of the patella scan and its greyscale AIM (T16_DIR, GRAB below);
   * validation/results/from_ipl_contour_ceil_dt/records/*.json   (21 patellae, configuration B: the dt-inclusive run
     under the shipped engine, the source of every patella configuration-B number of the manuscript);
   * validation/results/oslh_auto_vN/records/<Group>_<Study>_<n>.json (62 radius / tibia scans, configuration B) and
@@ -60,9 +60,9 @@ from ipldt.step1 import STAGES, TIBIA, cort_trab_separation  # noqa: E402
 from ipldt.contour import render_volume  # noqa: E402
 
 # ------------------------------------------------------------------------------------------------ inputs
-P16_DIR = lab_path("Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs")   # IPL's stage exports
-EXPORT_BASE = "X2420448_P16_"                                                                  # <base>_<TAG>.AIM;n
-GREY_AIM = lab_path("PFJOA/XCT_masks_full_grab/PFJ-0be66a_R/X2420448.AIM")           # the scan's greyscale
+T16_DIR = lab_path("ipl_test_runs/run15/aims_and_logs")   # IPL's stage exports
+EXPORT_BASE = "X2420448_T16_"                                                                  # <base>_<TAG>.AIM;n
+GREY_AIM = lab_path("patellae/PFJ-0be66a_R/X2420448.AIM")           # the scan's greyscale
 PATELLA_RECORDS = os.path.join(REPO, "validation", "results", "from_ipl_contour_ceil_dt", "records")
 OSLH_RECORD_DIRS = [os.path.join(REPO, "validation", "results", OSLH_AUTO, "records"),
                     os.path.join(REPO, "validation", "results", OSLH_NOEDIT, "records")]
@@ -118,12 +118,12 @@ def say(*a):
 
 # ------------------------------------------------------------------------------------------------ helpers
 def find_export(tag):
-    """The newest VMS version (';n') of <EXPORT_BASE><TAG>.AIM in P16_DIR."""
+    """The newest VMS version (';n') of <EXPORT_BASE><TAG>.AIM in T16_DIR."""
     rx = re.compile("^" + re.escape(EXPORT_BASE + tag) + r"\.AIM(?:;(\d+))?$", re.I)
-    cands = [(int(m.group(1) or 0), f) for f in os.listdir(P16_DIR) for m in [rx.match(f)] if m]
+    cands = [(int(m.group(1) or 0), f) for f in os.listdir(T16_DIR) for m in [rx.match(f)] if m]
     if not cands:
-        raise FileNotFoundError(f"no export for {tag} in {P16_DIR}")
-    return os.path.join(P16_DIR, max(cands)[1])
+        raise FileNotFoundError(f"no export for {tag} in {T16_DIR}")
+    return os.path.join(T16_DIR, max(cands)[1])
 
 
 def count(v):
@@ -521,7 +521,7 @@ def main():
                                     for s, _ in SITES},
                           step1_seconds_median=float(np.median([r["step1_seconds"] for r in scans]))),
                facts_checked=facts_keys,
-               sources=dict(exports=public_path(P16_DIR), greyscale=public_path(GREY_AIM), patella_records=public_path(PATELLA_RECORDS),
+               sources=dict(exports=public_path(T16_DIR), greyscale=public_path(GREY_AIM), patella_records=public_path(PATELLA_RECORDS),
                             oslh_records=public_path(OSLH_RECORD_DIRS), facts=public_path(FACTS_JSON)))
     json.dump(out, open(OUT + "_numbers.json", "w"), indent=1)
     with open(OUT + "_scans.csv", "w", newline="") as f:

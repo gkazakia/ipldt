@@ -1,12 +1,12 @@
 """ipldt.step1 (Script 32 STEP 1, the cortical / trabecular separation).
 
 Fast: a synthetic cylinder with a dense shell -- cort and trab partition the periosteal rendering, cort is a
-ring on every slice (one 4-connected component around a hole that trab fills), the stage tags are the P16
+ring on every slice (one 4-connected component around a hole that trab fills), the stage tags are the T16
 names, the thresholds come from the processing log, the raw-mask wrapper and the RADIUS preset run, an
 empty / disjoint periosteal contour raises before /seg_gauss, numpy-scalar parameters give JSON-native info,
 and the wiring of the slicewise stages 24 -> 25 -> 26 -> 27 -> 28 -> 29 is pinned by a spy (they are no-ops
 on the cylinder and on PFJ-0be66a).
-Slow (needs the P16 probe exports and the XCT_masks_full_grab folder): the whole chain from the greyscale
+Slow (needs the T16 test-run exports and the patella folder): the whole chain from the greyscale
 and IPL's stage 00 reproduces every exported stage 01..29 and the September evaluation's CORT_MASK /
 TRAB_MASK voxel for voxel on identical grids."""
 import json
@@ -99,7 +99,7 @@ def test_keep_stages_false_returns_the_same_masks(phantom):
 
 
 def test_stage_02_negatives_are_the_seg_gauss_voxels_outside_the_contour_and_stage_03_removes_them(phantom):
-    """/subtract_aims stores -127 where only input 2 is set (probe 18).  On the cylinder the dense shell smooths
+    """/subtract_aims stores -127 where only input 2 is set (test run 18).  On the cylinder the dense shell smooths
     above 4524 up to 3 voxels outside the disc, so 02 = 00 - 01 carries -127 there (a ring outside r = 40);
     info['negatives'] counts them for every int8 stage, 03 = 02 AND peel6(00) removes all of them (values 0 /
     127 from 03 on), the later differences (in2 a subset of in1) carry none, and TRAB (29) is int8 0 / 127."""
@@ -245,8 +245,8 @@ def test_slicewise_stages_are_wired_in_order(phantom, monkeypatch):
 
 
 # ------------------------------------------------------------------------------------------- real data (slow)
-PROBE_ROOT = os.environ.get("IPLDT_PROBE_ROOT", lab_path("Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs"))
-P16_TAGS = STAGES[1:]
+RUN_ROOT = os.environ.get("IPLDT_RUN_ROOT", lab_path("ipl_test_runs/run15/aims_and_logs"))
+T16_TAGS = STAGES[1:]
 
 
 def _find(folder, pattern):
@@ -265,12 +265,12 @@ def _mismatch(ours, ref):
 @pytest.mark.slow
 def test_pfj_0be66a_chain_reproduces_ipl_exports_and_masks(data_root):
     grab = os.path.join(data_root, "PFJ-0be66a_R")
-    if not os.path.isdir(PROBE_ROOT) or not os.path.isdir(grab):
-        pytest.skip("P16 probe exports or PFJ-0be66a_R grab folder not found")
+    if not os.path.isdir(RUN_ROOT) or not os.path.isdir(grab):
+        pytest.skip("T16 test-run exports or PFJ-0be66a_R patella folder not found")
     grey_path = os.path.join(grab, "X2420448.AIM")
-    p00 = _find(PROBE_ROOT, "X2420448_P16_00_ALL.AIM")
+    p00 = _find(RUN_ROOT, "X2420448_T16_00_ALL.AIM")
     if p00 is None or not os.path.exists(grey_path):
-        pytest.skip("X2420448.AIM or X2420448_P16_00_ALL.AIM missing")
+        pytest.skip("X2420448.AIM or X2420448_T16_00_ALL.AIM missing")
     grey = read_aim(grey_path)
     all_ = read_aim(p00)
     res = cort_trab_separation(grey, all_, TIBIA, keep_stages=True)
@@ -278,8 +278,8 @@ def test_pfj_0be66a_chain_reproduces_ipl_exports_and_masks(data_root):
     assert res["info"]["box"] == dict(dim=(738, 343, 168), pos=(798, 97, 168))
     assert res["info"]["counts"]["peel"][6] == 25_892_693
     bad = {}
-    for tag in P16_TAGS:
-        path = _find(PROBE_ROOT, f"X2420448_P16_{tag}.AIM")
+    for tag in T16_TAGS:
+        path = _find(RUN_ROOT, f"X2420448_T16_{tag}.AIM")
         assert path is not None, f"export for {tag} missing"
         n, same = _mismatch(res["stages"][tag], read_aim(path))
         if n or not same:

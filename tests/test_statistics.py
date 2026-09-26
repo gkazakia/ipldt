@@ -130,7 +130,7 @@ def test_cube(version):
 
 
 def test_spacing_is_thickness_of_the_complement(phantom, phantom_gobj):
-    """Probe 13: IPL's dt_thickness on the marrow AIM equals its dt_spacing on the bone."""
+    """Test run 13: IPL's dt_thickness on the marrow AIM equals its dt_spacing on the bone."""
     sp = dt_spacing(phantom, gobj={"rendered": phantom_gobj}, voxel_size_mm=0.0607, backend="cpu")
     th = dt_thickness(~phantom, gobj={"rendered": phantom_gobj}, voxel_size_mm=0.0607, backend="cpu")
     assert np.array_equal(sp.map, th.map) and np.array_equal(sp.centres, th.centres)

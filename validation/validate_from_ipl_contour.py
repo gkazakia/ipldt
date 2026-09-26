@@ -62,9 +62,9 @@ FLOOR padding rule, so the SEG / TRAB_SEG / CORT_SEG numbers of this paragraph a
 next paragraph and are kept here as the provenance of the shipped directory): CORT_MASK /
 TRAB_MASK exact on 21/21 with identical grids (20/21 in the run of 2026-09-13, kept in
 results/from_ipl_contour_pre_mirror/: PFJ-411dfd_R differed by 3 voxels of its last slice, z = 167, that the
-pre-mechanism /open 15 removed -- located at /open 15 by probe 17, inside /open's internal chaining by probe 19,
+pre-mechanism /open 15 removed -- located at /open 15 by test run 17, inside /open's internal chaining by test run 19,
 explained the same evening by the erosion's edge-inclusive mirror margin that /open's dilation half reuses, and
-implemented in ipl_ops.open_ that night; probe 20, its prospective confirmation, ran on 2026-09-15 and CONFIRMED the
+implemented in ipl_ops.open_ that night; test run 20, its prospective confirmation, ran on 2026-09-15 and CONFIRMED the
 mechanism -- IPL matched its own prediction on 46 of 46 exports carrying readings, 12 of them separating it from every
 alternative, 11 contrast hypotheses refuted); cort and trab contours
 exact on 21/21; SEG differs by 138 voxels in total (0 .. 40 per subject, 64 ipldt-only / 74 IPL-only,
@@ -75,13 +75,13 @@ Ct.Th map exact on 21/21 (20/21 before: 1 voxel on PFJ-411dfd_R); metrics: max |
 header's element size the dt metrics reproduce IPL's printed 6-decimal values to 1.1e-5 (Tb.N) or better.
 
 RESULT (2026-09-17 15:31, 21 subjects, --skip-dt --lh-pad-offset ceil, 569 s; results/from_ipl_contour_ceil/): with
-IPL's padding offset (probe 21: the extra power-of-two padding voxel goes BEFORE the data on an odd-padded axis; the
+IPL's padding offset (test run 21: the extra power-of-two padding voxel goes BEFORE the data on an odd-padded axis; the
 run above used 'floor', one voxel off on every such axis) SEG differs by 50 voxels (0 .. 5 per subject, 23 ipldt-only
 / 27 IPL-only; PFJ-8bcf88_L and PFJ-d81140_R exact; 9 subjects better, 3 worse by 1-2 voxels (PFJ-42293d_L, PFJ-d81140_L, PFJ-6f5538_R),
 9 unchanged, the 6 with no odd-padded axis identical voxel for voxel), TRAB_SEG 33, CORT_SEG 17; step-1 masks,
 contours and SEG labels 0 on 21/21; every remaining voxel has our short at exactly 15564 or 15563, the FFT rounding
 floor (2026-09-17). In numbers, floor -> ceil: patella SEG 138 -> 50 (64 / 74 -> 23 / 27), TRAB_SEG
-67 -> 33, CORT_SEG 71 -> 17 (results/from_ipl_contour/ -> results/from_ipl_contour_ceil/); OS_LH configuration B
+67 -> 33, CORT_SEG 71 -> 17 (results/from_ipl_contour/ -> results/from_ipl_contour_ceil/); radius / tibia configuration B
 (validate_dataset.py; internal runs, not distributed) on 52 radius / tibia measurements: 620 -> 39 (max 4,
 Diaphyseal/CKD/315196), on 53 others: 648 -> 39; pooled 758 -> 89 over 73 measurements and 786 -> 89 over 74; four
 measurements worse, none by more than +2 (Diaphyseal/REPRO/229741 0 -> 1, PFJ-d81140_L 0 -> 1, PFJ-42293d_L 1 -> 3, PFJ-6f5538_R
@@ -295,7 +295,7 @@ def build_seg(grey, periosteal, g_cort, g_trab, pad_offset=ormir.LH_PAD_OFFSET, 
     """Script 32 STEP 2 on our contours: Laplace-Hamming threshold of the native volume (header element
     sizes), masked by the periosteal raster, cleaned and split by the cortical / trabecular contours.
     pad_offset: the /fft_laplace_hamming power-of-two padding offset (ormir.lh_pad_plan): 'ceil' = IPL's rule
-    (probe 21), 'floor' = the rule the shipped results/from_ipl_contour numbers were computed with (before 2026-09-17).
+    (test run 21), 'floor' = the rule the shipped results/from_ipl_contour numbers were computed with (before 2026-09-17).
     dtype: the FFT / filter arithmetic, 'float32' (the shipped engine, ormir.LH_DTYPE) or 'float64' (the opt-in under
     study since 2026-09-17, see ormir.lh_filter_core).
     Returns dict(SEG (127/126 on its tight box), TRAB_SEG, CORT_SEG (0/127 on IPL's seg_box = the box of the
@@ -732,7 +732,7 @@ def main(argv=None):
     ap.add_argument("--site", default="tibia", choices=sorted(SITE_PARAMS), help="Step1Params preset (tibia = Script 32)")
     ap.add_argument("--skip-dt", action="store_true", help="stop after the SEG comparison")
     ap.add_argument("--lh-pad-offset", default=ormir.LH_PAD_OFFSET, choices=list(ormir.LH_PAD_OFFSETS),
-                    help="power-of-two padding offset of /fft_laplace_hamming: ceil (IPL's rule, probe 21, default) or floor "
+                    help="power-of-two padding offset of /fft_laplace_hamming: ceil (IPL's rule, default) or floor "
                          "(the rule used before 2026-09-17)")
     ap.add_argument("--lh-dtype", default=ormir.LH_DTYPE, choices=list(ormir.LH_DTYPES),
                     help="FFT / filter arithmetic of /fft_laplace_hamming: float32 (the shipped engine, default; every shipped "

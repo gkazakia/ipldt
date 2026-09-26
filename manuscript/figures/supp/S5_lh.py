@@ -58,10 +58,10 @@ from ipldt import ormir  # noqa: E402
 from ipldt import ipl_ops as ops  # noqa: E402
 
 # ------------------------------------------------------------------------------------------------ inputs
-DATA = lab_path("PFJOA/XCT_masks_full_grab/PFJ-0be66a_R")          # the displayed scan (a patella)
+DATA = lab_path("patellae/PFJ-0be66a_R")          # the displayed scan (a patella)
 BASE = "X2420448"
-IPL_EXPORTS = lab_path("Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs")   # IPL's STEP-2 exports
-PHANTOM_DIR = lab_path("Python/scripts/IPL/probes/p21_lh_padding")                # the impulse phantom
+IPL_EXPORTS = lab_path("ipl_test_runs/run15/aims_and_logs")   # IPL's STEP-2 exports
+PHANTOM_DIR = lab_path("ipl_test_runs/run21")                # the impulse phantom
 PHANTOM = "x63i01"                                                                                # 63 voxels along x, impulse at x = 1
 CACHE_DIR = os.path.join(REPO, "manuscript", "figures", "cache")
 CACHE_NPZ = os.path.join(CACHE_DIR, "S5_lh_cache.npz")
@@ -239,8 +239,8 @@ def compute():
     del short_std_ext
     lh_grey = np.ascontiguousarray(lh_std[1:-1, 1:-1, 1:-1])
     del lh_std
-    thr_ipl = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_P15_LHSEG.AIM")), gdim, gpos) != 0
-    short_ipl = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_P15_LHNORM.AIM")), gdim, gpos)
+    thr_ipl = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_T15_LHSEG.AIM")), gdim, gpos) != 0
+    short_ipl = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_T15_LHNORM.AIM")), gdim, gpos)
     NUM["vs_ipl"] = dict(threshold_decisions_differ=int((bms["std"] != thr_ipl).sum()), voxels=int(np.prod(gdim)),
                          threshold_voxels_ipl=int(thr_ipl.sum()), short_differs=int((short_std != short_ipl).sum()),
                          short_abs_diff_max=int(np.abs(short_std.astype(np.int32) - short_ipl.astype(np.int32)).max()))
@@ -267,8 +267,8 @@ def compute():
     cort = ops.on_grid(cort_raw, gdim, gpos) != 0
     trab = ops.on_grid(trab_raw, gdim, gpos) != 0
     prx = cort | trab
-    g_cort = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_P15_CORT_G2A.AIM")), gdim, gpos) != 0
-    g_trab = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_P15_TRAB_G2A.AIM")), gdim, gpos) != 0
+    g_cort = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_T15_CORT_G2A.AIM")), gdim, gpos) != 0
+    g_trab = ops.on_grid(read_aim(os.path.join(IPL_EXPORTS, f"{BASE}_T15_TRAB_G2A.AIM")), gdim, gpos) != 0
     bm = bms["std"]
     seg0 = bm & prx
     lab, ncomp, sizes = ops.label6(seg0)
@@ -318,9 +318,9 @@ def compute():
     say("the impulse phantom: IPL's export against the two placements of the padding voxel")
     ph = np.load(os.path.join(PHANTOM_DIR, "prediction_volumes", f"{PHANTOM}.npz"))
     inp, el_ph = ph["input"], tuple(float(e) for e in ph["el"])
-    ipl_lh = read_aim(os.path.join(PHANTOM_DIR, "aims_and_logs", f"{BASE}_P21_{PHANTOM.upper()}_LH.AIM"))
-    ipl_nm = read_aim(os.path.join(PHANTOM_DIR, "aims_and_logs", f"{BASE}_P21_{PHANTOM.upper()}_NM.AIM"))
-    ipl_sg = read_aim(os.path.join(PHANTOM_DIR, "aims_and_logs", f"{BASE}_P21_{PHANTOM.upper()}_SG.AIM"))
+    ipl_lh = read_aim(os.path.join(PHANTOM_DIR, "aims_and_logs", f"{BASE}_T21_{PHANTOM.upper()}_LH.AIM"))
+    ipl_nm = read_aim(os.path.join(PHANTOM_DIR, "aims_and_logs", f"{BASE}_T21_{PHANTOM.upper()}_NM.AIM"))
+    ipl_sg = read_aim(os.path.join(PHANTOM_DIR, "aims_and_logs", f"{BASE}_T21_{PHANTOM.upper()}_SG.AIM"))
     zi, yi, xi = (int(v) for v in np.argwhere(inp != 0)[0])
     res = dict(dim_xyz=[int(v) for v in inp.shape[::-1]], impulse_xyz=[xi, yi, zi], amplitude=int(inp.max()), el_size_mm=el_ph,
                ipl_max=float(ipl_lh["data"].max()), ipl_argmax_x=int(np.argmax(ipl_lh["data"][zi, yi])),
@@ -354,7 +354,8 @@ def load_cache():
 
 
 # ================================================================================================= draw
-def curve_panel(fig, x, y, w, h, el_z, rows, ymax, cut_marks, legend_loc="upper right", legend_title=None):
+def curve_panel(fig, x, y, w, h, el_z, rows, ymax, cut_marks, legend_loc="upper right", legend_title=None,
+                legend_box=False):
     ax = mm_axes(fig, x, y, w, h)
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
@@ -371,8 +372,11 @@ def curve_panel(fig, x, y, w, h, el_z, rows, ymax, cut_marks, legend_loc="upper 
     ax.set_ylim(0, ymax)
     ax.set_xlabel("spatial frequency |k| (line pairs / mm)", labelpad=1.5)
     ax.set_ylabel("gain H(|k|)", labelpad=2)
-    leg = ax.legend(loc=legend_loc, frameon=False, handlelength=1.6, borderaxespad=0.2, labelspacing=0.3, title=legend_title,
-                    title_fontsize=6.6, alignment="left")
+    # legend_box: an opaque, borderless box, so the cut-off lines pass behind the entries instead of through them
+    # (panels A and B, where the box sits clear of every curve)
+    box = dict(frameon=True, facecolor="white", edgecolor="none", framealpha=1.0, borderpad=0.25) if legend_box         else dict(frameon=False)
+    leg = ax.legend(loc=legend_loc, handlelength=1.6, borderaxespad=0.2, labelspacing=0.3, title=legend_title,
+                    title_fontsize=6.6, alignment="left", **box)
     if legend_title is not None:
         leg.get_title().set_color(INK2)
     return ax, nyq
@@ -393,7 +397,7 @@ def tile(fig, x, y, s, mask, title, sub, ipl=False, scalebar_mm=None, el=None):
     if scalebar_mm is not None:
         bar = scalebar_mm / el
         ax.add_patch(Rectangle((5, mask.shape[0] - 9), bar, 2.6, fc=INK, ec="white", lw=0.6))
-        ax.text(5 + bar / 2, mask.shape[0] - 11, f"{scalebar_mm:g} mm", color=INK, fontsize=6.5, ha="center", va="bottom",
+        ax.text(5 + bar / 2, mask.shape[0] - 11, f"{scalebar_mm:g} mm", color=INK, fontsize=6.6, ha="center", va="bottom",
                 bbox=dict(fc="white", ec="none", pad=0.6))
     return ax
 
@@ -423,23 +427,24 @@ def draw(A):
          150, [(k_ipl, C_VERM)], "upper right", None, [("eps0", "ε = 0"), ("std", "ε = 0.45 (IPL)"), ("eps09", "ε = 0.9")]),
         ("B", "radial cutoff  (IPL option lp_cut_off_freq)",
          [(EPS, 0.2, AMP, C_ORANGE, 1.0, "0.2"), (EPS, LP, AMP, C_BLUE, 1.6, "0.3 (IPL)"), (EPS, 0.4, AMP, C_GREEN, 1.0, "0.4")],
-         150, [(0.2 / el_z, C_ORANGE), (k_ipl, C_BLUE), (0.4 / el_z, C_GREEN)], "upper right", "$k_c$ = value / Δz (lp/mm)",
+         200, [(0.2 / el_z, C_ORANGE), (k_ipl, C_BLUE), (0.4 / el_z, C_GREEN)], "upper right", "k_c = value / Δz (lp/mm)",
          [("lp02", "cutoff 0.2"), ("std", "cutoff 0.3 (IPL)"), ("lp04", "cutoff 0.4")]),
         ("C", "window amplitude A  (IPL option hamming_amp)",
          [(EPS, LP, 0.0, C_ORANGE, 1.0, "A = 0 (rectangular)"), (EPS, LP, 0.5, C_GREEN, 1.0, "A = 0.5"), (EPS, LP, AMP, C_BLUE, 1.6, "A = 1 (Hann, IPL)")],
-         800, [(k_ipl, C_VERM)], "upper left", "W = (1 − A/2) + (A/2)·cos(π|k| / $k_c$)\nfor |k| < $k_c$, 0 above",
+         800, [(k_ipl, C_VERM)], "upper left", "W = (1 − A/2) + (A/2)·cos(π|k| / k_c)\nfor |k| < k_c, 0 above",
          [("amp0", "A = 0"), ("amp05", "A = 0.5"), ("std", "A = 1 (IPL)")]),
     ]
     for (letter, title, curves, ymax, cut_marks, legend_loc, legend_title, tiles), ry in zip(rows_spec, ROW_Y):
         panel_letter(fig, 2.0, ry, letter)
         mm_text(fig, 8.0, ry + 0.2, title, fontsize=7.5)
-        ax, nyq = curve_panel(fig, CX, ry + 4.5, CW, CH, el_z, curves, ymax, cut_marks, legend_loc, legend_title)
+        ax, nyq = curve_panel(fig, CX, ry + 4.5, CW, CH, el_z, curves, ymax, cut_marks, legend_loc, legend_title,
+                              legend_box=(letter in ("A", "B")))
         if letter == "A":
             ax.text(k_ipl + 0.12, ymax * 0.32, f"cutoff\n0.3 / Δz\n= {k_ipl:.2f} lp/mm", color=C_VERM, fontsize=6.6, ha="left", va="center")
             ax.text(nyq - 0.1, ymax * 0.10, "Nyquist", color=INK2, fontsize=6.6, ha="right", va="center")
         if letter == "B":
             for kc, col, lab in ((0.2 / el_z, C_ORANGE, "3.30"), (k_ipl, C_BLUE, "4.94"), (0.4 / el_z, C_GREEN, "6.59")):
-                ax.text(kc + 0.1, ymax * 0.07, lab, color=col, fontsize=6.4, ha="left", va="center")
+                ax.text(kc + 0.1, ymax * 0.07, lab, color=col, fontsize=6.6, ha="left", va="center")
         if letter == "C":
             ax.text(k_ipl + 0.12, ymax * 0.16, "cutoff", color=C_VERM, fontsize=6.6, ha="left", va="center")
         for (key, ttl), tx in zip(tiles, TX):
@@ -453,8 +458,8 @@ def draw(A):
     P = NUM["phantom"]
     n = len(A["prof_ipl"])
     xs = np.arange(n)
-    axs = mm_axes(fig, 13.0, DY + 5.0, 72.0, 3.6)          # the strip: padding voxel + data
-    axp = mm_axes(fig, 13.0, DY + 9.2, 72.0, 26.0, sharex=axs)
+    axs = mm_axes(fig, 13.0, DY + 5.8, 72.0, 3.2)          # the strip: padding voxel + data
+    axp = mm_axes(fig, 13.0, DY + 9.4, 72.0, 25.8, sharex=axs)
     axs.set_xlim(-2.0, n + 0.5)
     axs.set_ylim(0, 1)
     axs.axis("off")
@@ -462,9 +467,9 @@ def draw(A):
         axs.add_patch(Rectangle((i - 0.5, 0.15), 1.0, 0.7, fc="#EEEEEE", ec=INK2, lw=0.3))
     axs.add_patch(Rectangle((-1.5, 0.15), 1.0, 0.7, fc=C_ORANGE, ec=INK2, lw=0.3, alpha=0.75))
     axs.add_patch(Rectangle((P["impulse_xyz"][0] - 0.5, 0.15), 1.0, 0.7, fc=C_BLUE, ec=INK2, lw=0.3))
-    axs.text(-1.6, 1.1, "pad", fontsize=6.3, ha="center", va="bottom", color=C_ORANGE)
-    axs.text(2.2, 1.1, "impulse at x = 1", fontsize=6.3, ha="left", va="bottom", color=C_BLUE)
-    axs.text(n * 0.62, 1.1, "data voxels x = 0 … 62", fontsize=6.3, ha="center", va="bottom", color=INK2)
+    axs.text(-1.6, 1.1, "pad", fontsize=6.6, ha="center", va="bottom", color=C_ORANGE)
+    axs.text(2.2, 1.1, "impulse at x = 1", fontsize=6.6, ha="left", va="bottom", color=C_BLUE)
+    axs.text(n * 0.62, 1.1, "data voxels x = 0 … 62", fontsize=6.6, ha="center", va="bottom", color=INK2)
     for sp in ("top", "right"):
         axp.spines[sp].set_visible(False)
     axp.grid(True, color=GRID, lw=0.4)
@@ -479,18 +484,18 @@ def draw(A):
     axp.set_yticks([0, 50, 100, 150])
     axp.set_xlabel("x (voxel)", labelpad=1.5)
     axp.set_ylabel("filter output (×10³)", labelpad=2)
-    axp.legend(loc="upper center", bbox_to_anchor=(0.56, 1.02), frameon=False, handlelength=1.8, borderaxespad=0.0, labelspacing=0.3, fontsize=6.4)
+    axp.legend(loc="upper center", bbox_to_anchor=(0.56, 1.02), frameon=False, handlelength=1.8, borderaxespad=0.0, labelspacing=0.3, fontsize=6.6)
     axp.text(0.16, 0.40,                  # right of the curves at x = 0..3, below the key
              f"IPL vs before-the-data: max |Δ| {P['ceil']['max_abs_diff']:.3f} units,\nthreshold decisions differ on {P['ceil']['threshold_differs']}\n"
              f"IPL vs after-the-data: max |Δ| {fmt_int(round(P['floor']['max_abs_diff']))} units,\nthreshold decisions differ on {P['floor']['threshold_differs']}",
-             transform=axp.transAxes, fontsize=6.4, va="center", ha="left", color=INK, linespacing=1.25)
-    mm_text(fig, 13.0, DY + 43.4,
+             transform=axp.transAxes, fontsize=6.6, va="center", ha="left", color=INK, linespacing=1.25)
+    mm_text(fig, 13.0, DY + 42.7,
             "the mirror is edge-exclusive: the padding voxel copies voxel 1 (not voxel 0),\n"
             "so the impulse is duplicated at x = −1, the response peaks at x = 0 and\n"
             "reappears at the far end of the axis, the circular neighbor of the padding\n"
             "voxel.  The scan itself first receives a 1-voxel duplicated border on every\n"
             "face, then this padding to 1024 × 512 × 256.",
-            fontsize=6.3, color=INK2, linespacing=1.2)
+            fontsize=6.6, color=INK2, linespacing=1.2)
 
     # ---------------------------------------------------------------------------------------- E normalisation + threshold
     EX = 96.0
@@ -518,25 +523,27 @@ def draw(A):
     axe.set_ylabel("voxels", labelpad=2)
     axe.set_xticks([-200, -100, 0, 100, 200, 300, 400])
     axe.set_yticks([1, 1e2, 1e4, 1e6])
+    axe.set_yticklabels(["10⁰", "10²", "10⁴", "10⁶"])      # Unicode powers: no 4.9-pt mathtext exponents
+    axe.minorticks_off()
     top = axe.secondary_xaxis("top", functions=(lambda f: f * 1e3 * I16 / NMAX, lambda s: s * NMAX / I16 * 1e-3))
     top.set_xticks([-I16, 0, THR, I16])
     top.set_xticklabels(["−32,767", "0", "15,564", "32,767"])
-    top.tick_params(labelsize=6.4, length=2, width=0.5, pad=1.5, colors=INK2)
+    top.tick_params(labelsize=6.6, length=2, width=0.5, pad=1.5, colors=INK2)
     top.spines["top"].set_visible(False)
     top.set_xlabel("int16 level = trunc(output × 32,767 / 200,000)", labelpad=2, fontsize=6.6, color=INK2)
     axe.text(F_THR * 1e-3 + 8, cnt.max() * 1.3, f"threshold: 475‰ of 32,767\n= 15,564 = {F_THR / 1e3:.1f} × 10³ units",
-             color=C_VERM, fontsize=6.4, ha="left", va="bottom", linespacing=1.2, bbox=dict(fc="white", ec="none", pad=0.6, alpha=0.9))
-    axe.text(NMAX * 1e-3 + 6, 1.2, "clip →\n32,767", color=INK2, fontsize=6.4, ha="left", va="bottom", linespacing=1.15,
+             color=C_VERM, fontsize=6.6, ha="left", va="bottom", linespacing=1.2, bbox=dict(fc="white", ec="none", pad=0.6, alpha=0.9))
+    axe.text(NMAX * 1e-3 + 6, 1.2, "clip →\n32,767", color=INK2, fontsize=6.6, ha="left", va="bottom", linespacing=1.15,
              bbox=dict(fc="white", ec="none", pad=0.5, alpha=0.9))
-    axe.text(-NMAX * 1e-3 + 6, 1.2, "clip →\n−32,767", color=INK2, fontsize=6.4, ha="left", va="bottom", linespacing=1.15,
+    axe.text(-NMAX * 1e-3 + 6, 1.2, "clip →\n−32,767", color=INK2, fontsize=6.6, ha="left", va="bottom", linespacing=1.15,
              bbox=dict(fc="white", ec="none", pad=0.5, alpha=0.9))
-    mm_text(fig, EX + 6.0, DY + 43.4,
+    mm_text(fig, EX + 6.0, DY + 42.7,
             f"{N['ge_threshold_pct']:.1f}% of the scan's voxels reach the threshold; {fmt_int(N['above_clip'])}\n"
             f"voxels ({N['above_clip_pct']:.2f}%) exceed +200,000 and clip to 32,767, all of them\n"
             f"above the threshold; none fall below −200,000.  The float → int16\n"
             f"conversion truncates toward zero; the segmentation keeps\n"
             f"15,564 ≤ level ≤ 32,767.",
-            fontsize=6.3, color=INK2, linespacing=1.2)
+            fontsize=6.6, color=INK2, linespacing=1.2)
 
     # ---------------------------------------------------------------------------------------- F component filters
     FY = 197.0
@@ -598,7 +605,7 @@ def draw(A):
     lax = mm_axes(fig, 13.0, TY + S2 + 0.8, 2 * S2 + 3.0, 8.0)
     lax.axis("off")
     lax.legend(handles=handles, loc="upper left", ncol=2, frameon=False, handlelength=1.0, handleheight=0.8, columnspacing=1.2,
-               borderaxespad=0, fontsize=6.4, labelspacing=0.25)
+               borderaxespad=0, fontsize=6.6, labelspacing=0.25)
     # the size distribution
     sizes = np.asarray(A["sizes"], float)
     HX = 13.0 + 2 * S2 + 3.0 + 12.0
@@ -625,17 +632,19 @@ def draw(A):
     axh.set_ylabel("components", labelpad=2)
     axh.set_xticks([1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7])
     axh.set_xticklabels(["1", "10", "100", "10³", "10⁴", "10⁵", "10⁶", "10⁷"])
+    axh.set_yticks([1, 10, 100, 1000])
+    axh.set_yticklabels(["10⁰", "10¹", "10²", "10³"])
     axh.text(0.98, 0.95,
              f"{fmt_int(C['n_components'])} components; largest {fmt_int(C['largest'])} voxels\n"
              f"< 35: {fmt_int(C['n_lt_35'])} components, {fmt_int(C['voxels_lt_35'])} voxels\n"
              f"35–69: {C['n_35_69']} components, {fmt_int(C['voxels_35_69'])} voxels\n"
              f"≥ 70: {C['n_ge_70']} components",
-             transform=axh.transAxes, fontsize=6.4, ha="right", va="top", color=INK, linespacing=1.2)
+             transform=axh.transAxes, fontsize=6.6, ha="right", va="top", color=INK, linespacing=1.2)
     mm_text(fig, HX, TY + HH + 8.2,
             f"this scan: SEG {fmt_int(C['seg'])} voxels (cortical {fmt_int(C['cort_seg'])}, trabecular\n"
             f"{fmt_int(C['trab_seg'])}; {C['cort_seg'] + C['trab_seg'] - C['seg']} in both carry 127); IPL's SEG: {fmt_int(C['seg_ipl'])}, {C['seg_differs_from_ipl']} differ.\n"
             f"Window: {n_small_win} components < 35 and {n_mid_win} of 35–69 voxels (ringed); {n_removed_win} removed.",
-            fontsize=6.3, color=INK2, linespacing=1.2)
+            fontsize=6.6, color=INK2, linespacing=1.2)
     NUM["window"]["voxels_removed_in_window"] = n_removed_win
 
     fig.savefig(OUT_PNG, dpi=300)

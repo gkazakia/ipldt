@@ -43,7 +43,7 @@ on every platform.
 
 ## What needs data that are not public
 
-The other figures show slices of the scans and IPL's products, or IPL's exports of probe runs on the scanner. Their
+The other figures show slices of the scans and IPL's products, or IPL's exports of dedicated test runs on the scanner. Their
 scripts are included as the record of how each panel was made; they stop with a Python FileNotFoundError naming
 the missing path when the data are absent (set `IPLDT_LAB_ROOT`, see `validation/datapaths.py`). They, and the `slow`
 tests, name the scans by their pseudonyms (the de-identification rewrote the code as well), so they find the
@@ -56,15 +56,15 @@ laboratory's data only when it is laid out under those names. Their image caches
 | 2 STEP 1 | IPL's stage exports of PFJ-0be66a_R, its greyscale | I |
 | 3 Laplace-Hamming | PFJ-0be66a_R greyscale and IPL's STEP-2 exports; `--verify` re-reads every greyscale | C |
 | 4 distance transforms | PFJ-0be66a_R SEG, TRAB_SEG, TRAB_MASK and IPL's Tb.Th / Tb.Sp maps | -- |
-| 6 porosity | IPL's products of Diaphyseal/CKD/2422 and Distal/REPRO/2095 | C-F |
+| 6 porosity | IPL's products of Diaphyseal/CKD/251016 and Distal/REPRO/322919 | C-F |
 | S1 /seg_gauss | PFJ-0be66a_R greyscale and IPL's stage exports | the calibration panel (header values in the records) |
-| S2 morphology | IPL's STEP-1 exports and probe exports (synthetic blocks, patella volumes) | -- |
+| S2 morphology | IPL's STEP-1 exports and test-run exports (synthetic blocks, patella volumes) | -- |
 | S3 STEP-1 presets | greyscale and IPL's renderings of one ultradistal tibia and one ultradistal radius | -- |
-| S4 contours | IPL's masks, renderings and contour files of the 21 patellae; the probe-19 phantom exports (`IPLDT_PROBE19_MIRROR`) | -- (D-G are synthetic but read the phantom exports) |
-| S5 Laplace-Hamming padding | PFJ-0be66a_R and IPL's STEP-2 exports; the probe-21 impulse-phantom exports | -- |
+| S4 contours | IPL's masks, renderings and contour files of the 21 patellae; the test-run-19 phantom exports (`IPLDT_RUN19_MIRROR`) | -- (D-G are synthetic but read the phantom exports) |
+| S5 Laplace-Hamming padding | PFJ-0be66a_R and IPL's STEP-2 exports; the test-run-21 impulse-phantom exports | -- |
 | S6 distance-transform parameters | PFJ-0be66a_R and IPL's parameter-sweep exports | -- |
 | S7 Tb.Sp and Tb.N | PFJ-0be66a_R and IPL's maps | -- |
-| S8 derivation example | the probe-21 predictions and IPL's exports | -- |
+| S8 derivation example | the test-run-21 predictions and IPL's exports | -- |
 | S9 porosity | IPL's products of two radius / tibia scans (the patella label census of the legend is kept in `S9_porosity_numbers.json`, `patella_labels`) | J |
 
 `figures/fig3_lh_verify_oslh.json` and `fig3_lh_verify_patella.json` list, for the voxels on which ipldt's and IPL's

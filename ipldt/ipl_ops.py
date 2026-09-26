@@ -6,12 +6,12 @@ cortical / trabecular separation) applies to char masks: /seg_gauss, the metric-
 
 Every rule below was derived from IPL's help text, the manufacturer's evaluation scripts, IPL's logs and IPL's exported
 intermediate AIMs only (no binary was disassembled) and is verified voxel for voxel against two oracles:
-(a) the 29 exported stages of the P16 replay of Script 32 on PFJ-0be66a_R (scan X2420448, log P16_PFJ-0be66a_R.TXT):
-0 mismatching voxels and identical grids for every command applied to IPL's own input stage; (b) probe 18
+(a) the 29 exported stages of the T16 replay of Script 32 on PFJ-0be66a_R (scan X2420448, log T16_PFJ-0be66a_R.TXT):
+0 mismatching voxels and identical grids for every command applied to IPL's own input stage; (b) test run 18
 (designed phantoms, scanner run 2026-09-13): two phantoms on which the competing readings of the conventions
-the P16 oracle does not exercise (43 questions) give DIFFERENT outputs, run through the same commands on the
-scanner (28 exports X2420448_P18_<TAG>.AIM, logs P18_CL.TXT / P18_SG.TXT, every prediction written before
-the run; probe-18 verifier, not distributed: 'every export matched a
+the T16 oracle does not exercise (43 questions) give DIFFERENT outputs, run through the same commands on the
+scanner (28 exports X2420448_T18_<TAG>.AIM, logs T18_CL.TXT / T18_SG.TXT, every prediction written before
+the run; test-run-18 verifier, not distributed: 'every export matched a
 predicted reading').  No parameter is fitted: each rule is a discrete hypothesis that reproduces IPL's
 export exactly or is refuted (mismatch counts in the docstrings).  The /seg_gauss float32 formulation is
 identified on ONE export only (stage 01 of PFJ-0be66a_R, sigma 2 / support 3) by enumerating 978 candidate
@@ -19,7 +19,7 @@ kernel / normaliser / accumulation formulations, 20 of which that export cannot 
 multiply-add, the normaliser's summation, the last ulp of the outermost tap); its last-ulp neighbours move
 2-8 stage-01 voxels and 0 CORT_MASK / TRAB_MASK voxels on PFJ-0be66a_R and PFJ-69bcb0_R.
 
-PROBE 18 OUTCOME (verified on designed phantoms, probe 18, 2026-09-13).  CONFIRMED: the slicewise
+TEST RUN 18 OUTCOME (verified on designed phantoms, test run 18, 2026-09-13).  CONFIRMED: the slicewise
 denominator (slice total; exports SW), the inclusive 50 % tie and 4-connectivity (SW), the inclusive
 cl_nr_extract bounds (NRMIN, NRMAX), add_aims saturation 127 + 127 = 127 (ADD), every chamfer threshold
 3N + 2 and the open erosion boundary on the x0 / x1 / y0 / y1 / z faces (ERO3, ERO1, OPEN3), the dilation
@@ -30,8 +30,8 @@ true joins EVERY face-touching component into one component before ranking (CBT1
 tie-break is not 'lower label first' (RANK1 / RANK2 put the later of two equal components first, RANK4 /
 RANK5 the earlier one): an unstable sort of the size table, see cl_ow_rank_extract.
 
-PROBE 17 OUTCOME (Script 33 STEP 1 replayed with every intermediate exported, scanner run fetched 2026-09-14;
-probe-17 exports and verifier, not distributed).  The
+TEST RUN 17 OUTCOME (Script 33 STEP 1 replayed with every intermediate exported, scanner run fetched 2026-09-14;
+test-run-17 exports and verifier, not distributed).  The
 RADIUS preset (corner_min 800, close2 30) on PFJ-0be66a_R (X2420448), PFJ-42293d_L (X3623103) and PFJ-6f5538_R (X5492058):
 every stage 01..29 reproduced with 0 mismatching voxels and identical grids, isolated and cumulative, and the
 renderings 30 / 31 with 0 voxels -- the corner branch is non-empty on all three (18_corncl 3,500 / 42,625 /
@@ -41,13 +41,13 @@ renderings 30 / 31 with 0 voxels -- the corner branch is non-empty on all three 
 PFJ-411dfd_R (X5143651, corner_min 200000 / close2 50): stages 01..14 exact, 15_open15 <- 14_bbc leaves 3 IPL-ONLY
 voxels (ours 17,696,230, IPL 17,696,233, same grid), every later stage 16..29 exact in isolation, so the 3
 voxels propagate cumulatively to 28 / 29 and ARE the known 3-voxel difference to PFJ-411dfd_R's September masks;
-30 / 31 and the 336 + 168 stored chains exact.  That residual was explained on 2026-09-14 evening (probe 19 and
+30 / 31 and the 336 + 168 stored chains exact.  That residual was explained on 2026-09-14 evening (test run 19 and
 the S3 search: /open is ONE pipeline on the erosion's mirror-padded buffer, see open_) and the mechanism is
 implemented in open_ since that evening: 18 of 18 erosion / dilation / close / open oracles exact, PFJ-411dfd_R
 15_open15 included (17,696,233 = 17,696,233), and the
-probe-19 exports OPEN15 / SUBA_OPEN15 / SUBB_OPEN15 / SUBC_OPEN15 at 0.
-PROBE 20 OUTCOME (the prospective confirmation of the /open mechanism; designed 2026-09-14 18:12, every prediction
-written at 18:12:42 BEFORE any scanner run, run fetched 2026-09-15; probe-20 verifier log, not distributed): 'MECHANISM CONFIRMED: IPL matched the mechanism's own prediction on all 46 export(s)
+test-run-19 exports OPEN15 / SUBA_OPEN15 / SUBB_OPEN15 / SUBC_OPEN15 at 0.
+TEST RUN 20 OUTCOME (the prospective confirmation of the /open mechanism; designed 2026-09-14 18:12, every prediction
+written at 18:12:42 BEFORE any scanner run, run fetched 2026-09-15; test-run-20 verifier log, not distributed): 'MECHANISM CONFIRMED: IPL matched the mechanism's own prediction on all 46 export(s)
 with readings (the edge-inclusive mirror where the command has no -continuous_at_boundary flag or a flag of 1, the
 empty border where the flag is 0); 12 export(s) separate it from every alternative ...; 11 contrast hypothes(es)
 refuted, 0 never separated'.  CONFIRMED: the six-face edge-inclusive mirror margin of /open at every N of the scan
@@ -79,7 +79,7 @@ THE RULES (details and the refuted alternatives in each docstring)
                   erosion on the same buffer, cropped to the input grid.  open = ONE pipeline on the mirror-padded
                   buffer: the erosion on the whole buffer, then the dilation seeded by EVERY survivor, margin
                   included (the margin is not re-filled), cropped to the input grid -- the mechanism of the PFJ-411dfd_R
-                  /open 15 residual (found and implemented 2026-09-14 evening, CONFIRMED by probe 20 on 2026-09-15,
+                  /open 15 residual (found and implemented 2026-09-14 evening, CONFIRMED by test run 20 on 2026-09-15,
                   see open_).  18 of the 18 erosion / dilation / close / open oracles are exact.
   components      6-connected 3-D labelling (topology 6) in raster label order; connect_boundary true joins
                   every component touching any of the six faces into one component (label 1); ranks = an
@@ -160,7 +160,7 @@ def ipl_gauss_weights(sigma=2.0, support=3):
     0.131074890 0.070159331 (sum 1.0000000447, one ulp above float32(exactly normalised) in w0, w2, w3).
     REFUTED on the PFJ-0be66a oracle (mismatches of stage 01): float32(exactly normalised weights) 2; running
     float32-sum normaliser (4.6273603 instead of 4.6273599) 4; float64 kernel and arithmetic 4,540.
-    VERIFIED for sigma 2 / support 3 only (the single /seg_gauss oracle X2420448_P16_01_SEGGAUSS of PFJ-0be66a_R);
+    VERIFIED for sigma 2 / support 3 only (the single /seg_gauss oracle X2420448_T16_01_SEGGAUSS of PFJ-0be66a_R);
     other sigma / support values apply the same construction without an oracle."""
     k = np.arange(-support, support + 1, dtype=np.float64)
     g = np.exp(-k * k / (2.0 * float(sigma) * float(sigma))).astype(np.float32)
@@ -254,7 +254,7 @@ def seg_gauss(v, sigma, support, lower_native, upper_native, value_in_range=SET)
     Output: char volume on the input grid shrunk by `support` on every side ('valid' convolution), voxel set
     <=> lower_native <= smoothed <= upper_native, BOTH INCLUSIVE.  Lower bound on PFJ-0be66a: all 4,585 voxels at
     exactly 4524 are IPL-included, all 4,578 at 4523 excluded.  Both bounds verified on designed phantoms
-    (probe 18, 2026-09-13, export X2420448_P18_SG: two 15x15 ramps painted into PFJ-0be66a's greyscale whose
+    (test run 18, 2026-09-13, export X2420448_T18_SG: two 15x15 ramps painted into PFJ-0be66a's greyscale whose
     smoothed values 17171..17175 and 4522..4526 each occur on exactly 81 voxels): IPL keeps 17173 and drops
     17174 (refuting v < 17173 by 81 voxels and v <= 17174 by 82), keeps 4524 and drops 4523 (refuting >= 4525
     by 7 / 87 and >= 4523, the truncation of 4523.83, by 9 / 91 voxels in the two windows).  Cohort: only
@@ -262,7 +262,7 @@ def seg_gauss(v, sigma, support, lower_native, upper_native, value_in_range=SET)
     Only sigma 2 / support 3 (Script 32 / 33) have an oracle; other values are untested, and support < 1 raises
     ValueError (no oracle, so no guess).  The native thresholds are integers (IPL's log prints them as such): a
     fractional value raises ValueError instead of being truncated (4523.83 -> 4523 would be the refuted rule).
-    Verified: 0 mismatches over the 39,962,808 voxels of X2420448_P16_01_SEGGAUSS (732x337x162 @ 801,100,171).
+    Verified: 0 mismatches over the 39,962,808 voxels of X2420448_T16_01_SEGGAUSS (732x337x162 @ 801,100,171).
     Use mgha_to_native / calibration_from_proclog to convert the script's mgHA thresholds."""
     r = int(support)
     if r < 1:
@@ -421,17 +421,17 @@ def metric11_threshold(n):
     N+1 ...' for the map scaled to voxel units; raw is an integer, so there are no ties).
     REFUTED on stage 09 (erosion 3 of 08): raw >= 3N+1 leaves 299,145 mismatches, raw >= 3N+3 311,424,
     raw >= N+1 (raw units) 3,142,551; Euclidean, city-block and chessboard variants 0.7-2.1 M.
-    Verified on designed phantoms (probe 18, 2026-09-13) for N = 1 and 3 (erosion, open, close) and N = 1 and
+    Verified on designed phantoms (test run 18, 2026-09-13) for N = 1 and 3 (erosion, open, close) and N = 1 and
     15 (dilation): on a 13^3 block with a 1-voxel hole the alternatives 3N+1 / 3N+3 / Euclidean differ from
     3N+2 by 32 / 48 / 32 voxels (erosion 3) and 12 / 8 / 12 (erosion 1), all refuted; exports ERO3, ERO1,
     DIL15, DIL1, CLOSE3, OPEN3 all matched the 3N+2 reading exactly.
-    Probe 19 (2026-09-14): at N = 15 on a real volume, PFJ-411dfd_R's stage 14 (X5143651_P17_14_BBC) and three
+    Test run 19 (2026-09-14): at N = 15 on a real volume, PFJ-411dfd_R's stage 14 (X5143651_T17_14_BBC) and three
     /sub_get copies of it, /erosion 15 (raw >= 47) and /dilation 15 (raw < 47) match with 0 mismatches
     (13,640,114 / 20,637,201 set voxels on the full volume).  IPL's log prints 'Thresholds are gray-scale:
     16 32767' for the erosion and for both halves of /open, and '16 10000000' for the standalone dilation:
     16 = N + 1 in the scaled (voxel) units of the map, i.e. keep rint(raw / 3) >= 16 <=> raw >= 47.
-    Probe 20 (2026-09-15) exercised the same threshold at seven more distances on that volume -- /open 11, 12, 13,
-    14, 16, 17 and 18 (exports X5143651_P20_OPEN11 .. OPEN18) -- with 0 mismatching voxels at every N (17,833,531 /
+    Test run 20 (2026-09-15) exercised the same threshold at seven more distances on that volume -- /open 11, 12, 13,
+    14, 16, 17 and 18 (exports X5143651_T20_OPEN11 .. OPEN18) -- with 0 mismatching voxels at every N (17,833,531 /
     17,808,269 / 17,777,932 / 17,735,682 / 17,648,505 / 17,626,174 / 17,601,750 set voxels), and at N = 15 through
     /close and /dilation under both settings of -continuous_at_boundary (close15c0 / close15c1 / dil15c1 /
     dil15c001, all 0).  IPL's log prints one 'Thresholds are gray-scale: N+1 32767' pair per /open (two lines, one
@@ -462,9 +462,9 @@ def _boundary_modes(name, continuous_at_boundary):
     each flag is 0 or 1; IPL's help for /close and /dilation documents that 0 adds an empty (background) border and
     that 1 mirrors the object into the border, i.e. 0 -> a BACKGROUND margin and 1 -> the
     EDGE-INCLUSIVE MIRROR of the operand (numpy pad 'symmetric'), the same fill the erosion / open buffer carries.
-    The flag is applied PER AXIS: probe 20's dil15c001 ('/dilation 15 -continuous_at_boundary 0 0 1', mirror on z
+    The flag is applied PER AXIS: test run 20's dil15c001 ('/dilation 15 -continuous_at_boundary 0 0 1', mirror on z
     only) matches this reading at 0 mismatching voxels, while the axis-swapped reading (mirror on x only) differs by
-    598,104 voxels -- so the order is x y z (probe 20, 2026-09-15)."""
+    598,104 voxels -- so the order is x y z (test run 20, 2026-09-15)."""
     c = continuous_at_boundary
     if isinstance(c, (bool, np.bool_, int, np.integer)):
         flags = (c,) * 3
@@ -515,14 +515,14 @@ def _open_padded(m_bool, n, margin, mode="symmetric"):
           'reflect'       the edge-EXCLUSIVE mirror (numpy 'reflect': depth k holds the slice at distance k);
           'edge'          the face slice replicated; 'wrap' a periodic margin; 'background' all background (which
                           also erodes the faces); 'object' all object -- the discriminated alternatives (their
-                          mismatch counts against IPL are in open_), named here so tests and probes can run them.
+                          mismatch counts against IPL are in open_), named here so tests and test runs can run them.
           'open_boundary' the PRE-MECHANISM rule (open_ before 2026-09-14 evening): the erosion on the UNPADDED
                           grid (nothing outside the array is background), then the dilation on a background
                           margin of `margin` -- i.e. the two chained primitives erosion() / dilation(), cropped.
     Thin volumes (an axis shorter than `margin`): numpy 'symmetric' / 'reflect' REPEAT the reflection.  IPL does the
-    same -- probe 20's z156 export ('/sub_get' of 12 slices, 721x290x12, opened with N = 15 so margin 17 = one full
+    same -- test run 20's z156 export ('/sub_get' of 12 slices, 721x290x12, opened with N = 15 so margin 17 = one full
     reflection plus 5 repeated layers) matches 'symmetric' at 0 mismatching voxels and refutes a single reflection
-    completed with background / object / the far face slice by 11,803 / 3 / 3 voxels (probe 20,
+    completed with background / object / the far face slice by 11,803 / 3 / 3 voxels (test run 20,
     2026-09-15).  Only margin > 2 * axis length (more than one repeat) remains untested; open_ warns there."""
     m_bool = np.asarray(m_bool, dtype=bool)
     n = _distance("open", n)
@@ -550,8 +550,8 @@ def _open_padded(m_bool, n, margin, mode="symmetric"):
 
 class ThinVolumeWarning(UserWarning):
     """A mirrored margin DEEPER THAN TWICE an axis length: numpy's 'symmetric' pad then repeats the reflection more
-    than once, and that is the one margin regime probe 20 does not settle.  A margin up to 2 * the axis length (one
-    reflection plus at most one repeat) IS settled: probe 20's z156 export, 721x290x12 opened with N = 15 (margin 17
+    than once, and that is the one margin regime test run 20 does not settle.  A margin up to 2 * the axis length (one
+    reflection plus at most one repeat) IS settled: test run 20's z156 export, 721x290x12 opened with N = 15 (margin 17
     against 12 slices), matches numpy 'symmetric' at 0 mismatching voxels (2026-09-15)."""
 
 
@@ -560,7 +560,7 @@ _thin_volume_warned = False
 
 def _mirror_repeat_axes(shape, margin, modes_zyx):
     """The axes whose mirrored margin is deeper than twice the axis length -- i.e. where numpy's 'symmetric' pad
-    repeats the reflection more than once, the regime probe 20 leaves untested.  shape and modes_zyx are in the
+    repeats the reflection more than once, the regime test run 20 leaves untested.  shape and modes_zyx are in the
     internal (z, y, x) order; axes with a background margin are never thin."""
     margin = int(margin)
     return tuple(ax for ax in range(3) if modes_zyx[ax] == "symmetric" and margin > 2 * int(shape[ax]))
@@ -568,7 +568,7 @@ def _mirror_repeat_axes(shape, margin, modes_zyx):
 
 def _warn_thin_volume(name, dim, margin, axes):
     """Once per process: a mirrored margin of `margin` is more than twice as deep as one of the volume's axes, so
-    numpy's 'symmetric' pad repeats the reflection more than once.  IPL's fill is verified up to one repeat (probe
+    numpy's 'symmetric' pad repeats the reflection more than once.  IPL's fill is verified up to one repeat (test run
     20 'z156': 12 slices, margin 17, 0 mismatching voxels, 2026-09-15) and untested beyond it."""
     global _thin_volume_warned
     if _thin_volume_warned:
@@ -577,7 +577,7 @@ def _warn_thin_volume(name, dim, margin, axes):
     names = ", ".join("zyx"[ax] for ax in axes)
     warnings.warn(f"{name}: volume dim {tuple(dim)} is thinner than half the mirrored margin {margin} on axis "
                   f"{names}; numpy's 'symmetric' pad then repeats the reflection more than once, where IPL's fill "
-                  "is untested (probe 20 settles it up to one repeat: export 'z156', 12 slices with margin 17, "
+                  "is untested (test run 20 settles it up to one repeat: export 'z156', 12 slices with margin 17, "
                   "0 mismatching voxels, 2026-09-15) (warned once per process)",
                   ThinVolumeWarning, stacklevel=3)
 
@@ -605,19 +605,19 @@ def erosion(v, n):
     erode an in-volume voxel its original does not (on PFJ-411dfd_R 15 <- 14 the in-volume erosion is voxel-identical
     with and without the mirrored margin: 0 differences).  The margin's own survivors are dropped with the margin when /erosion
     writes its result -- they matter only when the buffer is reused, which /open does.  This function therefore
-    computes the open-boundary erosion on the input grid, unchanged since probe 18.
+    computes the open-boundary erosion on the input grid, unchanged since test run 18.
     Verified: 09_ero3 <- 08 (15,752,082 set voxels) and 17_cornero <- 16 (6,550) both 0 mismatches.  The open
     boundary is PROVEN on PFJ-0be66a for the z faces (09: 311,091 / 300,826 discriminating voxels at z0 / z1 =
-    611,917) and the y0 face (17: 15 voxels), and on designed phantoms (probe 18, 2026-09-13) for ALL SIX
+    611,917) and the y0 face (17: 15 voxels), and on designed phantoms (test run 18, 2026-09-13) for ALL SIX
     faces: 20x9x9 blocks on the x0 / x1 / y0 / y1 faces and 9^3 blocks on the z faces, erosion 3 and 1
     (exports ERO3, ERO1; a background-padded face would have removed 27 / 49 voxels per block), and again
     inside /open 3 (OPEN3).  IPL's D3P_BorderChange margin is the same N + 2 on all three axes (log: rel
     beg_pos -5 -5 -5, out dim 753 358 178 for N = 3).
-    Probe 17 (2026-09-14): 09_ero3 <- 08 and 17_cornero <- 16 0 mismatches on PFJ-0be66a_R, PFJ-42293d_L, PFJ-6f5538_R
+    Test run 17 (2026-09-14): 09_ero3 <- 08 and 17_cornero <- 16 0 mismatches on PFJ-0be66a_R, PFJ-42293d_L, PFJ-6f5538_R
     (RADIUS) and PFJ-411dfd_R (TIBIA): 15,752,082 / 13,548,957 / 699,709 / 12,925,282 and 6,550 / 45,279 /
     33,696 / 60,152 set voxels.
-    Probe 19 (2026-09-14): /erosion 15 on PFJ-411dfd_R's stage 14 (X5143651_P17_14_BBC, 721x290x168 @ 856,24,0,
-    the input of the /open residual documented in open_) exported as X5143651_P19_ERO15 = this rule exactly:
+    Test run 19 (2026-09-14): /erosion 15 on PFJ-411dfd_R's stage 14 (X5143651_T17_14_BBC, 721x290x168 @ 856,24,0,
+    the input of the /open residual documented in open_) exported as X5143651_T19_ERO15 = this rule exactly:
     13,640,114 set voxels, 0 mismatches, grid unchanged; a second run (ERO15B) is voxel-identical (IPL's erosion
     is deterministic); /erosion 15 on IPL's own /sub_get copies of 14 (suba z 100..167, subb z 0..166, subc
     x 400..720 y 40..289 z 100..167) 0 mismatches (5,521,647 / 13,572,701 / 2,677,855 set voxels), so the open
@@ -626,8 +626,8 @@ def erosion(v, n):
     two-pass 3-4-5 chamfer distance map and a grey-scale threshold of 16 (keep rint(raw / 3) >= 16 <=> raw >= 47);
     CPU 7.04 s.  The erosion half of /open is therefore exact on the very input of the
     residual; the residual is not in this primitive.
-    Probe 20 (2026-09-15) CONFIRMED the mirror margin prospectively, through /open (see open_) and directly here:
-    /erosion 15 on the region phantom (export X5143651_P20_K0_ERO15) = this function at 0 mismatching voxels
+    Test run 20 (2026-09-15) CONFIRMED the mirror margin prospectively, through /open (see open_) and directly here:
+    /erosion 15 on the region phantom (export X5143651_T20_K0_ERO15) = this function at 0 mismatching voxels
     (192,181 set voxels), and IPL's own /dilation 15 applied to that very export (K0_DIL15, 713,838 set voxels)
     equals dilation() at 0 -- while IPL's own /open 15 of the same phantom exceeds that chain by EXACTLY the 3
     residual voxels, which is the whole effect reproduced inside a 121x101x38 volume.  /erosion carries NO
@@ -646,28 +646,28 @@ def dilation(v, n, continuous_at_boundary=(0, 0, 0)):
     -continuous_at_boundary (an int or a 3-tuple in IPL's x, y, z order; DEFAULT (0, 0, 0) = the only form Scripts
     32 / 33 use, so every existing call site and oracle is unaffected): per axis, 0 fills that axis's margin with
     BACKGROUND and 1 with the EDGE-INCLUSIVE MIRROR of the operand (the two border modes IPL's help documents for
-    /close and /dilation; see _boundary_modes).  Probe 20 (scanner run 2026-09-15) gives the
-    oracles on PFJ-411dfd_R's stage 14: '1 1 1' (export X5143651_P20_DIL15C1) and '0 0 1' (DIL15C001) each match this
+    /close and /dilation; see _boundary_modes).  Test run 20 (scanner run 2026-09-15) gives the
+    oracles on PFJ-411dfd_R's stage 14: '1 1 1' (export X5143651_T20_DIL15C1) and '0 0 1' (DIL15C001) each match this
     rule at 0 mismatching voxels ON THE WHOLE WRITTEN GRID, the 16 written margin layers included -- 27,387,249 and
     27,062,074 set voxels on 753x322x200 @ 840,8,-16 -- so the written margin exhibits the fill directly.  The two
     exports differ from each other by 325,175 voxels; against DIL15C1 the edge-EXCLUSIVE mirror ('reflect') differs
     by 70,802 (57,263 ours-only / 13,539 IPL-only), edge replication by 416,854, a background margin (the default
     rule) by 787,238 and an object margin by 14,517,704; against DIL15C001 by 19,772 / 121,266 / 462,063 /
     6,637,962, and reading the flags in z, y, x order instead (mirror on x only) differs by 598,104 -- the per-axis
-    application and the x y z order are both pinned by data (probe 20, 2026-09-15).
+    application and the x y z order are both pinned by data (test run 20, 2026-09-15).
     Verified: 11_dil3 <- 10 (19,463,848 set voxels) 0 mismatches, grid 743x348x168 @ 795,94,168 ->
-    751x356x176 @ 791,90,164 reproduced.  On designed phantoms (probe 18, 2026-09-13): an isolated 5^3 block
+    751x356x176 @ 791,90,164 reproduced.  On designed phantoms (test run 18, 2026-09-13): an isolated 5^3 block
     dilated by 15 and by 1 (exports DIL15, DIL1) matched the raw < 3N + 2 ball exactly (3N+1 / 3N+3 /
     Euclidean r <= N / r <= N + 0.5 differ by 1,224 / 1,272 / 1,724 / 2,900 voxels at N = 15, 60 / 8 / 60 at
     N = 1) and the written headers were 775x380x200 @ 779,78,152 and 747x352x172 @ 793,92,166 = the input
     grid grown by N + 1 per side (N and N + 2 refuted).
-    Probe 17 (2026-09-14): 11_dil3 <- 10 and 19_cornmajor <- 18 0 mismatches and the grown grids reproduced on
+    Test run 17 (2026-09-14): 11_dil3 <- 10 and 19_cornmajor <- 18 0 mismatches and the grown grids reproduced on
     all four subjects (11: 19,463,848 / 18,777,844 / 1,458,872 / 16,641,696 set voxels; 19: 12,879 / 139,031 /
     91,420 / 0 -- the corner branch is non-empty under the RADIUS preset).
-    Probe 19 (2026-09-14): /dilation 15 (-continuous_at_boundary 0 0 0 -use_previous_margin false) on IPL's own
-    /erosion 15 of PFJ-411dfd_R's stage 14 (X5143651_P19_ERO15) exported as X5143651_P19_DIL15 = this rule exactly:
+    Test run 19 (2026-09-14): /dilation 15 (-continuous_at_boundary 0 0 0 -use_previous_margin false) on IPL's own
+    /erosion 15 of PFJ-411dfd_R's stage 14 (X5143651_T19_ERO15) exported as X5143651_T19_DIL15 = this rule exactly:
     20,637,201 set voxels on 753x322x200 @ 840,8,-16 = the 721x290x168 @ 856,24,0 input grown by N + 1 = 16 per
-    side, 0 mismatches -- the grid growth is now verified at N = 15 on a real volume (probe 18 verified it on a
+    side, 0 mismatches -- the grid growth is now verified at N = 15 on a real volume (test run 18 verified it on a
     phantom); on IPL's /sub_get copies suba / subb / subc (see erosion) 0 mismatches as well (10,168,167 /
     20,545,954 / 5,094,680 set voxels on 753x322x100 @ 840,8,84, 753x322x199 @ 840,8,-16, 353x282x100 @
     1240,48,84).  IPL's log of the run reports an
@@ -676,7 +676,7 @@ def dilation(v, n, continuous_at_boundary=(0, 0, 0)):
     the upper bound 10000000, and a re-inversion; the result's
     off is 1 (the written grid keeps N + 1 of the 17); CPU 7.97 s.  The dilation half of /open is therefore
     exact on the very input of the residual (see open_); the residual is not in this primitive.
-    -use_previous_margin true (X5143651_P19_DIL15PM: /dilation 15 on ERO15B; NOT implemented here -- Scripts 32
+    -use_previous_margin true (X5143651_T19_DIL15PM: /dilation 15 on ERO15B; NOT implemented here -- Scripts 32
     and 33 pass false): the written grid is the input grid SHRUNK by N + 1 per side, 689x258x136 @ 872,40,16,
     and its content is this rule's dilation restricted to that grid (0 mismatches, 14,356,093 set voxels; it also
     equals IPL's /open 15 there).  IPL's log reports that the margin of
@@ -704,25 +704,25 @@ def close(v, n, continuous_at_boundary=(0, 0, 0)):
     32 / 33 use, so every existing call site and oracle is unaffected): per axis, 0 = a BACKGROUND margin, 1 = the
     EDGE-INCLUSIVE MIRROR of the input, exactly as in dilation().
     Verified: 12_close15 <- 11 (21,034,566 set voxels) and 23_close50 <- 22 (20,333,641) 0 mismatches; on
-    designed phantoms (probe 18, 2026-09-13, export CLOSE3) two 10^3 blocks 2 apart are bridged and two 6 apart
+    designed phantoms (test run 18, 2026-09-13, export CLOSE3) two 10^3 blocks 2 apart are bridged and two 6 apart
     (the bridging limit of close 3) exactly as the 3N+2 rule predicts (3N+1 / 3N+3 / Euclidean differ there by
     88 / 112 / 88 voxels).
-    Probe 17 (2026-09-14): 12_close15 <- 11 on PFJ-0be66a_R / PFJ-42293d_L / PFJ-6f5538_R / PFJ-411dfd_R (21,034,566 /
+    Test run 17 (2026-09-14): 12_close15 <- 11 on PFJ-0be66a_R / PFJ-42293d_L / PFJ-6f5538_R / PFJ-411dfd_R (21,034,566 /
     22,076,107 / 2,066,861 / 18,578,278 set voxels), 23_close30 <- 22 on the three RADIUS subjects (20,302,109 /
     21,606,958 / 1,954,987; the close-30 oracle of Script 33) and 23_close50 <- 22 on PFJ-411dfd_R (17,989,866):
     0 mismatches, identical grids -- close 3 / 15 / 30 / 50 are all verified.
-    Probe 19 (2026-09-14): no new close oracle; the two primitives close is composed of were re-verified at
+    Test run 19 (2026-09-14): no new close oracle; the two primitives close is composed of were re-verified at
     N = 15 on a real volume, PFJ-411dfd_R's stage 14 and its three /sub_get copies (/erosion 15 and /dilation 15
     each 0 mismatches, the dilation's grid growth N + 1 included; see erosion, dilation), and the four close
     oracles above stand.  The 3-voxel residual of /open on that volume (open_) has no counterpart in any close
-    oracle (12_close15 on the same subject is exact), and probe 19 located it inside /open's internal chaining,
+    oracle (12_close15 on the same subject is exact), and test run 19 located it inside /open's internal chaining,
     not in the primitives.  UNCHANGED by the /open mechanism (implemented 2026-09-14 evening, open_): /close
     -continuous_at_boundary 0 0 0 (the only form Scripts 32 / 33 use) is the dilation on a BACKGROUND margin
     (border mode 0 of IPL's help for /close and /dilation; see _boundary_modes), followed by the erosion on that
     buffer, which is exactly this rule, and
     the six close oracles (3 / 15 / 30 / 50) stay at 0 with the mechanism in place.
-    Probe 20 (scanner run 2026-09-15) settled BOTH readings of the flag on PFJ-411dfd_R's stage 14, /close 15:
-    '-continuous_at_boundary 0 0 0' (export X5143651_P20_CLOSE15C0) = this function's default at 0 mismatching
+    Test run 20 (scanner run 2026-09-15) settled BOTH readings of the flag on PFJ-411dfd_R's stage 14, /close 15:
+    '-continuous_at_boundary 0 0 0' (export X5143651_T20_CLOSE15C0) = this function's default at 0 mismatching
     voxels (17,964,657 set voxels), and '1 1 1' (CLOSE15C1) = the mirrored margin at 0 (18,003,002).  The two IPL
     exports differ from each other by 38,345 voxels, which is also the distance from each reading to the other
     export -- so the hypothesis that IPL IGNORES the flag and always mirrors is refuted by 38,345 voxels, and the
@@ -748,7 +748,7 @@ def close(v, n, continuous_at_boundary=(0, 0, 0)):
 
 def open_(v, n):
     """/open -open_distance N -metric 11 = ONE pipeline on the erosion's mirror-padded buffer (the mechanism of
-    the PFJ-411dfd_R residual, found and implemented 2026-09-14 evening, CONFIRMED prospectively by probe 20 on
+    the PFJ-411dfd_R residual, found and implemented 2026-09-14 evening, CONFIRMED prospectively by test run 20 on
     2026-09-15; /open takes no -continuous_at_boundary flag, its border is always the mirror).
     RULE (in numpy): Mp = np.pad(M, N + 2, mode='symmetric'); surv = Mp & (chamfer_dt_345(Mp) >= 3N + 2);
     out = (surv | (chamfer_dt_345(~surv) < 3N + 2))[N+2:-(N+2), N+2:-(N+2), N+2:-(N+2)]  (= _open_padded(M, N,
@@ -777,15 +777,15 @@ def open_(v, n):
     have no such flag), and -use_previous_margin true crops exactly the reach of the margin content
     (see dilation).  /close = dilation with a background margin then erosion on that buffer: unchanged, exact.
     VERIFIED (0 mismatching voxels, identical grids): IPL's /open 15 on the full PFJ-411dfd_R stage 14
-    (X5143651_P17_14_BBC -> X5143651_P17_15_OPEN15 and the probe-19 re-run X5143651_P19_OPEN15: 17,696,233 =
+    (X5143651_T17_14_BBC -> X5143651_T17_15_OPEN15 and the test-run-19 re-run X5143651_T19_OPEN15: 17,696,233 =
     17,696,233 set voxels) and on IPL's /sub_get copies suba / subb / subc (SUB?_IN -> SUB?_OPEN15: 7,196,729 /
-    17,595,873 / 3,247,584), also with this implementation (probe-19 verification); the 18 oracle-table
-    comparisons at 0 (PFJ-0be66a_R / PFJ-42293d_L / PFJ-6f5538_R / PFJ-411dfd_R P17 open
-    15 and close 30 / 50, PFJ-0be66a_R P16 open 15 / close 50 / close 15, PFJ-411dfd_R P17 close 15, probe 18 OPEN3 /
-    CLOSE3 / ERO3 / ERO1 / DIL15 / DIL1) first with p20_rules.open_ipl and then with
+    17,595,873 / 3,247,584), also with this implementation (test-run-19 verification); the 18 oracle-table
+    comparisons at 0 (PFJ-0be66a_R / PFJ-42293d_L / PFJ-6f5538_R / PFJ-411dfd_R T17 open
+    15 and close 30 / 50, PFJ-0be66a_R T16 open 15 / close 50 / close 15, PFJ-411dfd_R T17 close 15, test run 18 OPEN3 /
+    CLOSE3 / ERO3 / ERO1 / DIL15 / DIL1) first with the test-run-20 rule script's open_ipl and then with
     this function; the 12 erosion / dilation stage oracles
-    and the 8 probe-19 primitives at 0 (see erosion, dilation).  DISCRIMINATED on the full PFJ-411dfd_R volume
-    (X5143651_P17_14_BBC vs X5143651_P19_OPEN15) and on suba, recomputed with _open_padded on 2026-09-14 evening
+    and the 8 test-run-19 primitives at 0 (see erosion, dilation).  DISCRIMINATED on the full PFJ-411dfd_R volume
+    (X5143651_T17_14_BBC vs X5143651_T19_OPEN15) and on suba, recomputed with _open_padded on 2026-09-14 evening
     (tests/test_ipl_ops.py pins them) -- mismatch counts
     (ours-only / IPL-only): the pre-mechanism rule ('open_boundary', the two chained primitives) 3 (0 / 3), exactly
     the residual; the mirror margin at depth N + 1 -> 19 (19 / 0), N + 3 -> 2 (0 / 2), N -> 48 (48 / 0), 2N -> 3
@@ -793,14 +793,14 @@ def open_(v, n):
     replication 14,423 (14,422 / 1), 8,445 on suba; wrap 76,168 (3,121 / 73,047), 61,036 on suba; margin = object
     28,338 (28,338 / 0), 16,635 on suba; margin = background 238,083 (0 / 238,083), 222,472 on suba.  The z faces
     alone mirrored with OBJECT x / y margins gave 30 (suba) / 540 (full) ours-only in the S3 search; the z faces
-    alone with the pre-mechanism x / y conventions (p20_rules 'sym_z') is NOT separated by the /open 15 oracles
+    alone with the pre-mechanism x / y conventions (the test-run-20 rule 'sym_z') is NOT separated by the /open 15 oracles
     (0 / 0 on full / suba, same log): the six-face mirror is what IPL's isotropic BorderChange implies (the same
     N + 2 margin on all three axes, 'rel beg_pos -17 -17 -17'; the help's description of the mirror mode names
-    no axis) and probe 20 SETTLED it directly on 2026-09-15: the transposed copies tzx / tzx0 / tzy / tzy0 put the
+    no axis) and test run 20 SETTLED it directly on 2026-09-15: the transposed copies tzx / tzx0 / tzy / tzy0 put the
     residual geometry on the x1 / x0 / y1 / y0 faces and IPL keeps it there (six-face mirror 0 mismatching voxels,
     'sym_z' 3 voxels each), and cavex -- the plate-over-cave phantom transposed onto the x1 face -- separates the
     two by 138 voxels ('symmetric' 0, 'sym_z' 138, like 'ipldt' / 'reflect' / 'edge').
-    THIN VOLUMES (an axis shorter than N + 2): numpy 'symmetric' REPEATS the reflection, and so does IPL -- probe
+    THIN VOLUMES (an axis shorter than N + 2): numpy 'symmetric' REPEATS the reflection, and so does IPL -- test run
     20's z156 export ('/sub_get' of 12 slices, 721x290x12 @ 856,24,156, opened with N = 15, i.e. a margin of 17
     against 12 slices = one full reflection plus 5 repeated layers) matches this function at 0 mismatching voxels
     (1,240,454 set voxels) and refutes the three special thin-volume readings -- one reflection completed with
@@ -808,9 +808,9 @@ def open_(v, n):
     'object' 24,740, 'wrap' 13,941 and the pre-mechanism rule 36.  Untested, and the only case left warning
     (ThinVolumeWarning): a margin deeper than TWICE an axis, where the reflection repeats more than once.  Scripts
     32 / 33 never open a volume thinner than 17 slices.
-    STATUS: mechanism CONFIRMED by probe 20 on 2026-09-15 (implemented 2026-09-14 evening from the probe-19
-    evidence; predictions written 2026-09-14 18:12:42, BEFORE any scanner run, in the probe-20 prediction file (not distributed);
-    69 exports; probe-20 run log, not distributed: 'MECHANISM CONFIRMED: IPL matched the
+    STATUS: mechanism CONFIRMED by test run 20 on 2026-09-15 (implemented 2026-09-14 evening from the test-run-19
+    evidence; predictions written 2026-09-14 18:12:42, BEFORE any scanner run, in the test-run-20 prediction file (not distributed);
+    69 exports; test-run-20 run log, not distributed: 'MECHANISM CONFIRMED: IPL matched the
     mechanism's own prediction on all 46 export(s) with readings ...; 12 export(s) separate it from every
     alternative; 11 contrast hypothes(es) refuted, 0 never separated').  The evidence, export by export:
       N-SCAN (open11 / open12 / open13 / open14 / open16 / open17 / open18 on this volume) -- this function matches
@@ -843,11 +843,11 @@ def open_(v, n):
     Patella STEP-1 masks from IPL's periosteal: PFJ-411dfd_R was the only non-exact subject (3 voxels), so 21 / 21 are
     expected exact.
     Verified before the mechanism (unchanged by it): 15_open15 <- 14_bbc (20,163,367 set voxels, grid 724x328x168 @
-    805,103,168) 0 mismatches on PFJ-0be66a_R; on designed phantoms (probe 18, 2026-09-13, export OPEN3) a 10^3 block
+    805,103,168) 0 mismatches on PFJ-0be66a_R; on designed phantoms (test run 18, 2026-09-13, export OPEN3) a 10^3 block
     with 1x1 / 3x3 / 5x5 / 7x7 spikes of length 8 loses the first three and keeps the 7x7 with the corners of the
     3N+2 rule (3N+1 / 3N+3 / Euclidean differ by 137 / 155 / 137 voxels), and the face blocks confirm the open x0 /
-    x1 / y1 boundary inside the open.  Probe 17 (2026-09-14): 15_open15 <- 14_bbc 0 mismatches on PFJ-0be66a_R
-    (20,163,367 set voxels, the P16 volume again), PFJ-42293d_L (21,006,474) and PFJ-6f5538_R (1,763,947); probe 18 OPEN3
+    x1 / y1 boundary inside the open.  Test run 17 (2026-09-14): 15_open15 <- 14_bbc 0 mismatches on PFJ-0be66a_R
+    (20,163,367 set voxels, the T16 volume again), PFJ-42293d_L (21,006,474) and PFJ-6f5538_R (1,763,947); test run 18 OPEN3
     89,677.
     HISTORY OF THE RESIDUAL (PFJ-411dfd_R, X5143651, 15_open15 <- 14_bbc, grid 721x290x168 @ 856,24,0; the pre-mechanism
     rule = erosion() then dilation(), cropped): IPL keeps 3 voxels that rule removes -- ours 17,696,230, IPL
@@ -856,9 +856,9 @@ def open_(v, n):
     eroded (raw chamfer to the background 8 / 15 / 19); their raw dilation distance to the in-volume eroded set is
     47 / 47 / 49 (3N + 2 = 47), and their in-plane neighbours that IPL does NOT restore sit at 47 / 47 / 47 / 47 / 48
     / 48 / 50, so '<=' instead of '<' is refuted on the same slice; their z = 166 counterparts (45 / 44 / 46) are
-    restored by both.  The 3 voxels reproduce in the P17 replay and in the September production run (a
+    restored by both.  The 3 voxels reproduce in the T17 replay and in the September production run (a
     deterministic function of the input) and propagate unchanged through 16..29 (every later command exact in
-    isolation) to the 3-voxel CORT_MASK / TRAB_MASK difference of PFJ-411dfd_R.  Proven (probe-17 analysis): under ANY dilation that is a chamfer-3-4-5 ball around a
+    isolation) to the 3-voxel CORT_MASK / TRAB_MASK difference of PFJ-411dfd_R.  Proven (test-run-17 analysis): under ANY dilation that is a chamfer-3-4-5 ball around a
     seed set, no in-volume seed set reproduces IPL -- every in-volume candidate within 46 of (1470, 179, 167) also
     restores a voxel that is object in 14 and background in IPL's 15, even if the output were ANDed with the input
     (0 admissible seeds), and every candidate within 46 of the background also restores the background voxel that
@@ -881,16 +881,16 @@ def open_(v, n):
     first slice's background not seeded 4,773 / 1,080 / 5,850 / 1,378 / 5,566; every combination of a chamfer pass
     skipping the first or last slice in either half (44 combinations, 162 .. 424,816); every modified weight triple
     for steps into / within / out of the last slice (no improvement); the 47 inexact two-pass variants of another
-    raster order (22,895 .. 260,612, all also breaking probe 18 ERO3 / DIL15 / OPEN3); a single wrong-neighbour
+    raster order (22,895 .. 260,612, all also breaking test run 18 ERO3 / DIL15 / OPEN3); a single wrong-neighbour
     read (x+a, y+b, z') + w at the last slice over a, b in -60..60, z' in 140..184, w in {0, 3, 4, 5} (no solution).
-    Probe 19 (2026-09-14; the halves of /open run
-    as separate commands on the very input): /erosion 15 on X5143651_P17_14_BBC (export X5143651_P19_ERO15) =
+    Test run 19 (2026-09-14; the halves of /open run
+    as separate commands on the very input): /erosion 15 on X5143651_T17_14_BBC (export X5143651_T19_ERO15) =
     erosion() exactly (13,640,114 set voxels, 0 mismatches) and /dilation 15 (-use_previous_margin false) on IPL's
     ero15 (DIL15, 753x322x200 @ 840,8,-16) = dilation() exactly (20,637,201, 0 mismatches): THE PRIMITIVES ARE EXACT
-    on this input.  /open 15 run again (OPEN15) = the P17 stage-15 export voxel for voxel (deterministic) and differs
+    on this input.  /open 15 run again (OPEN15) = the T17 stage-15 export voxel for voxel (deterministic) and differs
     from DIL15 inside the 14 grid by EXACTLY the 3 residual voxels (open15 has them, dil15 does not): /open is NOT
     /erosion followed by /dilation as separate commands -- the residual lives inside /open's internal chaining.  The
-    log agrees (probe 19): /open reports ONE border change (the erosion's, 17 voxels on every face, out dim
+    log agrees (test run 19): /open reports ONE border change (the erosion's, 17 voxels on every face, out dim
     755 324 202), the four chamfer DT steps and a grey-scale threshold of 16, then the dilation's inversion with
     NO border change, the DT steps again and the same threshold (upper bound 32767 where the standalone
     /dilation reports 10000000), and a final back-inversion;
@@ -924,7 +924,7 @@ def open_(v, n):
 # ============================================================================================== gobj peel mask
 def peel_gobj_render(gobj_render, peel_iter):
     """The mask M of /gobj_maskaimpeel_ow: IPL's rendering of the gobj (/gobj_to_aim -peel_iter 0, e.g. the
-    P16 stage 00) eroded slice-wise with 4-connectivity peel_iter times (ipldt.core.peel_gobj; 0 = the
+    T16 stage 00) eroded slice-wise with 4-connectivity peel_iter times (ipldt.core.peel_gobj; 0 = the
     rendering itself), as a char volume on the rendering's grid.  |M| is what IPL prints as 'Set N'
     (PFJ-0be66a: 27,484,219 for peel 0, 25,892,693 for peel 6)."""
     g = _set(gobj_render)
@@ -995,7 +995,7 @@ def rank_order(sizes):
     components = scipy.ndimage.label's order); returns the 0-based indices in rank order.
     RULE: the size table is sorted largest-first by an UNSTABLE shell sort (K&R gaps n/2, n/4, ..., 1), so
     two equal sizes are ordered by the sort's data-dependent moves, not by their labels.
-    Basis (probe 18, 2026-09-13; exports X2420448_P18_RANK1..5 on a 41-component phantom): the two 20,000-voxel
+    Basis (test run 18, 2026-09-13; exports X2420448_T18_RANK1..5 on a 41-component phantom): the two 20,000-voxel
     components T1 (label 19) and T2 (label 22) came out rank 1 = T2, rank 2 = T1 (the LATER label first),
     while the two 10,000-voxel components b (label 21) and c (label 23) came out rank 4 = b, rank 5 = c (the
     EARLIER label first); rank 3 = a (15,000).  No monotone rule on the label order (lower first, higher first,
@@ -1009,7 +1009,7 @@ def rank_order(sizes):
     other quicksorts put T1 first.  RESIDUAL AMBIGUITY, stated: the four fitting sorts can differ on other
     size tables, and IPL's first-scan label numbering on concave shapes (bone) is not pinned (the one-voxel
     lookahead scan that reproduces the phantom's 43 / 74 and the 2-D slice's 104 labels is 9-20 % high on
-    the P16 bone stages), so a tie between equal-sized components of a bone volume may be ordered
+    the T16 bone stages), so a tie between equal-sized components of a bone volume may be ordered
     differently by IPL.  Script 32 / 33 extract rank 1..1 only, which this affects only when the two largest
     components have exactly the same size (PFJ-0be66a: 23,425,237 vs 4,046 at stage 04)."""
     s = np.ascontiguousarray(np.asarray(sizes), dtype=np.int64)
@@ -1044,10 +1044,10 @@ def cl_ow_rank_extract(v, first_rank=1, last_rank=1, connect_boundary=False, val
     connect_boundary false (Script 32 / 33): components are NOT joined through the grid border (in stage 09,
     168 non-largest components touching the border were discarded).  connect_boundary true: EVERY component
     touching any of the six faces of the volume is joined into one component, ranked with the others (the
-    joined component is label 1, IPL's 'Boundary marked with label 1'); verified on designed phantoms (probe
+    joined component is label 1, IPL's 'Boundary marked with label 1'); verified on designed phantoms (test run
     18, 2026-09-13): on a 743x348x20 sub-volume with B1 (2,000 voxels) and B2 (200) touching its first slice,
     B4 (300) its last slice and B3 (1,500) interior, rank 1 = B1 + B2 + B4 (2,500 voxels, export
-    X2420448_P18_CBT1) and rank 2 = B3 (CBT2); the readings 'no effect' (B1), 'same face only' (B1 + B2) and
+    X2420448_T18_CBT1) and rank 2 = B3 (CBT2); the readings 'no effect' (B1), 'same face only' (B1 + B2) and
     'face-touching components excluded' (B3 first) are refuted; the connect_boundary false control gave B1
     (CBF1).  The joined component's size is its object voxels only: IPL's log prints it as 'Label 1: 62.5000 %
     (2500)' of the sub-volume's 4,000 set voxels (the non-object face voxels are not counted), as here.
@@ -1055,7 +1055,7 @@ def cl_ow_rank_extract(v, first_rank=1, last_rank=1, connect_boundary=False, val
     first_rank raises ValueError (a 0-based caller would otherwise silently get an empty mask); ranks beyond
     the component count give an empty mask.
     Verified: 05 <- 04, 08 <- 07, 10 <- 09 all 0 mismatches; component counts 2145 / 550 / 1695 and the five
-    largest sizes equal the log; probe 18 RANK1..RANK5 (T2, T1, a, b, c) 0 mismatches each."""
+    largest sizes equal the log; test run 18 RANK1..RANK5 (T2, T1, a, b, c) 0 mismatches each."""
     if topology != 6:
         raise AssertionError("cl_ow_rank_extract: only -topology 6 was observed and is implemented")
     fr, lr = int(first_rank), int(last_rank)
@@ -1079,7 +1079,7 @@ def cl_nr_extract(v, min_number=1, max_number=0, value_in_range=SET, topology=6)
     """/cl_nr_extract: keep the 6-connected components with min_number <= size <= max_number (max_number 0 =
     no upper limit) at value_in_range, BOTH BOUNDS INCLUSIVE; grid unchanged.
     Verified: 18 <- 17 (min 200000: 64 components, largest 3,500 -> empty) and 21 <- 20 (1..500000 on an
-    empty volume) 0 mismatches; the inclusive bounds on designed phantoms (probe 18, 2026-09-13): components
+    empty volume) 0 mismatches; the inclusive bounds on designed phantoms (test run 18, 2026-09-13): components
     of exactly 799, 800 and 801 voxels, -min_number 800 keeps 800 and 801 (export NRMIN), -max_number 800
     keeps 799 and 800 (NRMAX); the exclusive readings are refuted."""
     if topology != 6:
@@ -1098,11 +1098,11 @@ def cl_slicewise_extractow(v, lo_vol_fract_in_perc=50.0, up_vol_fract_in_perc=10
     (topology 6 restricted to the slice) and keep the components whose 100 * size / (SET VOXELS OF THAT SLICE)
     lies in [lo, up], INCLUSIVE at both ends; a slice in which no component qualifies is cleared ENTIRELY
     (e.g. fragments of 40 / 35 / 25 % at lo 50); empty slices stay empty; grid unchanged.
-    Verified on designed phantoms (probe 18, 2026-09-13, export X2420448_P18_SW, lo 50 / up 100): a 60 / 40
+    Verified on designed phantoms (test run 18, 2026-09-13, export X2420448_T18_SW, lo 50 / up 100): a 60 / 40
     slice keeps the 60 only (the 'fraction of the largest component' reading, which keeps both, is refuted),
     40 / 35 / 25 and 45 / 30 / 25 slices are cleared, a 50 / 50 slice keeps both (the tie at exactly lo is
     inclusive), and 60 / 40 and 70 / 20 blocks touching at one diagonal only are two components (4-connected;
-    8-connectivity refuted).  Basis for the denominator before the probe: the help text calls the bounds
+    8-connectivity refuted).  Basis for the denominator before the test run: the help text calls the bounds
     'Lower/Upper volume fraction [%]'; the per-slice histogram this command prints ('Label k: p % (n)') equals
     100 * n / (set voxels of the slice) in all 115 multi-component printouts of the cohort EVAL logs (e.g.
     'Label 1: 49.9871 % (27081)' of 54176) and never 100 * n / largest.
@@ -1157,11 +1157,11 @@ def subtract_aims(v1, v2):
     reading of the char byte IPL writes: 0x81 = -127, which reads as 129 unsigned), values saturated to
     [-127, 127] (the lower bound is the implemented, unobserved choice; only -127, 0 and 127 were observed).
     A -127 voxel IS set (non-zero): every consumer in ipldt tests set-ness as != 0, and IPL's own
-    -compress_type bin export of such a volume stores it as set (P16 / P17 stage 02 are bin exports).
+    -compress_type bin export of such a volume stores it as set (T16 / T17 stage 02 are bin exports).
     Char volumes only (a short operand raises TypeError).
     Verified: 02, 07, 16, 26 (grid 743x348x176 @ 795,94,164 = the union) and 29 of PFJ-0be66a all 0 mismatches
-    (in2 is a subset of in1 there); the negative case on designed phantoms (probe 18, 2026-09-13): a 20x20x10
-    block A1 minus an all-127 box b overlapping its corner (export X2420448_P18_SUB, written -compress_type
+    (in2 is a subset of in1 there); the negative case on designed phantoms (test run 18, 2026-09-13): a 20x20x10
+    block A1 minus an all-127 box b overlapping its corner (export X2420448_T18_SUB, written -compress_type
     none: 3,000 voxels 127, 1,000 voxels 0, 3,000 voxels byte 0x81 on the union grid 743x348x10 @ 795,94,268)
     and b - A1 (SUB2, the same histogram) -- the former 'clip to 0' reading is REFUTED by 3,000 voxels in each.
     Script 32: in2 is a subset of in1 by construction for 07 (06 = 05 AND peel0 of 00), 16 (15 = open of 14,
@@ -1181,7 +1181,7 @@ def add_aims(v1, v2):
     the wrap-around reading, byte 0xFE, is refuted), int8 output like subtract_aims (a negative operand,
     unobserved, saturates at -127).  Char volumes only (a short operand raises TypeError).
     Verified: 22 <- 21 + 15 (grid 732x336x176 @ 801,99,164) 0 mismatches (disjoint inputs); the saturation on
-    designed phantoms (probe 18, 2026-09-13, export X2420448_P18_ADD written -compress_type none: A1 + b with a
+    designed phantoms (test run 18, 2026-09-13, export X2420448_T18_ADD written -compress_type none: A1 + b with a
     1,000-voxel overlap -> 7,000 voxels of 127, none of 254).
     Transient memory: one int16 copy of the union grid (plus the int8 result)."""
     _char_operands("add_aims", v1, v2)

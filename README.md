@@ -32,12 +32,18 @@ unchanged.
 | Also written | report (JSON, CSV, Markdown), the greyscale in HU, the 3D Slicer segmentation, a preview | report (JSON, CSV) |
 | Correction in 3D Slicer and re-entry (`ormir-bqrl redo`) | yes | no |
 
-Both run the pore cascade on the grid of the input AIM, on the cortical contour rendered there and the cortical
-segmentation. The paper's validation placed the cortical contour on IPL's own box (the box of the periosteal contour,
-where IPL renders it); because the cascade's slice-wise steps depend on the grid they run on, the pore map could
-differ between the two grids. On the one scan of the validation set run both ways (a patella, from IPL's periosteal
-contour) the two grids gave the same pore map, identical to IPL's voxel for voxel; the other validation scans, the
-radius and tibia scans among them, have not been run on the workflow's grid.
+Both run the cortical pore cascade on the grid IPL runs it on: IPL's render grid of the cortical contour (the grid
+IPL's `/gobj_to_aim` renders the contour onto), which `ipldt.porosity.render_grid` predicts from the rendered contour
+alone. Per in-plane axis the grid runs from the contour's lowest coordinate minus 2, clipped at 0, to the largest
+over the contour's slices of (the slice's highest coordinate, plus 1 when the slice's extent is even) plus 2; in z it
+spans the contour's slices; where it reaches past the input AIM it is zero-padded. The cascade runs there on the
+rendered cortical contour and the cortical segmentation, and the pore map is pasted back onto the input AIM's grid
+(the reports record the grids). The grid matters because the cascade's slice-wise steps measure every component
+against the non-bone voxels of its slice in the grid they run on. On the 137 validation scans the predicted grid is
+IPL's own render grid on 137 of 137, and with IPL's configuration-A inputs (IPL's rendered cortical contour and
+cortical segmentation) run through the workflows' code the pore map is identical to IPL's on all 116 radius and tibia
+scans and all 21 patellae; run on the plain grid of the input AIM instead, as the code did before this rule, it
+differed from IPL's on 4 of the 137 (`ormir_bqrl/README.md`, "The pore map's grid").
 
 ## How it was derived
 
@@ -127,8 +133,8 @@ r = cort_trab_separation(grey, per, TIBIA)                       # r["cort"], r[
 with IPL uses that definition. ORMIR-BQRL and `ipldt-pipeline` report Tb.Th on the whole SEG inside the trabecular
 contour, which measures a trabecula cut by the endocortical boundary at its full width; the scripts' definition is
 computed by `ipldt-dt-thickness` on TRAB_SEG, `ipldt-ipl-morphometry --trab-seg` or
-`ipldt.ormir.ipl_morphometry(..., trab_seg=...)`. The two are not interchangeable, so state which one you report
-(`ormir_bqrl/README.md`, "Tb.Th").
+`ipldt.ormir.ipl_morphometry(..., trab_seg=...)` (`dt_thickness` itself takes either object). The two are not
+interchangeable, so state which one you report (`ormir_bqrl/README.md`, "Tb.Th").
 
 Parameters keep IPL's names and defaults (ridge_epsilon 0.9, assign_epsilon 0.5, peel_iter -1, version 3; the
 tibia and radius parameter sets of the evaluation script); see the docstrings of `ipldt.core`, `ipldt.step1` and
@@ -145,11 +151,12 @@ pip install -e ".[bqrl,test]"      # Python 3.11+; on Python 3.10, ".[io,test]" 
 pytest -m "not slow"               # synthetic phantoms; add the gpu extra for the CuPy tests (they skip without CUDA)
 ```
 
-The `slow` tests and a few others compare against IPL's exported products of real scans and probe runs, which are not
-public; they skip when the data are absent. Laboratory users point `IPLDT_LAB_ROOT` at the data folder
-(`validation/datapaths.py` lists the layout and the per-location variables). The de-identification rewrote the code
-and tests as well, so they name the scans by their pseudonyms and find the data only when it is laid out under those
-names; with the scanner's own names the real-data tests skip and the image-figure scripts stop.
+The `slow` tests and a few others compare against IPL's exported products of real scans and of dedicated test runs on
+the scanner (the paper's probes), which are not public; they skip when the data are absent. Laboratory users point
+`IPLDT_LAB_ROOT` at the data folder (`validation/datapaths.py` lists the layout and the per-location variables). The
+de-identification rewrote the code and tests as well, so they name the scans by their pseudonyms and find the data
+only when it is laid out under those names and that layout; with the scanner's own names the real-data tests skip and
+the image-figure scripts stop.
 
 ## Regenerating the paper's numbers
 
@@ -178,10 +185,9 @@ the record. `manuscript/README.md` maps every figure, table and fact to its scri
   identifiers are all replaced by keyed pseudonyms (HMAC-SHA256; the key stays with the authors), consistently in
   file names, records, tables, figure sidecars, documentation and the comments and tests of the code, so that every
   cross-reference still resolves: a radius / tibia scan is `<region>/<study>/<six-digit pseudonym>`, a patella
-  `PFJ-<six hex digits>_<L|R>`, a file identifier `X<seven digits>`. The only scan identifiers kept as they are are
-  the ones the paper itself prints (the scans of Figure 6 and Supplementary Figure S9, for example
-  Diaphyseal/CKD/2422; `PRINTED_BY_THE_PAPER` in the tool). The list that links the pseudonyms to the scans stays
-  with the authors.
+  `PFJ-<six hex digits>_<L|R>`, a file identifier `X<seven digits>`. No scan identifier is kept as it is: the paper
+  prints none (its figures name a scan by its site), and the tool's `stage` checks that against the paper. The list
+  that links the pseudonyms to the scans stays with the authors.
 - **Vendor material.** The manufacturer's evaluation scripts, IPL's help pages and logs and the result sheets are
   vendor material and are not redistributed; the code names IPL's commands and parameters only as far as needed to
   say what it reimplements.

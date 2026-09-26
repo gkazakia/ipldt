@@ -1,8 +1,8 @@
-"""The power-of-two padding of /fft_laplace_hamming: IPL puts the extra voxel BEFORE the data (probe 21, 2026-09-17).
+"""The power-of-two padding of /fft_laplace_hamming: IPL puts the extra voxel BEFORE the data (test run 21, 2026-09-17).
 
 WHAT IS PINNED HERE
   * ormir.lh_pad_plan: 'ceil' (lo = d - d // 2, IPL's rule) and 'floor' (lo = d // 2, the rule shipped before
-    2026-09-17) on the axis lengths probe 21 used, and that an unknown rule is refused;
+    2026-09-17) on the axis lengths test run 21 used, and that an unknown rule is refused;
   * pad_offset='floor' is BYTE-IDENTICAL to the pre-refactor laplace_hamming_threshold, whose code is copied
     verbatim below (the refactor into lh_filter_core moved the crop before the elementwise scaling, which must not
     move a bit);
@@ -10,7 +10,7 @@ WHAT IS PINNED HERE
     D3P_FFT_AdjustDimensionsMirror there), on an odd-padded box they differ;
   * validation/validate_dataset.py's laplace_hamming_threshold, which delegates to the core, equals the engine
     under both rules, and its border='none' is the core's own threshold;
-  * against IPL's OWN exports (the probe-21 folder, skipped when it is not mounted; IPLDT_PROBE21_DIR relocates
+  * against IPL's OWN exports (the test-run-21 folder, skipped when it is not mounted; IPLDT_RUN21_DIR relocates
     it): on the two sharpest phantoms, x63i61 (an impulse one voxel below the high x face: its thresholded export
     is non-empty only under floor + reflect, and came back EMPTY) and x63i01 (one voxel above the low x face:
     non-empty only under ceil + reflect, and came back with 6 voxels set), the core under 'ceil' reproduces the
@@ -28,14 +28,14 @@ from ipldt import ormir
 from ipldt.io import read_aim
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROBE21 = os.environ.get("IPLDT_PROBE21_DIR", lab_path("Python/scripts/IPL/probes/p21_lh_padding"))
+RUN21 = os.environ.get("IPLDT_RUN21_DIR", lab_path("ipl_test_runs/run21"))
 THR = ormir.LH_THRESHOLD
 EL = (0.0607, 0.0607, 0.0607)
 
 
 # ------------------------------------------------------------------- the pre-refactor function, VERBATIM (2026-09-17)
 def shipped_floor_reference(native_int16, voxel_size_mm=None):
-    """ipldt.ormir.laplace_hamming_threshold as it read before the probe-21 refactor (the 2026-09-16 file, lines
+    """ipldt.ormir.laplace_hamming_threshold as it read before the test-run-21 refactor (the 2026-09-16 file, lines
     528-576), copied verbatim with the module constants qualified."""
     if voxel_size_mm is None:
         el = ormir.LH_EL_SIZE_FALLBACK_MM
@@ -153,19 +153,19 @@ def test_harness_copy_is_the_engine():
     assert defaults["dtype"] == ormir.LH_DTYPE == "float32"     # the harness follows the engine's defaults (2026-09-17: float32)
 
 
-# ------------------------------------------------------------------------- against IPL's own exports (probe 21)
+# ------------------------------------------------------------------------- against IPL's own exports (test run 21)
 @pytest.fixture(scope="module")
-def probe21():
-    up, ex = os.path.join(PROBE21, "upload"), os.path.join(PROBE21, "aims_and_logs")
+def run21():
+    up, ex = os.path.join(RUN21, "upload"), os.path.join(RUN21, "aims_and_logs")
     if not (os.path.isdir(up) and os.path.isdir(ex)):
-        pytest.skip(f"probe-21 folder not mounted: {PROBE21} (set IPLDT_PROBE21_DIR)")
+        pytest.skip(f"test-run-21 folder not mounted: {RUN21} (set IPLDT_RUN21_DIR)")
 
     def load(tag):
-        paths = dict(inp=os.path.join(up, f"x2420448_p21_{tag}.aim"),
-                     **{k: os.path.join(ex, f"X2420448_P21_{tag.upper()}_{k}.AIM") for k in ("LH", "NM", "SG")})
+        paths = dict(inp=os.path.join(up, f"x2420448_t21_{tag}.aim"),
+                     **{k: os.path.join(ex, f"X2420448_T21_{tag.upper()}_{k}.AIM") for k in ("LH", "NM", "SG")})
         missing = [p for p in paths.values() if not os.path.exists(p)]
         if missing:
-            pytest.skip(f"probe-21 files missing: {missing}")
+            pytest.skip(f"test-run-21 files missing: {missing}")
         X = {k: read_aim(p) for k, p in paths.items()}
         for k in ("LH", "NM", "SG"):
             assert tuple(X[k]["dim"]) == tuple(X["inp"]["dim"]) and tuple(X[k]["pos"]) == tuple(X["inp"]["pos"])
@@ -174,8 +174,8 @@ def probe21():
 
 
 @pytest.mark.parametrize("tag, ipl_sg_voxels", [("x63i61", 0), ("x63i01", 6)])
-def test_probe21_phantom_matches_ipl_under_ceil(probe21, tag, ipl_sg_voxels):
-    X = probe21(tag)
+def test_run21_phantom_matches_ipl_under_ceil(run21, tag, ipl_sg_voxels):
+    X = run21(tag)
     vol, el = np.asarray(X["inp"]["data"]), tuple(float(e) for e in X["inp"]["el_size_mm"])
     assert vol.dtype == np.int16 and vol.shape == (64, 64, 63)                   # (z, y, x): 63 on x only
     lh, sh = ormir.lh_filter_core(vol.astype(np.float32), el, "ceil")
@@ -192,8 +192,8 @@ def test_probe21_phantom_matches_ipl_under_ceil(probe21, tag, ipl_sg_voxels):
 
 
 @pytest.mark.parametrize("tag", ["x63i61", "x63i01"])
-def test_probe21_phantom_refutes_floor(probe21, tag):
-    X = probe21(tag)
+def test_run21_phantom_refutes_floor(run21, tag):
+    X = run21(tag)
     vol, el = np.asarray(X["inp"]["data"]), tuple(float(e) for e in X["inp"]["el_size_mm"])
     lh_f, sh_f = ormir.lh_filter_core(vol.astype(np.float32), el, "floor")
     lh_ipl = np.asarray(X["LH"]["data"], np.float32)

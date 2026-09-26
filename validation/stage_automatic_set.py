@@ -1,9 +1,9 @@
-"""Stage IPL's AUTOMATIC evaluation run of each of the 63 OS_LH measurements whose delivered evaluation was later
+"""Stage IPL's AUTOMATIC evaluation run of each of the 63 radius / tibia measurements whose delivered evaluation was later
 corrected by an operator, as a normal, single-version measurement folder the existing harness can read unchanged.
 
-Source   <IPLDT_LAB_ROOT>/PFJOA/XCT_full_grab/edited_all/<Tag>/        (VMS versions of the scanner fetch, read-only)
+Source   <IPLDT_LAB_ROOT>/radius_tibia/scanner_versions_set1/<Tag>/        (every stored version of the scanner fetch, read-only)
 Mapping  AUTOMATIC_VERSION_SET.json of the internal decode (IPLDT_AUTOMATIC_VERSION_SET; not distributed)
-Target   <IPLDT_LAB_ROOT>/Cross_validation_IPL/OS_LH_AUTO/<Group>/<Sub>/<meas>/
+Target   <IPLDT_LAB_ROOT>/radius_tibia/set1/<Group>/<Sub>/<meas>/
 The inputs are not public; the script documents how the validation set was assembled.
 
 Products are HARDLINKED (same NTFS volume) so the 35 GB is not duplicated; only the two rendered
@@ -26,8 +26,8 @@ from ipldt.io import read_aim, write_aim
 from ipldt.contour.gobj_file import read_gobj, path as gobj_path
 from ipldt.contour.render import polygon_fill
 
-SRC = lab_path("PFJOA/XCT_full_grab/edited_all")
-DST = lab_path("Cross_validation_IPL/OS_LH_AUTO")
+SRC = lab_path("radius_tibia/scanner_versions_set1")
+DST = lab_path("radius_tibia/set1")
 MAP = os.environ.get("IPLDT_AUTOMATIC_VERSION_SET") or os.path.join(SRC, "AUTOMATIC_VERSION_SET.json")   # internal decode
 VARIANT = 8          # the chain-path variant validated in syn_render (0 mismatches vs IPL's own export, 63/63)
 

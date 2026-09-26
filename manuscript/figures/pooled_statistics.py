@@ -8,7 +8,7 @@ map agreement, configuration-B SEG agreement, the configuration-B metrics) are r
 loader and estimators and written to validation/results/pooled_137_comparison.json (block n137), which
 manuscript/facts/build_facts.py must reproduce.
 
-One of the 54, Diaphyseal/BMAT/610892, ships no IPL SEG (IPL's evaluation command errored), so it enters only
+One of the 54, Diaphyseal/BMAT/610892, ships no IPL SEG (its evaluation run exported none), so it enters only
 the comparisons that do not need one: Ct.Th in both configurations and the configuration-B trabecular
 metrics.  Every statistic below states its own n.
 

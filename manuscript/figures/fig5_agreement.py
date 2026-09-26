@@ -244,13 +244,22 @@ def load_scans(oslh_dirs=OSLH_DIRS):
 
 
 # ------------------------------------------------------------------------------------------------ formatting
+SUP = str.maketrans("-0123456789", "\u207b\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079")
+SUP_FONTS = ["Arial", "DejaVu Sans"]      # Arial has the superscript digits; the superscript minus comes from DejaVu Sans
+
+
+def sup(e):
+    """An integer exponent as Unicode superscripts (a 7-pt glyph, not a 4.9-pt mathtext script): -6 -> '⁻⁶'."""
+    return str(int(e)).translate(SUP)
+
+
 def sci(v, digits=2):
-    """3.44e-06 -> '3.4 x 10^-6' in mathtext; 0 -> '0'."""
+    """3.44e-06 -> '3.4 × 10⁻⁶' (Unicode superscripts); 0 -> '0'."""
     if v == 0:
         return "0"
     e = int(math.floor(math.log10(abs(v))))
     m = v / 10 ** e
-    return rf"${m:.{digits - 1}f}\times10^{{{e}}}$"
+    return f"{m:.{digits - 1}f} \u00d7 10{sup(e)}".replace("-", "\u2212")
 
 
 def unit_str(u):
@@ -298,7 +307,7 @@ def draw_regression(ax, scans, key, label, unit, st, letter):
     ax.set_title(label, pad=3)
     ax.locator_params(nbins=4)
     # the data lie on the diagonal, so the lower-right triangle is always free of points
-    txt = (f"slope {st['slope']:.6f}\n$R^2$ {st['r2']:.6f}\nICC {st['icc21']:.6f}\n"
+    txt = (f"slope {st['slope']:.6f}\nR\u00b2 {st['r2']:.6f}\nICC {st['icc21']:.6f}\n"
            f"equal {st['identical']}/{st['n']}")          # scalars: 'equal' (12 s.f.); 'identical' is for voxel maps
     ax.text(0.96, 0.05, txt, transform=ax.transAxes, ha="right", va="bottom", fontsize=7, color=INK, linespacing=1.25)
     panel_letter(ax, letter)
@@ -320,7 +329,7 @@ def draw_bland_altman(ax, scans, key, label, unit, st, letter):
     ax.set_xlim(xlo, xhi)
     ax.set_ylim(-top, 2.15 * top)          # the band above 1.25 x the data range holds the annotation
     ax.set_xlabel(f"mean of IPL and ipldt {label}{unit_str(unit)}")
-    ax.set_ylabel(rf"ipldt $-$ IPL {label} ($\times10^{{{e}}}$" + (f" {unit})" if unit else ")"))
+    ax.set_ylabel(f"ipldt \u2212 IPL {label} (\u00d710{sup(e)}" + (f" {unit})" if unit else ")"), fontfamily=SUP_FONTS)
     ax.set_title(label, pad=3)
     ax.locator_params(axis="x", nbins=4)
     ax.locator_params(axis="y", nbins=5)
@@ -329,7 +338,8 @@ def draw_bland_altman(ax, scans, key, label, unit, st, letter):
     else:
         txt = (f"bias {sci(st['bias'])}\nLoA {sci(st['loa_low'])} to {sci(st['loa_high'])}\n"
                f"max |rel.| {st['max_rel_pct']:.3f}%")
-    ax.text(0.04, 0.96, txt, transform=ax.transAxes, ha="left", va="top", fontsize=7, color=INK, linespacing=1.25)
+    ax.text(0.04, 0.96, txt, transform=ax.transAxes, ha="left", va="top", fontsize=7, color=INK, linespacing=1.25,
+            fontfamily=SUP_FONTS)
     panel_letter(ax, letter)
 
 

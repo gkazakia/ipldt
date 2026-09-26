@@ -18,7 +18,7 @@ IPL commands in ipldt.ipl_ops).  Agreement with IPL V5.42 is reported voxel for 
 
     from ipldt import cort_trab_separation, TIBIA
     grey = read_aim("X2420448.AIM")                               # native short greyscale
-    per = read_aim("X2420448_P16_00_ALL.AIM")                     # rendered periosteal contour
+    per = read_aim("X2420448_T16_00_ALL.AIM")                     # rendered periosteal contour
     r = cort_trab_separation(grey, per, TIBIA)                     # r["cort"], r["trab"] = CORT/TRAB_MASK
 
 Parameters are IPL's: ridge_epsilon (0.9), assign_epsilon (0.5), peel_iter (-1),

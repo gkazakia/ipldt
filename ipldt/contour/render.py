@@ -29,8 +29,8 @@ THE RULE, per slice of the mask raster:
             stores nothing for it.  The theorem covers chains that stage B processes; an un-activated raw
             chain bypasses stage B and is stored raw, and stage A alone has 12 six-vertex fixed points, so a
             raw un-activated 6-vertex chain is the one shape that separates the thresholds 4..6 from 7..8.
-            Probe 19 (2026-09-14, the tiny-hole phantom on PFJ-0be66a_R's TRAB_MASK grid, exports
-            X2420448_P19_TINY / _PHRT and P19TINY.GOBJ, not distributed):
+            Test run 19 (2026-09-14, the tiny-hole phantom on PFJ-0be66a_R's TRAB_MASK grid, exports
+            X2420448_T19_TINY / _PHRT and T19TINY.GOBJ, not distributed):
             a vertical 1x2 hole in a 20x20 block (test h_v12) yields exactly that chain and IPL STORES it -- a
             6-element inner contour on each of the 3 test slices, vertex for vertex ipldt's, the hole kept in
             /gobj_to_aim's rendering (MIN_VERTICES 4: 0 differing voxels on the whole export; 8 would fill the
@@ -49,8 +49,8 @@ THE RULE, per slice of the mask raster:
             slices, all exact; the phantom round trip PHRT exact (8,910 voxels); IPL's /gobj_to_aim grid is
             the contour bounding box (217x59x88 @ 893,192,172) and its log prints 'Sli N CLEARED' for every
             contour-free slice.  Oracles before the phantom (2026-09-14): PFJ-6f5538_R
-            P17 29_trabfinal z332, an 8-px hexagon on the last slice (raw 6 -> stage A 3 vertices): IPL's
-            P17TRAB gobj has no contour on that slice (its /gobj_to_aim grid ends at z 331 while the mask ends
+            T17 29_trabfinal z332, an 8-px hexagon on the last slice (raw 6 -> stage A 3 vertices): IPL's
+            T17TRAB gobj has no contour on that slice (its /gobj_to_aim grid ends at z 331 while the mask ends
             at z 332), MIN_VERTICES = 3 rendered 3 voxels; X2420448_CORT_MASK_version1 vs
             X2420448_CORT_MASK.GOBJ (version 1): 14/17/18/18/20-px components stored with 8/8/8/8/12 elements, exact.
             Consistent evidence, not an oracle: X3931708_CORT_MASK_version2 vs X3931708_CORT_MASK.GOBJ (version 2) is not
@@ -65,7 +65,7 @@ THE RULE, per slice of the mask raster:
   order     the stored slice lists the outer contours first (raster order of the components), then the
             inner contours (raster order of the holes).  Verified with several outer chains on PFJ-ab6af9_R's
             earlier cortical gobj X3931708_CORT_MASK.GOBJ (version 2) (46 slices with 2-4 outer chains of
-            XCT_masks/PFJ-ab6af9_R/X3931708_CORT_MASK_version2.AIM reproduced in stored order, 0 order
+            patellae/PFJ-ab6af9_R/X3931708_CORT_MASK_version2.AIM reproduced in stored order, 0 order
             mismatches); the order among several inner chains and the outer/inner interleaving of a slice
             with several outers AND a hole are the natural reading (no IPL gobj on disk has a slice with two
             holes) and do not affect the raster (render_slice is order-independent; the package writes no
@@ -85,14 +85,14 @@ THE RULE, per slice of the mask raster:
             nested inside another component's hole is outside the verified domain: the code keeps it (global
             even-odd behaviour; a sequential fill/erase renderer would erase it).
 
-VERIFICATION (2026-09-13, probe-15 exports, whole volumes compared by global position on the union of the
-two grids; probe-15 exports, not distributed):
-  cortical  render_volume(<base>_CORT_MASK.AIM) vs <base>_P15_CORT_G2A.AIM (gobj_to_aim of the cortical
-            gobj) and vs <base>_P15_CORT_CORTGRID_P0.AIM (gobj_maskaimpeel peel 0 on the CORT_MASK grid):
+VERIFICATION (2026-09-13, test-run-15 exports, whole volumes compared by global position on the union of the
+two grids; test-run-15 exports, not distributed):
+  cortical  render_volume(<base>_CORT_MASK.AIM) vs <base>_T15_CORT_G2A.AIM (gobj_to_aim of the cortical
+            gobj) and vs <base>_T15_CORT_CORTGRID_P0.AIM (gobj_maskaimpeel peel 0 on the CORT_MASK grid):
             0 mismatches on all 21 subjects, |IPL| == |ours| (e.g. PFJ-ab6af9_R 19,042,175, PFJ-0be66a_R 7,154,297,
             PFJ-351dc7_R 21,755,789, PFJ-6f5538_R 11,450,390, PFJ-69bcb0_L 12,269,733);
-  trabecular render_volume(<base>_TRAB_MASK.AIM) vs <base>_P15_TRAB_G2A.AIM and vs
-            <base>_P15_TRAB_SEGGRID_P0.AIM (peel 0 on the SEG grid; peel 0 == peel -1 there): 0 mismatches
+  trabecular render_volume(<base>_TRAB_MASK.AIM) vs <base>_T15_TRAB_G2A.AIM and vs
+            <base>_T15_TRAB_SEGGRID_P0.AIM (peel 0 on the SEG grid; peel 0 == peel -1 there): 0 mismatches
             on all 21 subjects (e.g. PFJ-ab6af9_R 35,988,981, PFJ-0be66a_R 20,328,498, PFJ-69bcb0_R 26,282,267);
   chains    every stored contour of the newest TRAB_MASK.GOBJ / CORT_MASK.GOBJ of the 21 subjects
             (P5MASK.GOBJ / P7MASK.GOBJ for PFJ-0be66a_R / PFJ-8bcf88_R trabecular) reproduced vertex for vertex,
@@ -106,13 +106,13 @@ two grids; probe-15 exports, not distributed):
             IPL does not store as a contour (exact-list comparison: fs differs on 6 slices, cp on 4);
             stored order: one outer + at most one inner per cohort slice; multi-outer order on
             X3931708_CORT_MASK.GOBJ (version 2) (46 slices);
-  replay    PFJ-0be66a_R's P16 replay: render_volume(X2420448_P16_28_CORTFINAL) vs X2420448_P16_30_CORTGOBJ 0,
-            render_volume(X2420448_P16_29_TRABFINAL) vs X2420448_P16_31_TRABGOBJ 0; P16CORT.GOBJ 336/336
-            and P16TRAB.GOBJ 168/168 chains.
-  tiny      2026-09-14 (MIN_VERTICES 3 -> 4): the 21 x 2 cohort renderings, the P17 30/31 renderings
-            of PFJ-0be66a_R / PFJ-42293d_L / PFJ-6f5538_R / PFJ-411dfd_R and PFJ-0be66a_R's P16 30/31 re-run at 0 mismatches (52
-            volumes; PFJ-6f5538_R P17 31_trabgobj 3 -> 0, |ours| = |IPL| = 1,893,500) and 12,914 / 12,914 stored chains
-            exact (11,906 cohort + P17CORT/P17TRAB of PFJ-411dfd_R 336 + 168 + P16CORT/P16TRAB 336 + 168); a
+  replay    PFJ-0be66a_R's T16 replay: render_volume(X2420448_T16_28_CORTFINAL) vs X2420448_T16_30_CORTGOBJ 0,
+            render_volume(X2420448_T16_29_TRABFINAL) vs X2420448_T16_31_TRABGOBJ 0; T16CORT.GOBJ 336/336
+            and T16TRAB.GOBJ 168/168 chains.
+  tiny      2026-09-14 (MIN_VERTICES 3 -> 4): the 21 x 2 cohort renderings, the T17 30/31 renderings
+            of PFJ-0be66a_R / PFJ-42293d_L / PFJ-6f5538_R / PFJ-411dfd_R and PFJ-0be66a_R's T16 30/31 re-run at 0 mismatches (52
+            volumes; PFJ-6f5538_R T17 31_trabgobj 3 -> 0, |ours| = |IPL| = 1,893,500) and 12,914 / 12,914 stored chains
+            exact (11,906 cohort + T17CORT/T17TRAB of PFJ-411dfd_R 336 + 168 + T16CORT/T16TRAB 336 + 168); a
             guard-free sweep (chains swept down to 3 vertices, MIN_VERTICES 3) gives the same 52 rasters.
 
 REFUTED by the exports: no phase 1 (4,989 trabecular voxels); phase 1 dropping EVERY run of 1 (31 cortical
@@ -145,12 +145,12 @@ S4 = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], bool)
 MIN_VERTICES = 4          # a chain with fewer vertices is not stored.  The smoothing sweep (ipldt.contour.smooth.sweep) has
                           # no fixed point below 8 vertices (brute force over every closed chain of 3..7 8-adjacent vertices),
                           # so a chain still shrinking at 3 vertices -- where sweep() stops (guard n < 4) -- is a collapsing
-                          # chain, and IPL stores nothing for it: PFJ-6f5538_R P17 29_trabfinal z332 (8-px hexagon, 6 -> 3
+                          # chain, and IPL stores nothing for it: PFJ-6f5538_R T17 29_trabfinal z332 (8-px hexagon, 6 -> 3
                           # vertices, no contour in IPL's gobj, whose z range ends one slice short) and, as consistent evidence
                           # rather than an oracle (not an exact mask -> gobj pair), 13 frozen-at-3 chains of
                           # X3931708_CORT_MASK_version2 vs X3931708_CORT_MASK.GOBJ (version 2).  IPL's shortest stored contours have
                           # 8 elements (14-px component, PFJ-0be66a_R X2420448_CORT_MASK.GOBJ (version 1) z204), so the values 4..8 agree
-                          # on every stored chain of the cohort oracles.  Probe 19 (2026-09-14, tiny-hole phantom): an
+                          # on every stored chain of the cohort oracles.  Test run 19 (2026-09-14, tiny-hole phantom): an
                           # un-activated raw 6-vertex inner chain (vertical 1x2 hole, which bypasses stage B) IS stored by
                           # IPL and its hole kept -> 4..6 confirmed, 7..8 refuted.  4 vs 5 vs 6 is unpinned for good: no raw
                           # chain of 4, 5 or 7 vertices is ever un-activated (stage A has no fixed point of those lengths)

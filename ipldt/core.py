@@ -44,7 +44,7 @@ _RIDGE_TOL = 1e-9     # IPL's containment test is non-strict: exact ties prune. 
                       # ridge_epsilon (1 + 2.5 - 3.5 = 0; sqrt8 + sqrt2 - sqrt18 = 0), and 1e-9 absorbs their
                       # float64 rounding (< 1e-12 for s < 4000) while staying 500x below the closest genuine
                       # non-tie of the shared-contact pair space |v_i| <= 80 (0.8999994949, s = 62).  The
-                      # former 1e-6 (with float32 distances) is the 2026-09-14 OS_LH finding: see ridge().
+                      # former 1e-6 (with float32 distances) is the 2026-09-14 radius / tibia finding: see ridge().
 
 
 # ---------------------------------------------------------------------------------- helpers
@@ -62,7 +62,7 @@ def surface_distance(V, xp=np):
     relative error (< 1e-13 absolute for s < 1000) and the same bits on the CPU and on the GPU
     (`xp` = numpy or cupy; IEEE sqrt on both).  float32 (spacing 7.6e-6 at s = 70) is NOT enough
     for the containment ridge (stage 3), whose value |x - y| + s_x - s_y has genuine near-ties at
-    the 1e-6 level in thick cortices.  Evidence: on three OS_LH diaphyseal tibiae (Ct.Th of the
+    the 1e-6 level in thick cortices.  Evidence: on three diaphyseal tibiae of the radius / tibia set (Ct.Th of the
     cortical compartment, cortex about 140 voxels thick; Diaphyseal/REPRO 314619, 797620, 134330) one
     centre with v = (-5, 70, -7) (314619; the same squared distances recur on the other two),
     s = sqrt(19571)/2 = 69.9481951, and its +x neighbour with s = sqrt(19627)/2 = 70.0481977 has
@@ -92,7 +92,7 @@ def ridge(obj, V, ridge_epsilon=0.9):
     while at 0 it absorbs the rounding of the true ties (< 1e-12 for s < 4000).  An exact integer
     decision (nested squaring of the three roots) would overflow int64 near s = 100 and is not
     needed.  The float32 evaluation used until 2026-09-14 (spacing 7.6e-6 at s = 70, tolerance
-    1e-6) kept a centre with the exact value 0.8999974 on three OS_LH diaphyseal tibiae (2,601 / 8 /
+    1e-6) kept a centre with the exact value 0.8999974 on three diaphyseal tibiae of the radius / tibia set (2,601 / 8 /
     9 Ct.Th voxels off IPL); float64 reproduces IPL on all three."""
     s = surface_distance(V)
     s[~obj] = 0

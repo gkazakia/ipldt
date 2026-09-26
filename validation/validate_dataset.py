@@ -1,5 +1,5 @@
 """validate_dataset -- dataset-agnostic, stage-by-stage validation of ipldt against Scanco IPL V5.42, driven
-by a LAYOUT description (one for the radius / tibia export -- 'OS_LH': ultradistal and diaphyseal tibia and radius
+by a LAYOUT description (one for the radius / tibia export -- 'oslh': ultradistal and diaphyseal tibia and radius
 measurements, from which the paper's 116 are drawn -- and one for the 21-patella cohort), computing THREE
 configurations per measurement:
 
@@ -17,7 +17,7 @@ configurations per measurement:
                                     rendering as the gobj: together with the support tests it tells which contour
                                     IPL's maps actually used (the maps' processing logs name 'trab_mask.gobj').
 
-WHAT THE OS_LH LAYOUT ENCODES (from the six IPL logs and the AIM processing logs of the exports; see docstrings)
+WHAT THE RADIUS / TIBIA LAYOUT ENCODES (from the six IPL logs and the AIM processing logs of the exports; see docstrings)
   * inputs per measurement: <base>.AIM (native int16 greyscale, calibration from its processing log), IPL's contour
     RENDERINGS <base>_CT.AIM (periosteal gobj = Script 32 stage 00), <base>_CORT_MASK_CT.AIM, <base>_TRAB_MASK_CT.AIM
     or <base>_TRAB_MASK_CORR_CT.AIM (manually corrected trabecular contour, flag CORR), IPL's SEG (127 cort + 126
@@ -26,7 +26,7 @@ WHAT THE OS_LH LAYOUT ENCODES (from the six IPL logs and the AIM processing logs
   * Ct.Th object, decided PER MEASUREMENT (cort_object 'auto'): 'periosteal_minus_trab' when render(periosteal - IPL's
     trab rendering) == CORT_MASK_CT (IPL's STEP 2/3 re-evaluation derived cort_mask.aim = gobj_to_aim(periosteal) -
     gobj_to_aim(trab_mask.gobj) and CORT_MASK.GOBJ = togobj_from_aim of it: the 2022 distal and 2024 re-evaluations, 345857 /
-    487451 / 2422 / 581203); else 'raw_cort' = STEP 1's own stage 28 when render(our 28) fits CORT_MASK_CT better than
+    487451 / 251016 / 581203); else 'raw_cort' = STEP 1's own stage 28 when render(our 28) fits CORT_MASK_CT better than
     render(periosteal - our trab rendering) (the 51 single-run 2026 diaphyseal evaluations: 876976 render(28) == CORT_MASK_CT
     exactly and CORT_TH == dt_thickness(our 28) exactly, whereas periosteal - trab gives 485 rendering / 335,740 map
     mismatches).  A's object follows the rule (our stage 28 stands in for the unexported CORT_MASK.AIM, flagged when its
@@ -36,34 +36,34 @@ WHAT THE OS_LH LAYOUT ENCODES (from the six IPL logs and the AIM processing logs
     scripts' Tb.Th is dt_thickness(TRAB_SEG) = TRAB_TH_tseg.  Both definitions are computed for every measurement and
     both are reported side by side: TRAB_TH_seg = dt_thickness(whole SEG) (what the shipped ORMIR-BQRL pipeline
     computes) and TRAB_TH_tseg.  ONE DEFINITION, NOT TWO (settled 2026-09-16).  Eleven exported TRAB_TH files used to
-    be reproduced by the whole-SEG object and not at all by our TRAB_SEG (2422: 0 mismatches with the whole SEG,
+    be reproduced by the whole-SEG object and not at all by our TRAB_SEG (251016: 0 mismatches with the whole SEG,
     85,187 with TRAB_SEG), which was recorded as a second definition.  It was not one: those eleven are exactly the
     measurements whose TRAB_SEG was never cropped to the trabecular contour, because Script 32 STEP 2's
     '/gobj_maskaimpeel_ow -input_output trab_gauss -gobj <base>_trab_mask.gobj' did not run -- ten SEG processing logs
     carry no D3P_GobjOrAimMaskAimPeel_OW after D3P_Cl_ExtractNumber_CPP (and no D3P_FillOffsetDuplicate either), and
-    610892, which ships no SEG, has its evaluation log showing both commands erroring.  An uncropped TRAB_SEG differs
+    610892, which ships no SEG, has an evaluation log in which neither command takes effect.  An uncropped TRAB_SEG differs
     from the whole SEG only by the 35..69-voxel components inside the cortical contour, which a map cropped to the
     TRABECULAR contour barely sees, so the whole SEG was simply the nearest object the harness could build for them.
-    Modelling the failure (trab_seg_mask 'none', now DETECTED from the same logs) reproduces those files far better
+    Modelling the missing crop (trab_seg_mask 'none', now DETECTED from the same logs) reproduces those files far better
     than the whole-SEG substitute did -- pooled over the ten, Tb.Th 37,119 -> 41 mismatching voxels (0..13 each, the
     cohort's ordinary residual) and max |Tb.Th| 4.83e-04 -> 6.99e-06 mm, with SEG 2,244 -> 90, Tb.Sp 853 -> 250 and
     1/Tb.N 176,890 -> 1,434 alongside -- and it is corroborated by IPL's own text three ways: the DT input-object
     count recovered from each delivered TRAB_TH's processing log matches the uncropped object to 0..8 voxels of
     2.8-15.1 M and never the cropped one (off by 12-94 %), 581203's two evaluation logs print 0.207404 mm / 99.1 % valid
-    for the run whose mask succeeded and 0.233023 mm / 88.5 % for the run where it errored while the delivered map's
+    for the run whose mask succeeded and 0.233023 mm / 88.5 % for the run where it did not take effect while the delivered map's
     own proclog says 0.23302, and every delivered map's printed statistics follow suit.  The same model is WRONG on
     the other 106 (950609: TRAB_SEG exact, unmasked 2,483 Tb.Th mismatches), so the detection is measurement-specific.
-    The per-measurement --trab-th auto therefore no longer finds a second definition anywhere: with the failure
+    The per-measurement --trab-th auto therefore no longer finds a second definition anywhere: with the missing crop
     modelled the two candidate objects COINCIDE on the eleven, and all 117 resolve to the scripts' TRAB_SEG.  The
     mechanism is kept for provenance and for anyone who wants to force one reading (--trab-th trab_seg / seg).
-    OS_LH exports no TRAB_SEG raster, so TRAB_SEG is reconstructed in A as SEG & trabecular rendering, or -- where
+    The radius / tibia delivery has no TRAB_SEG raster, so TRAB_SEG is reconstructed in A as SEG & trabecular rendering, or -- where
     IPL's log says the crop never ran -- as the delivered SEG's own support.  TRAB_SP / TRAB_1N on the whole SEG
     (Script 32 reads IPL_SEGAIM for them), Ct.Th on the cortical compartment.  All dt_* with IPL's Script 32 parameters.
   * two versions of the evaluation script exist in the cohort and are detected per measurement from IPL's SEG
     processing log: (2022, distal) /fill_offset_duplicate on the greyscale border (LH border 'duplicate';
     Distal/CKD/345857 with IPL's renderings: 1 SEG mismatch, vs 17,787 with 'none' and 110,542 with 'zero') and a bounding_box_cut of TRAB_SEG
-    (its TRAB_TH map is on that tight grid); (2024, diaphyseal) '/fill_offset_duplicate cort' errors in the log and
-    IPL's FFT mirror-pads the data region directly (LH border 'none': 2422 121 SEG mismatches vs 27,669 with
+    (its TRAB_TH map is on that tight grid); (2024, diaphyseal) no border fill precedes the filter (the log records no effect of
+    '/fill_offset_duplicate cort') and IPL's FFT mirror-pads the data region directly (LH border 'none': 251016 121 SEG mismatches vs 27,669 with
     'duplicate' and 177,608 with 'zero').  The proclog lists Cl_Label before the gobj-mask entry in the 2022 version,
     but the periosteal mask DOES come first there too (Distal/CKD/345857 with IPL's renderings: periosteal_first 1 mismatch,
     gobj_first 262; patella PFJ-0be66a_R: 5 vs 1,481): both assembly orders are computed in B and C; --seg-variant
@@ -79,14 +79,13 @@ WHAT THE OS_LH LAYOUT ENCODES (from the six IPL logs and the AIM processing logs
     inside that run's time window and not inside the first run's, and the three trabecular maps' logs
     carry neither D3P_FillOffsetDuplicate nor a D3P_GobjOrAimMaskAimPeel_OW after D3P_Cl_ExtractNumber_CPP, which is
     the second run's behaviour and not the first's.  That run began at STEP 2 in a fresh IPL session, so two commands
-    addressed objects STEP 1 would have left behind and errored: '/fill_offset_duplicate -input cort' ->
-    'IPL_Ol_GetAim: Undefined object name (cort)' (log line 221 ff., so LH border 'none', not 'duplicate') and
-    '/gobj_maskaimpeel_ow -input_output trab_gauss -gobj ..._trab_mask.gobj' -> 'Undefined object name (trab_gauss)'
-    (line 434 ff., so TRAB_SEG was never cropped to the trabecular contour; the FIRST run's same command succeeded,
-    '-> Set 4460987 of total 15679104', line 1465).  The third variant, trab_seg_mask ('gobj' / 'none'), is threaded
+    addressed objects that only STEP 1 creates, and IPL's log reports each input object as undefined:
+    '/fill_offset_duplicate -input cort' (log line 221 ff., so LH border 'none', not 'duplicate') and
+    '/gobj_maskaimpeel_ow -input_output trab_gauss -gobj ..._trab_mask.gobj' (line 434 ff., so TRAB_SEG was never
+    cropped to the trabecular contour; the FIRST run's same command took effect, line 1465).  The third variant, trab_seg_mask ('gobj' / 'none'), is threaded
     through assemble_seg; --trab-seg-mask overrides it.  Where a SEG exists the same fact is read from the SEG's own
     processing log -- a D3P_GobjOrAimMaskAimPeel_OW after D3P_Cl_ExtractNumber_CPP means 'gobj', its absence 'none' --
-    which gives 'gobj' for 111 of the 122 OS_LH SEGs and 'none' for 11 (the ten above plus rerun/581203), with no mixed
+    which gives 'gobj' for 111 of the 122 radius / tibia SEGs and 'none' for 11 (the ten above plus rerun/581203), with no mixed
     case and nothing else changed on the 111.  The log also NAMES the gobj of each masking block ('Gobj File:
     <disk>:[<dir>]<base>_trab_mask.gobj' for the crop, '<base>.gobj' for the periosteal mask), and the name agrees with the
     position on all 122: the 111 all name a _trab_mask.gobj and no _trab_mask.gobj appears anywhere in the 11 that
@@ -109,7 +108,7 @@ WHAT THE OS_LH LAYOUT ENCODES (from the six IPL logs and the AIM processing logs
     its own group (hashes show whether it duplicates the original folder); the CORR trab (used as IPL's trabecular
     rendering, flagged, A2 added).
 
-PATELLA LAYOUT: XCT_masks_full_grab/<subject>/<base>_*_decompressed.AIM with raw CORT_MASK / TRAB_MASK (periosteal =
+PATELLA LAYOUT: patellae/<subject>/<base>_*_decompressed.AIM with raw CORT_MASK / TRAB_MASK (periosteal =
 their union = stage 00; the renderings are ipldt's render_volume of the raw masks), SEG, TRAB_SEG, CORT_SEG, maps
 TRAB_TH (full-SEG definition), TRAB_TH_old (TRAB_SEG), TRAB_SP, TRAB_1N, CORT_TH (object = raw CORT_MASK); TIBIA preset.
 
@@ -138,7 +137,7 @@ and per-bone totals, exact counts, Dice ranges, metric differences, sample-wise 
 configuration), regression_data.json (sample-wise metric pairs and pooled voxel-wise joint histograms for plots).
 
 CLI
-    python validate_dataset.py --dataset oslh --subjects Distal/CKD/345857 Distal/CKD/487451 Diaphyseal/CKD/2422
+    python validate_dataset.py --dataset oslh --subjects Distal/CKD/345857 Distal/CKD/487451 Diaphyseal/CKD/251016
     python validate_dataset.py --dataset oslh --groups Distal/CKD rerun --resume
     python validate_dataset.py --dataset patella --subjects PFJ-0be66a_R --backend cpu --skip-dt
     python validate_dataset.py --dataset oslh --resume --include-excluded   # aggregates over every record again
@@ -177,8 +176,8 @@ import validate_from_ipl_contour as vfc  # noqa: E402  (compare_masks, compare_l
 
 VOXEL_MM = vai.VOXEL_MM
 # our maps: Tb.Th is computed under BOTH definitions IPL has used -- TRAB_TH_seg = dt_thickness(whole SEG) (the patella cohort's
-# corrected TRAB_TH, and what the 2026 OS_LH diaphyseal exports contain) and TRAB_TH_tseg = dt_thickness(TRAB_SEG) (Script 32 STEP 3 as
-# written: /read trab_seg.aim; the patella's TRAB_TH_old, the 2022 OS_LH distal exports); the layout says which IPL file each is compared with
+# corrected TRAB_TH, and what the 2026 radius / tibia diaphyseal exports contain) and TRAB_TH_tseg = dt_thickness(TRAB_SEG) (Script 32 STEP 3 as
+# written: /read trab_seg.aim; the patella's TRAB_TH_old, the 2022 radius / tibia distal exports); the layout says which IPL file each is compared with
 MAP_NAMES = ("TRAB_TH_seg", "TRAB_TH_tseg", "TRAB_SP", "TRAB_1N", "CORT_TH")
 MAP_OBJECT = {"TRAB_TH_seg": "seg", "TRAB_TH_tseg": "trab_seg", "TRAB_SP": "seg", "TRAB_1N": "seg", "CORT_TH": "cort"}
 MAP_GOBJ = {"TRAB_TH_seg": "trab", "TRAB_TH_tseg": "trab", "TRAB_SP": "trab", "TRAB_1N": "trab", "CORT_TH": "cort"}
@@ -241,7 +240,7 @@ def split_excluded(records, rows=None, include_excluded=False):
 # ------------------------------------------------------------------------------------------------ layouts
 LAYOUTS = {
     "oslh": dict(
-        root=os.environ.get("OSLH_ROOT") or lab_path("Cross_validation_IPL/OS_LH"),
+        root=os.environ.get("OSLH_ROOT") or lab_path("radius_tibia/delivery"),
         groups=["Distal/CKD", "Distal/REPRO", "Diaphyseal/BMAT", "Diaphyseal/CKD", "Diaphyseal/REPRO", "rerun"],
         grey=r"^(?P<base>[A-Z]\d{7})\.AIM$",
         periosteal=["{base}_CT.AIM"],                                   # IPL's rendering of the periosteal gobj (stage 00)
@@ -267,7 +266,7 @@ LAYOUTS = {
         trab_seg_mask="auto",                       # was /gobj_maskaimpeel_ow with the trabecular contour applied to
                                                     # TRAB_SEG?  'auto': 'gobj' everywhere a SEG exists, and from IPL's
                                                     # evaluation log for the one measurement that ships none (610892,
-                                                    # where the command errored); see detect_variants
+                                                    # where the command did not take effect); see detect_variants
         site="auto",
         bone_key="region_bone",
     ),
@@ -428,7 +427,7 @@ def proclog_field(vol, key):
 def gobj_timeline(grey, inp, layout):
     """Creation dates of the contour files behind the renderings (the 'Original Creation-Date' of a
     D3P_GobjCreateAimPeel export) against the evaluation start (the greyscale's ISQ_TO_AIM 'Time' = STEP 1).  A
-    trabecular contour saved long after STEP 1 under the standard name is a later manual correction (2422: TRAB_MASK.GOBJ
+    trabecular contour saved long after STEP 1 under the standard name is a later manual correction (251016: TRAB_MASK.GOBJ
     saved about eight weeks after STEP 1, CORT_MASK.GOBJ 27 min after that).  Threshold 15 min: a single run writes both gobjs
     within 1.5 min of ISQ_TO_AIM (876976 / 312922 / 655328 / 581203), whereas the re-saved contours of the plain distal evaluations
     came 32 min (802246), 55 min (386723) and 10 - 23 days (950636 / 969383 / 113739 / 379176 / 114224 / 779503) later and none of those
@@ -630,13 +629,13 @@ def laplace_hamming_threshold(native_int16, el_size_mm, border="duplicate", keep
     /bounding_box_cut -border 1 1 1 + /offset_add put around the greyscale before /fft_laplace_hamming:
       'duplicate'  the border filled by /fill_offset_duplicate (np.pad edge, then the power-of-2 mirror padding) --
                    the 2022 script and the patella evaluation (= the ipldt function);
-      'none'       no border at all: the 2024 script's '/fill_offset_duplicate cort' fails on an undefined object and
-                   IPL's FFT mirror-pads the data region directly (2422: 121 SEG mismatches with 'none' vs 27,669 with
+      'none'       no border at all: in the 2024 diaphyseal evaluation no border fill precedes the filter and
+                   IPL's FFT mirror-pads the data region directly (251016: 121 SEG mismatches with 'none' vs 27,669 with
                    'duplicate' and 177,608 with 'zero', IPL's own renderings);
-      'zero'       the border left at zero (refuted on 2422, kept for --lh-border).
+      'zero'       the border left at zero (refuted on 251016, kept for --lh-border).
     The padding, FFT, filter, scaling and truncation are ipldt.ormir.lh_filter_core ITSELF (delegated since
     2026-09-17, so the harness and the engine cannot drift); pad_offset is its power-of-two padding offset -- 'ceil'
-    (IPL's rule, probe 21) or 'floor' (the rule every result under validation/results was computed with before
+    (IPL's rule, test run 21) or 'floor' (the rule every result under validation/results was computed with before
     2026-09-17; --lh-pad-offset floor reproduces them); dtype is its FFT / filter arithmetic -- 'float32' (the shipped
     engine, ormir.LH_DTYPE) or 'float64' (--lh-dtype float64, the opt-in under study since 2026-09-17: the same
     operations in double precision, rounded to float32 before IPL's float -> short conversion).  keep_border returns
@@ -664,9 +663,8 @@ def laplace_hamming_threshold(native_int16, el_size_mm, border="duplicate", keep
 # --------------------------------------------------------------------------------- IPL's own evaluation log (.LOG)
 # Read ONLY when a measurement ships no SEG, whose processing log is otherwise the source of these variants.  An IPL
 # job log is a flat transcript: a command is a line '/name' at column 0, its '  -option value' arguments follow, then
-# the operator's output until '!%  /name completed'.  A command that could not find its input object prints
-# 'IPL_Ol_GetAim: Undefined object name (x)' inside its own block and still 'completes', so a failure is only visible
-# there -- which is exactly what happened twice in Diaphyseal/BMAT/610892's second run (see parse_eval_log).
+# the operator's output until '!%  /name completed'.  A command that could not find its input object reports that
+# inside its own block and still 'completes', so the missing effect is only visible there -- as happened twice in Diaphyseal/BMAT/610892's second run (see parse_eval_log).
 _IPL_CMD_RE = re.compile(r"^/([a-z0-9_]+)\s*$")
 _IPL_OPT_RE = re.compile(r"^ {2,}-(\S+)\s+(.*?)\s*$")
 _IPL_DONE_RE = re.compile(r"^!%\s+/([a-z0-9_]+) completed")
@@ -714,15 +712,15 @@ def parse_eval_log(path):
 
     The segmentation is the sub-run that contains /fft_laplace_hamming; inside it,
       lh_border       'duplicate' when /fill_offset_duplicate ran on the very object /fft_laplace_hamming then read
-                      (the 2022 / first-run behaviour), 'none' when it errored or ran on something else -- in
+                      (the 2022 / first-run behaviour), 'none' when it did not take effect or ran on something else -- in
                       610892's and 581203's SECOND runs the script starts at STEP 2 in a fresh IPL session, so its
-                      '-input cort' names an object STEP 1 would have left behind and the command reports
-                      'IPL_Ol_GetAim: Undefined object name (cort)': the Laplace-Hamming input has no border.
+                      '-input cort' names an object only STEP 1 creates and IPL's log reports it as undefined: the
+                      Laplace-Hamming input has no border.
       seg_variant     'periosteal_first' when the first /gobj_maskaimpeel_ow that succeeded precedes the first
                       /cl_nr_extract, 'gobj_first' when the labelling comes first; None when the log cannot say.
       trab_seg_mask   'gobj' when the /gobj_maskaimpeel_ow with the trabecular contour that follows the labelling
-                      succeeded, 'none' when it errored (610892 / 581203 run 2: '-input_output trab_gauss' ->
-                      'Undefined object name (trab_gauss)', so TRAB_SEG is the raw /cl_nr_extract output and the
+                      took effect, 'none' when it did not (610892 / 581203 run 2: the log reports '-input_output trab_gauss' as
+                      undefined), so TRAB_SEG is the raw /cl_nr_extract output and the
                       trabecular compartment of SEG is never cropped to the trabecular contour), None when absent.
     Nothing here is inferred from our own numbers: every field points at a line of IPL's transcript."""
     with open(path, "r", encoding="latin-1", errors="replace") as fh:
@@ -874,10 +872,10 @@ def detect_variants(seg_vol, layout, folder=None, base=None, products=None):
     comes first) and whether TRAB_SEG was cropped to the trabecular contour ('gobj' when a D3P_GobjOrAimMaskAimPeel_OW
     follows D3P_Cl_ExtractNumber_CPP, 'none' when none does).
 
-    FALLBACK -- IPL's EVALUATION LOG, used only when the measurement ships no SEG (one measurement in the OS_LH
+    FALLBACK -- IPL's EVALUATION LOG, used only when the measurement ships no SEG (one measurement in the radius / tibia
     cohort, Diaphyseal/BMAT/610892), where there is no SEG processing log to read and the previous code fell back to
     the cohort's usual values.  The evaluation log is IPL's own transcript of the run, so the same three facts are
-    read from the commands themselves -- including the two that ERRORED in 610892's second run and left the delivered
+    read from the commands themselves -- including the two that did not take effect in 610892's second run and left the delivered
     products without a duplicated Laplace-Hamming border and with an unmasked TRAB_SEG.  When several runs exist the
     run is identified from the delivered files' own processing logs (choose_eval_log), never assumed.
 
@@ -885,10 +883,10 @@ def detect_variants(seg_vol, layout, folder=None, base=None, products=None):
     /gobj_maskaimpeel_ow did not run and TRAB_SEG is the raw component extraction) is read on BOTH paths from the same
     fact -- whether the masking command appears after the component extraction -- in the SEG's processing log where one
     exists, and in IPL's transcript of the run where it does not.  The two paths agree wherever both records exist:
-    610892's evaluation log shows the command erroring, and the ten SEG proclogs that lack the entry lack
-    D3P_FillOffsetDuplicate with it, which is the same failure's other half.  The SEG path also records the gobj FILE
+    610892's evaluation log shows the command not taking effect, and the ten SEG proclogs that lack the entry lack
+    D3P_FillOffsetDuplicate with it, the other half of the same pattern.  The SEG path also records the gobj FILE
     NAME each masking block prints (evidence 'gobj_mask_files' / 'gobj_mask_names_trab_mask'): a '_trab_mask.gobj'
-    identifies the crop independently of where it sits in the chain, the two readings agree on all 122 OS_LH SEG
+    identifies the crop independently of where it sits in the chain, the two readings agree on all 122 radius / tibia SEG
     logs, and a disagreement is recorded as a note for a human rather than silently deciding.
 
     Everything is recorded under 'evidence' and 'source'; --lh-border / --seg-variant / --trab-seg-mask override."""
@@ -927,10 +925,10 @@ def detect_variants(seg_vol, layout, folder=None, base=None, products=None):
             # <base>_trab_mask.gobj', which the SEG's processing log records as a D3P_GobjOrAimMaskAimPeel_OW AFTER the
             # D3P_Cl_ExtractNumber_CPP of the labelling.  Its presence means TRAB_SEG was cropped ('gobj'); its
             # absence means the command did not run, so TRAB_SEG is the raw extraction ('none') -- the same absence
-            # that IPL's evaluation log shows being CAUSED, by that command erroring on an undefined object, in the one
-            # measurement that ships no SEG (610892, see parse_eval_log).  Of the 122 OS_LH SEG processing logs 111 carry
+            # that IPL's evaluation log shows arising, from that command finding no object of that name, in the one
+            # measurement that ships no SEG (610892, see parse_eval_log).  Of the 122 radius / tibia SEG processing logs 111 carry
             # the entry and 11 carry none, with no mixed case, and those 11 are exactly the measurements whose proclog
-            # also lacks D3P_FillOffsetDuplicate -- the second command that errors in the same failed run.
+            # also lacks D3P_FillOffsetDuplicate -- the second command that does not take effect in the same run.
             out["trab_seg_mask"] = "gobj" if mask_after_extract else "none"
             out["evidence"]["trab_gobj_mask_absent_from_seg_proclog"] = not mask_after_extract
             out["evidence"]["cl_extract_index"] = i_ex
@@ -938,7 +936,7 @@ def detect_variants(seg_vol, layout, folder=None, base=None, products=None):
             # CORROBORATION FROM THE SAME LOG, added 2026-09-16 by the adversarial review: every
             # D3P_GobjOrAimMaskAimPeel_OW block prints the gobj it masked with ('Gobj File: <disk>:[<dir>]<base>_trab_mask.gobj'
             # for the trabecular crop, '<base>.gobj' for the periosteal mask), so the entry can be identified by NAME and
-            # not only by its position after the extraction.  The two readings agree on all 122 OS_LH SEG logs -- the 111
+            # not only by its position after the extraction.  The two readings agree on all 122 radius / tibia SEG logs -- the 111
             # with a post-extract entry all name a _trab_mask.gobj, and no _trab_mask.gobj appears anywhere in the 11 that
             # have none -- which closes the only ambiguity the positional rule had (a log whose sole late entry were a
             # periosteal mask; no such log exists here).  The names are RECORDED, and a disagreement is flagged as a
@@ -1024,7 +1022,7 @@ def assemble_seg(bm_ext, grey_grid, periosteal, cort_gobj, trab_gobj, variant, t
       gobj_first (2022 script): components labelled on the whole thresholded volume (border included), cort_seg =
           bbox(cl_nr(bm, 35) & cort gobj), trab_seg = bbox(cl_nr(bm, 70) & trab gobj), SEG = bbox(add on the union).
     trab_masked=False drops the '& trab gobj' from the trabecular branch, which is what IPL's own log shows happening
-    when its '/gobj_maskaimpeel_ow -input_output trab_gauss' errors on an undefined object (Diaphyseal/BMAT/610892's
+    when its '/gobj_maskaimpeel_ow -input_output trab_gauss' finds no object of that name (Diaphyseal/BMAT/610892's
     second run): TRAB_SEG is then the raw /cl_nr_extract output and SEG's 126 label is everything /cl_nr_extract kept
     that the 127 cortical label did not already claim.  The cortical branch is untouched either way.
     Returns dict(SEG (uint8 127/126 volume), TRAB_SEG, CORT_SEG (bool volumes), seg_box, lh_voxels, overlap, variant,
@@ -1185,7 +1183,7 @@ class Inputs:
 
 
 def build_periosteal(inp, layout):
-    """IPL's stage 00: the periosteal rendering file (OS_LH) or CORT_MASK | TRAB_MASK of the raw masks (patella)."""
+    """IPL's stage 00: the periosteal rendering file (radius / tibia) or CORT_MASK | TRAB_MASK of the raw masks (patella)."""
     if layout["periosteal"]:
         return set_vol(inp.vol("periosteal"))
     cort, trab = inp.vol("raw_cort"), inp.vol("raw_trab")
@@ -1193,7 +1191,7 @@ def build_periosteal(inp, layout):
 
 
 def ipl_renderings(inp, layout, cache_dir, meas):
-    """IPL's cortical / trabecular contour renderings: files (OS_LH) or render_volume of the raw masks (patella,
+    """IPL's cortical / trabecular contour renderings: files (radius / tibia) or render_volume of the raw masks (patella,
     cached as bool .npy on the mask's own grid).  A cortical file that is an evaluation-written RASTER (581203: periosteal
     rendering minus trab rendering, D3P_Concatenate in its log) is rendered here, since the contour IPL's dt used is
     togobj_from_aim of that raster.  Returns (renderings, notes)."""
@@ -1342,10 +1340,10 @@ def process_measurement(meas, args, cache_dir, inventory=None):
                           products=lambda: {f"map:{n}": (inp.map(n) or {}).get("proclog", "") for n in L["maps"] if meas.map_files.get(n)})
     if args.lh_border != "auto":
         var["lh_border"] = args.lh_border
-    var["lh_pad_offset"] = getattr(args, "lh_pad_offset", ormir.LH_PAD_OFFSET)     # probe 21: 'ceil'; 'floor' = the pre-2026-09-17 results
+    var["lh_pad_offset"] = getattr(args, "lh_pad_offset", ormir.LH_PAD_OFFSET)     # test run 21: 'ceil'; 'floor' = the pre-2026-09-17 results
     var["lh_dtype"] = getattr(args, "lh_dtype", ormir.LH_DTYPE)                    # 'float32' = the shipped engine; 'float64' = the opt-in
     # the Laplace-Hamming cut-off IPL actually used, from its own SEG processing log (it prints
-    # "fft.lp_cut_off_freq").  116 of the 117 OS_LH measurements use 0.30000; Diaphyseal/CKD/991161's
+    # "fft.lp_cut_off_freq").  116 of the 117 radius / tibia measurements use 0.30000; Diaphyseal/CKD/991161's
     # automatic run used 0.20000, and computing it at 0.3 puts ~1.28 M voxels into configuration B.
     _lp = proclog_field(seg_ipl, "fft.lp_cut_off_freq")
     try:
@@ -1476,7 +1474,7 @@ def process_measurement(meas, args, cache_dir, inventory=None):
         log_trial(T2)
         rec["B"]["preset_trials"][other] = trial_record(T2)
         # switch only when the other preset is exact or at least halves the mismatch (a few per cent either way is a
-        # hand-edited contour, not a preset question: 2422 radius 71,174 vs tibia 70,557)
+        # hand-edited contour, not a preset question: 251016 radius 71,174 vs tibia 70,557)
         if T2["score"] < 0.5 * T["score"]:
             preset, T = other, T2
             rec["B"]["step1"] = step1_info(T["info"], preset)
@@ -1531,7 +1529,7 @@ def process_measurement(meas, args, cache_dir, inventory=None):
 
     def a_cort_object():
         """The Ct.Th object of configurations A / C: IPL's STEP 2/3 raster (periosteal - IPL's trab rendering), IPL's raw
-        CORT_MASK file (patella), or -- 'raw_cort' without a raw file (the OS_LH single-run evaluations) -- our stage 28, which
+        CORT_MASK file (patella), or -- 'raw_cort' without a raw file (the radius / tibia single-run evaluations) -- our stage 28, which
         stands in for the unexported CORT_MASK.AIM (like for like when its rendering equals IPL's CORT_MASK_CT)."""
         if cort_rule == "periosteal_minus_trab":
             return cort_object_pm(per, ipl_G["trab"])
@@ -1642,7 +1640,7 @@ def process_measurement(meas, args, cache_dir, inventory=None):
                 if f is not None:
                     out[nm] = vfc.compare_masks(s[nm], f)
             if "TRAB_SEG" not in out:
-                # no TRAB_SEG file (OS_LH): compare our TRAB_SEG with SEG & IPL's trabecular rendering
+                # no TRAB_SEG file (radius / tibia): compare our TRAB_SEG with SEG & IPL's trabecular rendering
                 d, p = grid_of(seg_ipl)
                 out["TRAB_SEG_vs_seg_and_rendering"] = vfc.compare_masks(s["TRAB_SEG"], bvol((np.asarray(seg_ipl["data"]) != 0) & on(ipl_G["trab"], d, p), d, p))
             c = out["SEG"]
@@ -1986,10 +1984,10 @@ def write_table_md(rows, path, have_dt):
     if have_dt:
         P += ["Tb.Th definitions: TRAB_TH_seg = dt_thickness(whole SEG) -- what the shipped ORMIR-BQRL pipeline computes -- and TRAB_TH_tseg = dt_thickness(TRAB_SEG) -- what "
               "Scripts 32, 33 and 34 compute (/dt_thickness on IPL_FNAME5 = TRAB_SEG, cropped to the trabecular gobj).  Both are computed for every measurement and both are "
-              "reported below; each is compared with the IPL file the layout names (OS_LH: IPL's single TRAB_TH; patella: TRAB_TH_old is the TRAB_SEG map and TRAB_TH the whole-SEG one).  "
+              "reported below; each is compared with the IPL file the layout names (radius / tibia: IPL's single TRAB_TH; patella: TRAB_TH_old is the TRAB_SEG map and TRAB_TH the whole-SEG one).  "
               "The reported Tb.Th follows --trab-th (column 'reported Tb.Th definition'), which defaults to 'auto': each measurement is compared against the definition its own "
-              "exported IPL file used.  Since the failed trabecular crop is modelled (variants.trab_seg_mask 'none', read from IPL's own logs) 'auto' selects TRAB_SEG for every "
-              "OS_LH measurement -- on the eleven whose crop failed the two candidate objects coincide, so the choice is no longer a live one and the field records provenance.  "
+              "exported IPL file used.  Since the missing trabecular crop is modelled (variants.trab_seg_mask 'none', read from IPL's own logs) 'auto' selects TRAB_SEG for every "
+              "radius / tibia measurement -- on the eleven whose crop did not run the two candidate objects coincide, so the choice is no longer a live one and the field records provenance.  "
               "--trab-th seg forces the whole-SEG reading everywhere.", ""]
         for cfg, title in (("A", "A: dt on IPL's SEG + IPL's renderings"), ("B", "B: ipldt from IPL's periosteal contour, our renderings"),
                            ("C", "C: our LH SEG with IPL's renderings"), ("A2", "A2: IPL's SEG with our uncorrected trabecular rendering (CORR only)")):
@@ -2222,7 +2220,7 @@ def main(argv=None):
     ap.add_argument("--root", default=None, help="dataset root (default: the layout's)")
     ap.add_argument("--results", default=None, help="results folder (default validation/results/<dataset>/validate/; a partial run goes to a subset_ subfolder of it)")
     ap.add_argument("--subjects", nargs="*", default=None, help="measurement ids (Distal/CKD/345857, Distal_CKD_345857, 345857, X1496677; patella: PFJ-0be66a_R)")
-    ap.add_argument("--groups", nargs="*", default=None, help="layout groups to include (OS_LH: Distal/CKD Distal/REPRO Diaphyseal/BMAT Diaphyseal/CKD Diaphyseal/REPRO rerun)")
+    ap.add_argument("--groups", nargs="*", default=None, help="layout groups to include (radius / tibia: Distal/CKD Distal/REPRO Diaphyseal/BMAT Diaphyseal/CKD Diaphyseal/REPRO rerun)")
     ap.add_argument("--backend", default="auto", choices=["auto", "gpu", "cpu"])
     ap.add_argument("--skip-dt", action="store_true", help="masks, renderings and SEGs only (no maps / metrics)")
     ap.add_argument("--resume", action="store_true", help="skip measurements whose records/<id>.json exists")
@@ -2254,7 +2252,7 @@ def main(argv=None):
     ap.add_argument("--lh-border", default="auto", choices=["auto", "duplicate", "none", "zero"], help="Laplace-Hamming greyscale border (auto = from IPL's SEG processing log: duplicate / none)")
     ap.add_argument("--lh-both", action="store_true", help="also compute the other LH border variants' SEGs (reported, not used downstream)")
     ap.add_argument("--lh-pad-offset", default=ormir.LH_PAD_OFFSET, choices=list(ormir.LH_PAD_OFFSETS),
-                    help="power-of-two padding offset of /fft_laplace_hamming: ceil (IPL's rule, probe 21, default) or floor "
+                    help="power-of-two padding offset of /fft_laplace_hamming: ceil (IPL's rule, default) or floor "
                          "(the rule every result under validation/results was computed with before 2026-09-17)")
     ap.add_argument("--lh-dtype", default=ormir.LH_DTYPE, choices=list(ormir.LH_DTYPES),
                     help="FFT / filter arithmetic of /fft_laplace_hamming: float32 (the shipped engine, default; every result "

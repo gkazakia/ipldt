@@ -25,7 +25,7 @@ def lab_path(rel):
     return os.path.join(LAB_ROOT or "IPLDT_LAB_ROOT_is_not_set", rel).replace("\\", "/")
 
 
-DEFAULT_DATA_ROOT = lab_path("PFJOA/XCT_masks_full_grab")
+DEFAULT_DATA_ROOT = lab_path("patellae")
 DATA_ROOT = os.environ.get("IPLDT_DATA_ROOT", DEFAULT_DATA_ROOT)
 
 requires_gpu = pytest.mark.skipif(not cupy_available(), reason="CuPy / CUDA device not available")

@@ -1,4 +1,4 @@
-"""IPL parameter semantics as derived on the scanner (state file, probe 12):
+"""IPL parameter semantics as derived on the scanner (state file, test run 12):
 assign_epsilon is the sphere-drawing tolerance (so the map grows monotonically with it),
 peel_iter erodes the rendered gobj slice-wise with 4-connectivity before the centre selection,
 suppress_boundary has no effect, and gobj accepts a raw raster, {'mask': ...}, {'rendered': ...} or None."""

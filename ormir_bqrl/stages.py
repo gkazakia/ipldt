@@ -7,7 +7,7 @@ stage functions themselves.  Every numeric step is an ipldt.ormir public functio
     segment       render_on_own_box, laplace_hamming_threshold, ipl_seg_assembly         /fft_laplace_hamming ... /add_aims
     morphometry   bbox_cut, volume, ipl_morphometry, ipldt.io.align_to                    /dt_thickness /dt_spacing /dt_number
     bmd           step5_bmd                 (ORMIR-XCT bmd_masked)
-    porosity      ipldt.porosity.pore_cascade + ct_po (run_pipeline's STEP 5c)            Script 32 STEP 2 pore cascade
+    porosity      step5c_porosity           (ipldt.porosity on IPL's render grid + ct_po)   Script 32 STEP 2 pore cascade
     write_volumes write_volume (NIfTI via ipldt.io.write_nifti, or AIM via ipldt.io.write_aim with the input
                   AIM's header) + the Slicer files (ormir_bqrl.slicer)
 
@@ -17,10 +17,13 @@ RENDERED periosteal contour (ALL = CORT_MASK | TRAB_MASK = IPL's /gobj seg GOBJ0
 deliberate difference from ipldt.ormir.run_pipeline (it masks with the autocontour's raw raster); on rasters
 whose rendering is the identity (IPL's own contours, the test phantom) the two agree exactly.
 
-`porosity` is run_pipeline's STEP 5c unchanged: the rendered cortical contour (G_cort) and CORT_SEG, each as a
-char volume 0 / 127 on the AIM grid, go to ipldt.porosity.pore_cascade; Ct.Po = ipldt.porosity.ct_po of its
-pore map over that contour, i.e. |PORE & cortical contour| / |cortical contour|.  It runs after every
-segmentation, so a run and every kind of redo recompute it from their own compartments.
+`porosity` is run_pipeline's STEP 5c (ipldt.ormir.step5c_porosity) unchanged: the rendered cortical contour
+(G_cort) and CORT_SEG go to ipldt.porosity.pore_cascade on the grids IPL runs Script 32's pore block on -- the
+contour on its /gobj_to_aim grid (ipldt.porosity.render_grid: the contour's box grown by 2 voxels on the low side
+and 2 or 3 on the high side of each in-plane axis, clipped at 0, zero-padded where it reaches past the AIM),
+CORT_SEG on the tight box of its voxels -- and the pore map is pasted back onto the AIM grid; Ct.Po =
+ipldt.porosity.ct_po of that map over the contour, i.e. |PORE & cortical contour| / |cortical contour|.  It runs
+after every segmentation, so a run and every kind of redo recompute it from their own compartments.
 
 Conventions: arrays are numpy (z, y, x); sizes / positions are (x, y, z) as ipldt.io uses them; masks are bool
 on the AIM grid; SEG is uint8 127 / 126; maps are int16 diameters in voxels (IPL's AIM values) and become float32
@@ -151,7 +154,7 @@ class Segmentation:
     trab_seg: np.ndarray
     seg: np.ndarray
     lh_el_size_mm: tuple
-    lh_pad_offset: str = engine.LH_PAD_OFFSET     # /fft_laplace_hamming power-of-two padding offset (probe 21: 'ceil')
+    lh_pad_offset: str = engine.LH_PAD_OFFSET     # /fft_laplace_hamming power-of-two padding offset (test run 21: 'ceil')
 
     def counts(self):
         return {"LH_threshold_voxels": int(self.lh.sum()), "CORT_SEG_voxels": int(self.cort_seg.sum()),
@@ -178,6 +181,7 @@ class Porosity:
     metrics: dict
     computed: bool = False
     error: str | None = None
+    grids: dict | None = None      # {render, cort_seg, cascade}: dim_xyz / pos_xyz of the grids the cascade ran on
 
 
 MAP_NAMES = ("TRAB_TH", "TRAB_SP", "TRAB_1N", "CORT_TH")
@@ -299,7 +303,7 @@ def segment(loaded, ALL, cort, trab, G_cort=None, G_trab=None, log=None):
     t = time.time()
     lh_el = tuple(float(e) for e in loaded.native["el_size_mm"])
     log(f"  Laplace-Hamming element sizes (x, y, z) = {lh_el[0]:.7f} / {lh_el[1]:.7f} / {lh_el[2]:.7f} mm (AIM header, per axis, IPL's rule); "
-        f"power-of-two padding offset '{engine.LH_PAD_OFFSET}' (probe 21)")
+        f"power-of-two padding offset '{engine.LH_PAD_OFFSET}' (IPL's rule)")
     lh = engine.laplace_hamming_threshold(loaded.native["data"], lh_el, pad_offset=engine.LH_PAD_OFFSET)
     cort_seg, trab_seg = engine.ipl_seg_assembly(lh, ALL, G_cort, G_trab)
     seg = np.zeros(lh.shape, np.uint8)
@@ -359,24 +363,18 @@ def bmd(loaded, G_trab, G_cort, log=None):
 
 
 def porosity(loaded, G_cort, cort_seg, log=None):
-    """(5c) the cortical pore cascade and Ct.Po, exactly ipldt.ormir.run_pipeline's STEP 5c: the rendered cortical
-    contour and CORT_SEG as char volumes (0 / 127) on the AIM grid -> ipldt.porosity.pore_cascade -> the pore map;
-    ipldt.porosity.ct_po(pore, contour) = |PORE & contour| / |contour|.  As in run_pipeline a failure is logged
-    and never fails the morphometry (Porosity.computed False, the message in Porosity.error)."""
-    from ipldt import porosity as _por
+    """(5c) the cortical pore cascade and Ct.Po, exactly ipldt.ormir.run_pipeline's STEP 5c
+    (ipldt.ormir.step5c_porosity): the rendered cortical contour and CORT_SEG (bool on the AIM grid) are moved
+    onto the grids IPL runs the cascade on -- the contour's /gobj_to_aim grid, ipldt.porosity.render_grid, and
+    the tight box of CORT_SEG -- ipldt.porosity.pore_cascade runs there, and the pore map comes back on the AIM
+    grid; ipldt.porosity.ct_po(pore, contour) = |PORE & contour| / |contour|.  As in run_pipeline a failure is
+    logged and never fails the morphometry (Porosity.computed False, the message in Porosity.error)."""
     log = _log(log)
     grid = loaded.grid
-    log("STEP 5c - cortical pore cascade (Burghardt) + Ct.Po ...")
     try:
-        _cr = engine.volume(np.asarray(G_cort, bool).astype(np.uint8) * 127, grid.dim, grid.pos)
-        _cs = engine.volume(np.asarray(cort_seg, bool).astype(np.uint8) * 127, grid.dim, grid.pos)
-        _pore = _por.pore_cascade(_cr, _cs)["pore"]
-        _po = _por.ct_po(_pore, _cr)
-        metrics = {"Ct_Po": float(_po["ct_po"]), "Ct_Po_pore_voxels": int(_po["pore_voxels"]),
-                   "Ct_Po_compartment_voxels": int(_po["mask_voxels"])}
-        log(f"  Ct.Po = {_po['ct_po']:.5f}  ({_po['pore_voxels']:,d} pore voxels of "
-            f"{_po['mask_voxels']:,d} in the cortical compartment)")
-        return Porosity(pore=align_to(_pore, grid.dim, grid.pos) != 0, metrics=metrics, computed=True)
+        pore, metrics, grids = engine.step5c_porosity(as_bool(G_cort, grid, "cortical gobj"),
+                                                      as_bool(cort_seg, grid, "CORT_SEG"), grid.dim, grid.pos, log)
+        return Porosity(pore=pore, metrics=metrics, computed=True, grids=grids)
     except Exception as exc:     # porosity is a courtesy: never fail the morphometry for it (run_pipeline's rule)
         log(f"  porosity skipped: {type(exc).__name__}: {exc}")
         return Porosity(pore=None, metrics={}, computed=False, error=f"{type(exc).__name__}: {exc}")
@@ -388,7 +386,7 @@ def _ext(map_format):
 
 
 def write_volumes(out_dir, loaded, masks, segmentation, morph, map_units="voxels", log=None, pore=None, map_format="nifti"):
-    """The output set of section 7.1: every mask, SEG, the pore map and the dt maps on the AIM grid, as NIfTI
+    """The output set (ormir_bqrl/README.md, "Outputs"): every mask, SEG, the pore map and the dt maps on the AIM grid, as NIfTI
     (map_format 'nifti': origin = pos x el) or as char AIMs on the input AIM's header (map_format 'aim':
     ipldt.ormir.write_volume -> ipldt.io.write_aim, as run_pipeline writes them; maps as integer diameters in
     voxels, which must fit the char range 0..255 -- checked before anything is written); <base>_HU is always

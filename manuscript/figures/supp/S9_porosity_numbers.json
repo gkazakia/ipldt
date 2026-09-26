@@ -239,9 +239,14 @@
  },
  "I": {
   "scans": [
-   "Diaphyseal/CKD/2422",
-   "Distal/REPRO/2051"
+   "Diaphyseal/CKD/251016",
+   "Distal/REPRO/444590"
   ],
+  "labels": [
+   "a diaphyseal tibia",
+   "an ultradistal tibia"
+  ],
+  "column_header": "diaph. tibia / UD tibia",
   "rows": [
    {
     "label": "mode 0, both bounds inclusive: seed v \u2264 1, weak v \u2264 3 (ipldt)",
@@ -377,7 +382,7 @@
   "disagreeing": [],
   "points": [
    {
-    "id": "Diaphyseal/CKD/2422",
+    "id": "Diaphyseal/CKD/251016",
     "dataset": "oslh",
     "site": "diaphyseal tibia",
     "ours": 0.08040784344652327,
@@ -710,12 +715,13 @@
  },
  "figure": {
   "width_mm": 180.0,
-  "height_mm": 258.2,
+  "height_mm": 227.5,
   "dpi": 300,
   "voxel_mm": 0.06069942191243172,
-  "scan": "Diaphyseal/CKD/2422",
+  "scan": "Diaphyseal/CKD/251016",
   "base": "X6435585",
   "site": "diaphyseal tibia",
+  "label": "a diaphyseal tibia",
   "slice_index": 101,
   "slice_number_1based": 102,
   "window": [
@@ -724,11 +730,11 @@
    100
   ],
   "text_overflows": 0,
-  "generated": "2026-09-25 16:59"
+  "generated": "2026-09-26 10:07"
  },
  "computed": {
   "main": {
-   "id": "Diaphyseal/CKD/2422",
+   "id": "Diaphyseal/CKD/251016",
    "base": "X6435585",
    "site": "diaphyseal tibia",
    "voxel_mm": 0.06069942191243172,
@@ -1024,7 +1030,7 @@
    }
   },
   "second": {
-   "id": "Distal/REPRO/2051",
+   "id": "Distal/REPRO/444590",
    "base": "X4829835",
    "site": "ultradistal tibia",
    "voxel_mm": 0.06069965288043022,

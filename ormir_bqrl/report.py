@@ -110,7 +110,11 @@ def porosity_parameters(poro):
     """The parameters block of stage 5c: the ipldt calls, their fixed Script 32 arguments and the contour grid."""
     from ipldt import porosity as _por
     return {"method": "ipldt.porosity.pore_cascade", "ct_po": "ipldt.porosity.ct_po: |PORE & cortical contour| / |cortical contour|",
-            "contour": "rendered cortical contour (CORT_GOBJ) and CORT_SEG, char 0 / 127 on the AIM grid (ipldt.ormir.run_pipeline STEP 5c)",
+            "contour": "rendered cortical contour (CORT_GOBJ) and CORT_SEG (ipldt.ormir.step5c_porosity = run_pipeline STEP 5c)",
+            "grid_rule": (f"ipldt.porosity.pore_cascade_ipl_grid: the contour on IPL's /gobj_to_aim grid (its box grown by "
+                          f"{_por.RENDER_GRID_MARGIN} low and {_por.RENDER_GRID_MARGIN} or {_por.RENDER_GRID_MARGIN + 1} high per "
+                          f"in-plane axis, clipped at 0), CORT_SEG on its tight box; the map pasted back onto the AIM grid"),
+            "grids": None if poro is None else poro.grids,
             "hysteresis": dict(_por.SCRIPT32_HYSTERESIS), "slice_fraction_percent": list(_por.SLICE_FRACTION),
             "min_pore_voxels": _por.MIN_PORE_VOXELS, "computed": bool(poro is not None and poro.computed),
             "error": None if poro is None else poro.error}
@@ -120,7 +124,7 @@ def porosity_parameters(poro):
 def build_report(*, kind, loaded, masks, segmentation, morph, bmd, site, step1_params, step1_info, dt_params,
                  map_units, compute_bmd, outputs, timing, started, duration_s, command=None, out_dir=None,
                  derived_from=None, edits=None, calibration_source=None, porosity=None, map_format="nifti"):
-    """The report dict of section 8 (schema ormir-bqrl/1).  `masks.provenance` carries a Prov per mask;
+    """The report dict (schema ormir-bqrl/1; ormir_bqrl/README.md, "Outputs").  `masks.provenance` carries a Prov per mask;
     `edits` is None for a run and the edit block of a redo; `porosity` is stage 5c's stages.Porosity (None when
     the pore cascade was not run)."""
     grid = loaded.grid
@@ -274,10 +278,14 @@ def render_markdown(report):
         if pp.get("error"):
             line += f" ({pp['error']})"
         L.append(line)
+        if pp.get("grid_rule"):
+            L.append(f"- Ct.Po grid: {pp['grid_rule']} (the grids: 'porosity' rows below)")
     L.append(f"- output format: {P.get('map_format', 'nifti')}; map units: {P['map_units']}")
     L += ["", "## Grids (x, y, z)", "", "| Grid | dim | pos |", "|---|---|---|"]
     for k, g in r["grids"].items():
         L.append(f"| {k} | {g['dim_xyz']} | {g['pos_xyz']} |")
+    for k, g in ((pp or {}).get("grids") or {}).items():         # the pore cascade's grids (stage 5c)
+        L.append(f"| porosity {k} | {g['dim_xyz']} | {g['pos_xyz']} |")
     c = r["compartments"]
     L += ["", "## Voxel counts", "", "| Volume | Voxels |", "|---|---|"]
     for k, v in c.items():

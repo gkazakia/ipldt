@@ -1,6 +1,6 @@
 {
- "id": "Diaphyseal/REPRO/5876",
- "tag": "Diaphyseal_REPRO_5876",
+ "id": "Diaphyseal/REPRO/353308",
+ "tag": "Diaphyseal_REPRO_353308",
  "group": "Diaphyseal/REPRO",
  "base": "X2077003",
  "dataset": "oslh",
@@ -225,7 +225,7 @@
    "region": "D",
    "bone": "radius",
    "site": 20,
-   "index_measurement": "5876",
+   "index_measurement": "353308",
    "name_notes": [],
    "subject": "REPRO-cfcb85"
   },

@@ -52,7 +52,7 @@ sys.path.insert(0, REPO)
 from ipldt.io import read_aim  # noqa: E402
 from ipldt.contour import render_slice  # noqa: E402
 
-DATA_DIR = lab_path("PFJOA/XCT_masks_full_grab/PFJ-0be66a_R")
+DATA_DIR = lab_path("patellae/PFJ-0be66a_R")
 BASE = "X2420448"
 PRX_NIFTI = os.environ.get("IPLDT_FIG1_PRX_MASK") or lab_path(f"ormir_run_PFJ-0be66a/{BASE}_PRX_MASK.nii.gz")
 FACTS = os.path.join(REPO, "manuscript", "facts", "facts.json")

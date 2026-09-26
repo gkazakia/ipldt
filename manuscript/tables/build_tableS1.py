@@ -766,7 +766,7 @@ TABLE_S1 = [
     ('Distance transforms (STEP 3)',
      '/dt_thickness -input (Tb.Th)',
      'seg (TRAB_TH); trab_seg (TRAB_TH_old)',
-     "the workflow's default: the whole segmentation inside the trabecular contour (TRAB_TH), the segmentation Tb.Sp and Tb.N are also computed from; for the comparison with IPL: the trabecular part of the segmentation inside the trabecular contour (TRAB_SEG; TRAB_TH_old), the object of IPL's evaluation script; ipldt computes both",
+     "reported by the workflow: the whole segmentation inside the trabecular contour (TRAB_TH), the segmentation Tb.Sp and Tb.N are also computed from; for the comparison with IPL: the trabecular part of the segmentation inside the trabecular contour (TRAB_SEG; TRAB_TH_old), the object of IPL's evaluation script; ipldt computes both, and dt_thickness takes either object",
      'the binary object in which the Tb.Th spheres are fitted; the two maps differ only where a trabecula meets the endocortical boundary, which TRAB_SEG truncates and the whole segmentation keeps at its full width',
      'Figure 4A; S7K, S7L'),
     ('Distance transforms (STEP 3)',
@@ -816,6 +816,12 @@ TABLE_S1 = [
      'cort_render / contour_render',
      "IPL's own <base>_CORT_MASK_CT.AIM where one is delivered, otherwise render_volume of the raw cortical mask pasted onto the periosteal contour's bounding box",
      "the rendered cortical compartment every stage of the cascade is confined to; the cascade depends on the grid it is rendered on and not only on its content, because the slice-wise rule takes its denominator from the set voxels of each slice (the mask's own tight box leaves corner fragments that pass the 5% bound and add pore voxels)",
+     'S9A'),
+    ('Cortical porosity (Ct.Po)',
+     '/gobj_to_aim grid of CORT_MASK.GOBJ (the grid the pore block runs on)',
+     'RENDER_GRID_MARGIN',
+     "2 (voxels; low end = the contour's lowest in-plane coordinate − 2, clipped at 0; high end = the highest coordinate, taken + 1 on a slice of even extent, + 2; z = the contour's slices)",
+     "the grid the workflows run the cascade on, predicted from the rendered cortical contour alone (render_grid; equal to IPL's own render grid on 137/137 scans): the slice-wise rule's per-slice denominator depends on it",
      'S9A'),
     ('Cortical porosity (Ct.Po)',
      '/cl_slicewise_extractow -lo_vol_fract_in_perc (both pore passes)',
@@ -1035,6 +1041,7 @@ def check_against_code(printed):
         "MIN_PORE_VOXELS": num(porosity.MIN_PORE_VOXELS), "low_thresh": num(hys["low_thresh"]),
         "high_thresh": num(hys["high_thresh"]), "unit": num(hys["unit"]), "mode": num(hys["mode"]),
         "grow_axes": " ".join(num(g) for g in hys["grow_axes"]),
+        "RENDER_GRID_MARGIN": num(porosity.RENDER_GRID_MARGIN),
     }
     for name, val in expect.items():
         p = by_key.get((M, name))

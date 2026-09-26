@@ -1,6 +1,6 @@
 {
- "id": "Diaphyseal/CKD/2422",
- "tag": "Diaphyseal_CKD_2422",
+ "id": "Diaphyseal/CKD/251016",
+ "tag": "Diaphyseal_CKD_251016",
  "group": "Diaphyseal/CKD",
  "base": "X6435585",
  "dataset": "oslh",
@@ -236,7 +236,7 @@
    "region": "D",
    "bone": "tibia",
    "site": 39,
-   "index_measurement": "2422",
+   "index_measurement": "251016",
    "name_notes": [],
    "subject": "CKD-dea1c6"
   },

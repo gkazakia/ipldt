@@ -1,6 +1,6 @@
 """The containment ridge (stage 3) must decide near-ties as the exact value does.
 
-2026-09-14, OS_LH cohort: on three diaphyseal tibiae (Diaphyseal/REPRO 314619, 797620, 134330; Ct.Th of the
+2026-09-14, radius / tibia cohort: on three diaphyseal tibiae (Diaphyseal/REPRO 314619, 797620, 134330; Ct.Th of the
 cortical compartment, cortex about 140 voxels thick) the float32 surface distances used until then
 kept ONE sphere centre that IPL prunes.  With v_x = (-5, 70, -7) and the +x neighbour's
 v_y = (-5, 70, -8) (the same contact voxel) the exact ridge value

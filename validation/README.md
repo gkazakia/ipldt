@@ -66,7 +66,7 @@ The names `<OSLH_AUTO>` and `<OSLH_NOEDIT>` are set in `result_sets.py`.
 
 ### Record format
 
-Each record of `validate_dataset.py` holds: `id` (for example `Diaphyseal/CKD/2422`), `tag`, `group`, `base` (the
+Each record of `validate_dataset.py` holds: `id` (for example `Diaphyseal/CKD/251016`), `tag`, `group`, `base` (the
 pseudonymised file identifier of the measurement), `meta` (region, bone, site index, study label), `grey` (grid and element
 size), `inputs` (type, dimensions and position of each IPL file used; no paths), `preset` (the STEP-1 parameter set),
 `variants` (the evaluation-script variant read from IPL's processing logs), `seg_variant_used` (the SEG assembly order
@@ -93,8 +93,8 @@ authors). The scan identifiers get keyed pseudonyms from the same key, consisten
 figure sidecars, documentation and the comments and tests of the code: the scanner's measurement number of a
 radius / tibia record (`<region>/<study>/<measurement>`) becomes six digits, the study's knee identifier of a patella
 becomes `PFJ-<6 hex digits>_<L|R>` (both knees of a participant share it) and the scanner's file identifier (`base`)
-becomes `X` and seven digits. The only scan identifiers kept as they are are the ones the paper prints
-(`PRINTED_BY_THE_PAPER` in the tool: the scans of Figure 6 and Supplementary Figure S9). The same tool's `verify`
+becomes `X` and seven digits. No scan identifier is kept as it is: the paper prints none (`PRINTED_BY_THE_PAPER` in
+the tool is empty, and its `stage` checks that against the paper). The same tool's `verify`
 command scans a whole tree for identifiers, vendor material, local paths and references to internal material. The
 published harness writes the study label instead of the name and file names instead of paths, but its raw output
 should still be treated as internal until it has been through the de-identification.

@@ -95,7 +95,7 @@ def ridge_gpu(obj, V, ridge_epsilon=0.9, tol=1e-9):
     """26-neighbour containment test on the GPU: the same float64 arithmetic as ipldt.core.ridge
     (surface distances from the exact integer 4 s^2 through one IEEE sqrt, the same operation
     order, the same 1e-9 tolerance), so the centre sets are bit-identical.  Precision rule and
-    the OS_LH evidence (2026-09-14; float32 kept a centre of exact ridge value 0.8999974 on three
+    the radius / tibia evidence (2026-09-14; float32 kept a centre of exact ridge value 0.8999974 on three
     diaphyseal tibiae, 2,601 / 8 / 9 Ct.Th voxels off IPL): ipldt.core.surface_distance / ridge."""
     import cupy as cp
     import itertools

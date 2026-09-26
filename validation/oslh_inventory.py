@@ -1,5 +1,5 @@
-"""oslh_inventory -- inventory and consistency audit of the OS_LH cross-validation export
-(<IPLDT_LAB_ROOT>/Cross_validation_IPL/OS_LH: 123 HR-pQCT measurement folders, distal and diaphyseal
+"""oslh_inventory -- inventory and consistency audit of the radius / tibia cross-validation export
+(<IPLDT_LAB_ROOT>/radius_tibia/delivery: 123 HR-pQCT measurement folders, distal and diaphyseal
 tibia / radius, CKD / REPRO / BMAT studies, six re-evaluated duplicates under rerun/).
 
 PRIVACY: the inventory reads the scans' header identity fields (patient name, patient index, dates) to derive
@@ -90,7 +90,7 @@ if REPO not in sys.path:
 import ipldt  # noqa: E402
 from ipldt import ipl_ops as ops  # noqa: E402
 
-ROOT = os.environ.get("OSLH_ROOT") or lab_path("Cross_validation_IPL/OS_LH")
+ROOT = os.environ.get("OSLH_ROOT") or lab_path("radius_tibia/delivery")
 OUT_DIR = os.path.join(HERE, "results", "oslh")
 LOG_DIR = os.path.join(OUT_DIR, "logs")
 TOP_GROUPS = ("Distal", "Diaphyseal")
@@ -954,12 +954,12 @@ def plan_for(rec, logs_by_meas):
     if a and 0 < overlap <= small:
         cort_note += f" The CORT and TRAB renderings overlap in {overlap} contour-boundary voxels (SEG carries 127 there: 127-inside-trab {b.get('seg127_inside_trab')})."
     if a and 0 < u_only <= small and not rec["trab_is_corr"]:
-        if str(rec.get("measurement")) == "5876" or str(rec.get("id", "")).endswith("/5876"):
+        if str(rec.get("measurement")) == "353308" or str(rec.get("id", "")) == "Diaphyseal/REPRO/353308":
             cort_note += (f" {u_only} rendering voxels lie outside the periosteal rendering: an input-version case (classified 2026-09-14 evening, "
                           "CLOSED 2026-09-15 with direct evidence) -- "
                           "the periosteal gobj on disk is younger than the compartment gobjs (by 31 min) and differs from the version "
                           "IPL consumed by two spike pixels, (1463, 737, 91) and (1453, 739, 154), which added to the periosteal input reproduce "
-                          "IPL's CORT_MASK_CT / TRAB_MASK_CT at 0 / 0. Probe 20 block 4 fetched both gobj versions from the scanner on 2026-09-15: "
+                          "IPL's CORT_MASK_CT / TRAB_MASK_CT at 0 / 0. Test run 20 block 4 fetched both gobj versions from the scanner on 2026-09-15: "
                           "the older periosteal GOBJ version starts its z 91 / z 154 chains exactly at (1463, 737) and (1453, 739) and "
                           "renders both spikes, while the newer version contains neither vertex, renders neither pixel "
                           "and renders the on-disk X2077003_CT.AIM at 0 mismatching voxels (4,927,853 = 4,927,853); both STEP-1 contour files render "
@@ -1062,7 +1062,7 @@ def fmt_grid(g):
 def write_markdown(path, records, logs, summary):
     L = []
     w = L.append
-    w("# OS_LH inventory -- 123 HR-pQCT measurements, IPL exports of 2022-2026 evaluations")
+    w("# radius / tibia inventory -- 123 HR-pQCT measurements, IPL exports of 2022-2026 evaluations")
     w("")
     w(f"Generated {summary['generated']} by validation/oslh_inventory.py from `{ROOT}`.  Records: {len(records)} "
       f"({summary['n_with_errors']} with errors).  Voxel checks: {'yes' if summary['voxel_checks'] else 'no'}.")

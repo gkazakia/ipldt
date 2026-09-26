@@ -23,7 +23,7 @@ PFJ-d81140_R,PFJ-d81140_R,Patella,Patella,PFJSTUDY
 Diaphyseal/BMAT/610892,Diaphyseal_BMAT_610892,Diaphyseal Tibia,D Tibia,BMATSTUDY
 Diaphyseal/CKD/131714,Diaphyseal_CKD_131714,Diaphyseal Tibia,D Tibia,CKDSTUDY
 Diaphyseal/CKD/220364,Diaphyseal_CKD_220364,Diaphyseal Radius,D Radius,CKDSTUDY
-Diaphyseal/CKD/2422,Diaphyseal_CKD_2422,Diaphyseal Tibia,D Tibia,CKDSTUDY
+Diaphyseal/CKD/251016,Diaphyseal_CKD_251016,Diaphyseal Tibia,D Tibia,CKDSTUDY
 Diaphyseal/CKD/263312,Diaphyseal_CKD_263312,Diaphyseal Radius,D Radius,CKDSTUDY
 Diaphyseal/CKD/264031,Diaphyseal_CKD_264031,Diaphyseal Tibia,D Tibia,CKDSTUDY
 Diaphyseal/CKD/312922,Diaphyseal_CKD_312922,Diaphyseal Tibia,D Tibia,CKDSTUDY
@@ -52,6 +52,7 @@ Diaphyseal/REPRO/314619,Diaphyseal_REPRO_314619,Diaphyseal Tibia,D Tibia,REPROST
 Diaphyseal/REPRO/330187,Diaphyseal_REPRO_330187,Diaphyseal Tibia,D Tibia,REPROSTUDY
 Diaphyseal/REPRO/335949,Diaphyseal_REPRO_335949,Diaphyseal Tibia,D Tibia,REPROSTUDY
 Diaphyseal/REPRO/352455,Diaphyseal_REPRO_352455,Diaphyseal Radius,D Radius,REPROSTUDY
+Diaphyseal/REPRO/353308,Diaphyseal_REPRO_353308,Diaphyseal Radius,D Radius,REPROSTUDY
 Diaphyseal/REPRO/368516,Diaphyseal_REPRO_368516,Diaphyseal Radius,D Radius,REPROSTUDY
 Diaphyseal/REPRO/392589,Diaphyseal_REPRO_392589,Diaphyseal Radius,D Radius,REPROSTUDY
 Diaphyseal/REPRO/407979,Diaphyseal_REPRO_407979,Diaphyseal Radius,D Radius,REPROSTUDY
@@ -61,7 +62,6 @@ Diaphyseal/REPRO/511347,Diaphyseal_REPRO_511347,Diaphyseal Tibia,D Tibia,REPROST
 Diaphyseal/REPRO/546324,Diaphyseal_REPRO_546324,Diaphyseal Radius,D Radius,REPROSTUDY
 Diaphyseal/REPRO/570800,Diaphyseal_REPRO_570800,Diaphyseal Tibia,D Tibia,REPROSTUDY
 Diaphyseal/REPRO/574404,Diaphyseal_REPRO_574404,Diaphyseal Radius,D Radius,REPROSTUDY
-Diaphyseal/REPRO/5876,Diaphyseal_REPRO_5876,Diaphyseal Radius,D Radius,REPROSTUDY
 Diaphyseal/REPRO/589348,Diaphyseal_REPRO_589348,Diaphyseal Radius,D Radius,REPROSTUDY
 Diaphyseal/REPRO/593666,Diaphyseal_REPRO_593666,Diaphyseal Tibia,D Tibia,REPROSTUDY
 Diaphyseal/REPRO/655328,Diaphyseal_REPRO_655328,Diaphyseal Radius,D Radius,REPROSTUDY
@@ -102,17 +102,17 @@ Distal/REPRO/169172,Distal_REPRO_169172,Distal Tibia,UD Tibia,REPROSTUDY
 Distal/REPRO/188992,Distal_REPRO_188992,Distal Radius,UD Radius,REPROSTUDY
 Distal/REPRO/197603,Distal_REPRO_197603,Distal Tibia,UD Tibia,REPROSTUDY
 Distal/REPRO/204801,Distal_REPRO_204801,Distal Tibia,UD Tibia,REPROSTUDY
-Distal/REPRO/2051,Distal_REPRO_2051,Distal Tibia,UD Tibia,REPROSTUDY
-Distal/REPRO/2095,Distal_REPRO_2095,Distal Tibia,UD Tibia,REPROSTUDY
 Distal/REPRO/237035,Distal_REPRO_237035,Distal Radius,UD Radius,REPROSTUDY
 Distal/REPRO/243813,Distal_REPRO_243813,Distal Radius,UD Radius,REPROSTUDY
 Distal/REPRO/247104,Distal_REPRO_247104,Distal Radius,UD Radius,REPROSTUDY
 Distal/REPRO/256984,Distal_REPRO_256984,Distal Tibia,UD Tibia,REPROSTUDY
 Distal/REPRO/319997,Distal_REPRO_319997,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/322919,Distal_REPRO_322919,Distal Tibia,UD Tibia,REPROSTUDY
 Distal/REPRO/346361,Distal_REPRO_346361,Distal Radius,UD Radius,REPROSTUDY
 Distal/REPRO/354224,Distal_REPRO_354224,Distal Radius,UD Radius,REPROSTUDY
 Distal/REPRO/441968,Distal_REPRO_441968,Distal Radius,UD Radius,REPROSTUDY
 Distal/REPRO/444084,Distal_REPRO_444084,Distal Radius,UD Radius,REPROSTUDY
+Distal/REPRO/444590,Distal_REPRO_444590,Distal Tibia,UD Tibia,REPROSTUDY
 Distal/REPRO/449250,Distal_REPRO_449250,Distal Radius,UD Radius,REPROSTUDY
 Distal/REPRO/462076,Distal_REPRO_462076,Distal Tibia,UD Tibia,REPROSTUDY
 Distal/REPRO/467802,Distal_REPRO_467802,Distal Tibia,UD Tibia,REPROSTUDY

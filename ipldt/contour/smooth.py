@@ -38,7 +38,7 @@ pre_activated alone, whose stage B then changes nothing.
 The two pre-activation criteria of the derivation (a dropped pixel on the raw boundary trace / a dropped pixel
 W-E adjacent to exterior background) never differ on the cohort's 7,961 outer chains.
 
-TINY CHAINS (2026-09-14, probe 17).  sweep() leaves a chain of fewer than 4 vertices untouched (guard n < 4),
+TINY CHAINS (2026-09-14, test run 17).  sweep() leaves a chain of fewer than 4 vertices untouched (guard n < 4),
 so a chain that a sweep brings down to 3 vertices freezes there.  A frozen 3-chain is NOT a stored contour:
 the sweep has no fixed point below 8 vertices -- brute force over every closed chain of 3 / 4 / 5 / 6 / 7
 distinct 8-adjacent vertices (24 / 96 / 360 / 1,512 / 6,664 chains): 0 fixed points; the 16 smallest fixed
@@ -49,8 +49,8 @@ thresholds 4..8 agree on every stored chain of those oracles, and the no-fixed-p
 only chains that stage B processes: an UN-ACTIVATED raw chain bypasses stage B, stage A alone has 12
 six-vertex fixed points (brute force over the same 1,512 6-chains; 0 of 96 / 360 / 6,664 with 4 / 5 / 7
 vertices, 64 of 31,056 with 8), and a vertical 1x2 hole yields an un-activated raw 6-vertex inner chain that
-MIN_VERTICES = 4 stores (hole kept) and 8 would drop (hole filled).  Probe 19 (2026-09-14, the tiny-hole
-phantom on PFJ-0be66a_R's TRAB_MASK grid; exports X2420448_P19_TINY / _PHRT, P19TINY.GOBJ, not
+MIN_VERTICES = 4 stores (hole kept) and 8 would drop (hole filled).  Test run 19 (2026-09-14, the tiny-hole
+phantom on PFJ-0be66a_R's TRAB_MASK grid; exports X2420448_T19_TINY / _PHRT, T19TINY.GOBJ, not
 distributed) put that hole in front of IPL: the 6-vertex chain IS stored (a
 6-element inner contour on each of the 3 test slices, vertex for vertex ours) and the hole is kept in
 /gobj_to_aim's rendering (0 differing voxels under MIN 4 on the whole export; MIN 8 differs by the 6 hole
@@ -58,16 +58,16 @@ voxels).  MIN_VERTICES in 4..6 is CONFIRMED and 7..8 REFUTED; 4 vs 5 vs 6 remain
 pinned by any mask: a raw chain of 4, 5 or 7 vertices is never un-activated (no stage-A fixed point of those
 lengths), activated survivors have >= 8, and frozen 3-chains are dropped under all three values -- the three
 thresholds are observationally identical, so 4 is a convention of the package with no IPL-observable
-alternative inside the class.  The probe's other 17 tests (2x2 / 1x3 / 1x4 holes stored raw with 8 / 8 / 10
+alternative inside the class.  The test run's other 17 tests (2x2 / 1x3 / 1x4 holes stored raw with 8 / 8 / 10
 elements; the 1x1, horizontal 1x2 and diagonal holes filled; the 8-px hexagon, 3-px lines, 2x2 / 3x3 blocks
 and 2x12 / 3x12 ribbons not stored; 4x4 / 5x5 / 4x12 / 12-px disc stored with 8 / 12 / 24 / 8 elements) are
 exact under the rule: 45 / 45 stored chains, rendering 8,544 voxels with 0 differences.  A guard-free sweep
 deletes every one of the 24 closed 3-chains within one sweep and gives the same 52 verification rasters with
 MIN_VERTICES = 3; the guard is kept (it also protects the 2-vertex remains of a spur deletion) and the
 threshold does the work.
-Oracles: PFJ-6f5538_R P17 29_trabfinal z332, an 8-px hexagon on the last slice (raw 6 vertices -> stage A 3,
-frozen): IPL's P17TRAB gobj has no contour on that slice and its /gobj_to_aim grid ends one slice short;
-MIN_VERTICES = 3 rendered 3 voxels there (the P17 stage-31 residual, 3 -> 0); X2420448_CORT_MASK_version1 vs
+Oracles: PFJ-6f5538_R T17 29_trabfinal z332, an 8-px hexagon on the last slice (raw 6 vertices -> stage A 3,
+frozen): IPL's T17TRAB gobj has no contour on that slice and its /gobj_to_aim grid ends one slice short;
+MIN_VERTICES = 3 rendered 3 voxels there (the T17 stage-31 residual, 3 -> 0); X2420448_CORT_MASK_version1 vs
 X2420448_CORT_MASK.GOBJ (version 1): 14 / 17 / 18 / 18 / 20-px components stored with 8 / 8 / 8 / 8 / 12 elements,
 exact.  Consistent evidence, NOT an oracle: X3931708_CORT_MASK_version2 vs X3931708_CORT_MASK.GOBJ (version 2) is not
 an exact mask -> gobj pair (48 of its slices differ for other reasons); on it 13 more chains freeze at 3
@@ -76,11 +76,11 @@ chain survives (27 px -> 8 vertices at z401, 12 at z92, ...) has its IPL chain. 
 (14-px components are stored, 28..61-px ones whose chain collapses are not), a degenerate-polygon test (the
 frozen triangle has area 1/2), -min_elements (0 = no user minimum, IPL help).
 
-VERIFICATION (2026-09-13, probe-15 exports; the raster numbers are in ipldt.contour.render): every stored
+VERIFICATION (2026-09-13, test-run-15 exports; the raster numbers are in ipldt.contour.render): every stored
 chain of the 21 subjects' newest TRAB_MASK.GOBJ / CORT_MASK.GOBJ (P5MASK.GOBJ / P7MASK.GOBJ for the
 trabecular contours of PFJ-0be66a_R / PFJ-8bcf88_R) reproduced vertex for vertex, stored start included, in stored
 order: 11,906 / 11,906 chains (3,945 trabecular outer, 4,016 cortical outer, 3,945 cortical inner), plus the
-504 contours of PFJ-0be66a's P16 replay gobjs (P16TRAB.GOBJ 168, P16CORT.GOBJ 336).  Under the rule 4,015 outer
+504 contours of PFJ-0be66a's T16 replay gobjs (T16TRAB.GOBJ 168, T16CORT.GOBJ 336).  Under the rule 4,015 outer
 and 139 inner chains are stored raw; stage B needed at most 14 sweeps.
 
 REFUTED by the stored chains (counts from the derivation, scratch modules firstslice_rule / cortpoly_rule):

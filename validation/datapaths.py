@@ -1,4 +1,4 @@
-"""Where the NON-PUBLIC data live: the scans, IPL's products and the IPL probe exports.
+"""Where the NON-PUBLIC data live: the scans, IPL's products and the exports of IPL's test runs.
 
 Nothing here is needed to install or use ipldt / ORMIR-BQRL, to run the fast tests, or to regenerate the paper's
 numbers from the de-identified records under validation/results/.  It is used only by the slow tests, the validation
@@ -7,19 +7,26 @@ data are absent.
 
 One environment variable sets every default at once:
 
-    IPLDT_LAB_ROOT      a folder with the laboratory's layout, e.g.
-                          <IPLDT_LAB_ROOT>/PFJOA/XCT_masks_full_grab/<subject>/        the 21 patellae
-                          <IPLDT_LAB_ROOT>/Cross_validation_IPL/OS_LH/<group>/<meas>/  radius / tibia, IPL's delivery
-                          <IPLDT_LAB_ROOT>/Cross_validation_IPL/OS_LH_AUTO/...         radius / tibia, first set (automatic runs)
-                          <IPLDT_LAB_ROOT>/Cross_validation_IPL/OS_LH_NOEDIT/...       radius / tibia, second set
-                          <IPLDT_LAB_ROOT>/Python/scripts/IPL/probes/p15 ... p21/      IPL probe exports
-                          <IPLDT_LAB_ROOT>/ipl_probes/p19_open_halves/                 the probe-19 phantom with IPL's
-                                                                                       rendering (IPLDT_PROBE19_MIRROR)
-                          <IPLDT_LAB_ROOT>/ormir_run_PFJ-0be66a/                       an ORMIR-BQRL run of the Figure 1
-                                                                                       scan (IPLDT_FIG1_PRX_MASK)
+    IPLDT_LAB_ROOT      a folder with this layout:
+                          <IPLDT_LAB_ROOT>/patellae/<subject>/                          the 21 patellae
+                          <IPLDT_LAB_ROOT>/radius_tibia/delivery/<group>/<meas>/        radius / tibia, IPL's delivery
+                          <IPLDT_LAB_ROOT>/radius_tibia/set1/...                        radius / tibia, first set (automatic runs)
+                          <IPLDT_LAB_ROOT>/radius_tibia/set2/...                        radius / tibia, second set
+                          <IPLDT_LAB_ROOT>/radius_tibia/scanner_versions_set1/, _set2/  every stored version the scanner
+                                                                                        kept (the staging scripts' input)
+                          <IPLDT_LAB_ROOT>/ipl_test_runs/run15 ... run21/               the exports of IPL's dedicated test
+                                                                                        runs on the scanner (the paper's
+                                                                                        probes); test run NN names its
+                                                                                        exports <base>_T<NN>_<TAG>
+                          <IPLDT_LAB_ROOT>/ipl_test_runs/run19_mirror/                  the test-run-19 phantom with IPL's
+                                                                                        rendering (IPLDT_RUN19_MIRROR)
+                          <IPLDT_LAB_ROOT>/ipl_exports/decompressed/                    IPL's decompressed parameter-sweep
+                                                                                        exports (Supplementary Figure S6)
+                          <IPLDT_LAB_ROOT>/ormir_run_PFJ-0be66a/                        an ORMIR-BQRL run of the Figure 1
+                                                                                        scan (IPLDT_FIG1_PRX_MASK)
 
-and the individual variables named where they are used (IPLDT_DATA_ROOT, OSLH_ROOT, IPLDT_PROBE15,
-IPLDT_PROBE19_MIRROR, IPLDT_FIG1_PRX_MASK, ...) override single locations.  Unset, lab_path() returns a path under the relative folder 'IPLDT_LAB_ROOT_is_not_set', which
+and the individual variables named where they are used (IPLDT_DATA_ROOT, OSLH_ROOT, IPLDT_RUN15,
+IPLDT_RUN19_MIRROR, IPLDT_FIG1_PRX_MASK, ...) override single locations.  Unset, lab_path() returns a path under the relative folder 'IPLDT_LAB_ROOT_is_not_set', which
 never exists, so a missing-data error names the variable to set.
 """
 import os

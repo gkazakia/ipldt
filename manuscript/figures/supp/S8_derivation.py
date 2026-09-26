@@ -54,13 +54,13 @@ sys.path.insert(0, REPO)
 from ipldt.io import read_aim  # noqa: E402
 
 # ------------------------------------------------------------------------------------------------ inputs
-PROBE = lab_path("Python/scripts/IPL/probes/p21_lh_padding")
-AIMS = os.path.join(PROBE, "aims_and_logs")                # IPL's exports of the run
-VOLS = os.path.join(PROBE, "prediction_volumes")           # the prospective predictions, per candidate group
-PRED_JSON = os.path.join(PROBE, "probe21_prediction.json")  # the prediction file written before the run
-PHANTOMS = os.path.join(PROBE, "phantom21_manifest.json")
-MANIFEST = os.path.join(PROBE, "probe21_manifest.json")
-BASE, TAGP = "X2420448", "P21"
+RUN21_DIR = lab_path("ipl_test_runs/run21")
+AIMS = os.path.join(RUN21_DIR, "aims_and_logs")                # IPL's exports of the run
+VOLS = os.path.join(RUN21_DIR, "prediction_volumes")           # the prospective predictions, per candidate group
+PRED_JSON = os.path.join(RUN21_DIR, "run21_prediction.json")  # the prediction file written before the run
+PHANTOMS = os.path.join(RUN21_DIR, "phantom21_manifest.json")
+MANIFEST = os.path.join(RUN21_DIR, "run21_manifest.json")
+BASE, TAGP = "X2420448", "T21"
 OUT_PNG = os.path.join(HERE, "S8_derivation.png")
 OUT_SVG = os.path.join(HERE, "S8_derivation.svg")
 OUT_NUM = os.path.join(HERE, "S8_derivation_numbers.json")
@@ -99,7 +99,7 @@ plt.rcParams.update({
     "axes.labelcolor": INK, "xtick.color": INK2, "ytick.color": INK2, "text.color": INK,
     "savefig.dpi": 300, "figure.dpi": 100, "svg.fonttype": "none", "pdf.fonttype": 42,
 })
-FIG_W_MM, FIG_H_MM = 180.0, 222.0
+FIG_W_MM, FIG_H_MM = 180.0, 227.8          # <= 228 mm: printed 1:1 (the manuscript build), every text >= 6 pt
 
 
 def mm_axes(fig, x, y, w, h, **kw):
@@ -298,7 +298,7 @@ for xq in (-1, 63):
     axA.add_patch(Rectangle((xq, yb), 1, hb, facecolor=C_PAD, edgecolor=INK, linewidth=0.5, linestyle=(0, (2, 1.2))))
     axA.text(xq + 0.5, yb + hb / 2, "?", ha="center", va="center", fontsize=6.5, fontweight="bold", color=C_VERM)
 axA.text(31.5, yb + hb + 0.15, "transform box, 64 voxels: the 63 data voxels + ONE padding layer, before (?) or after (?)",
-         ha="center", va="bottom", fontsize=5.9, color=INK2)
+         ha="center", va="bottom", fontsize=6.0, color=INK2)
 # the four inputs: strips of 63 data cells, the impulse cell filled
 ys = [6.15, 4.85, 3.55, 2.25]
 for v, y in zip(IMPULSE_INPUTS, ys):
@@ -308,12 +308,12 @@ for v, y in zip(IMPULSE_INPUTS, ys):
     axA.annotate("", xy=(ix + 0.5, y + 0.9), xytext=(ix + 0.5, y + 1.22),
                  arrowprops=dict(arrowstyle="-", color=C_VERM, lw=0.7))
 for xi in (0, 62):
-    axA.text(xi + 0.5, 1.95, str(xi), ha="center", va="top", fontsize=5.5, color=INK2)
-axA.text(31.5, 1.95, "data index x", ha="center", va="top", fontsize=5.8, color=INK2)
+    axA.text(xi + 0.5, 1.95, str(xi), ha="center", va="top", fontsize=6.0, color=INK2)
+axA.text(31.5, 1.95, "data index x", ha="center", va="top", fontsize=6.0, color=INK2)
 axA.text(-17, 0.95, "Filter at IPL's standard values: \u03b5 = 0.45, cutoff 0.3, amplitude 1;",
-         ha="left", va="center", fontsize=5.8, color=INK2)
+         ha="left", va="center", fontsize=6.0, color=INK2)
 axA.text(-17, 0.25, "output scaled to \u00b1200,000 \u2192 int16 and thresholded at 475\u2030 of that range",
-         ha="left", va="center", fontsize=5.8, color=INK2)
+         ha="left", va="center", fontsize=6.0, color=INK2)
 
 # ---- B: the candidate rules -------------------------------------------------------------------------------
 axB = mm_axes(fig, 98, 7, 80, 40)
@@ -324,7 +324,7 @@ panel_letter(fig, 92, 4, "B")
 axB.text(0, 38.6, "Candidate rules: 4 offsets \u00d7 5 fill modes, + 12 per-axis mixtures = 32",
          ha="left", va="center", fontsize=7)
 # two columns: padding layer after the data (floor, left) / before the data (ceil, right)
-COLX = {"after": 26, "before": 64}
+COLX = {"after": 37.5, "before": 72.8}        # the left column holds a one-line description of each mode
 axB.text(COLX["after"] + 13.6, 35.0, "layer AFTER the data\noffsets floor, left", ha="center", va="center", fontsize=6.0,
          linespacing=1.05)
 axB.text(COLX["before"] + 13.6, 35.0, "layer BEFORE the data\noffsets ceil, right", ha="center", va="center", fontsize=6.0,
@@ -333,16 +333,16 @@ axB.text(COLX["before"] + 13.6, 35.0, "layer BEFORE the data\noffsets ceil, righ
 COPY = {  # mode: (source index when the layer is after the data, source index when it is before)
     "reflect": (61, 1), "symmetric": (62, 0), "edge": (62, 0), "constant": (None, None), "wrap": (0, 62),
 }
-MODE_TEXT = {"reflect": "mirror, face voxel\nnot repeated", "symmetric": "mirror, face voxel\nrepeated",
-             "edge": "face voxel\ncopied", "constant": "zero", "wrap": "periodic"}
+MODE_TEXT = {"reflect": "mirror, face voxel not repeated", "symmetric": "mirror, face voxel repeated",
+             "edge": "face voxel copied", "constant": "zero", "wrap": "periodic"}
 NUM["B_copied_index"] = {m: {"layer_after_data": COPY[m][0], "layer_before_data": COPY[m][1]} for m in MODES}
 strip_labels = ["0", "1", "2", "\u2026", "60", "61", "62"]
 idx_of = {"0": 0, "1": 1, "2": 2, "60": 60, "61": 61, "62": 62}
 cw, ch = 3.4, 2.8
 for r, m in enumerate(MODES):
     y = 29.0 - r * 5.3
-    axB.text(0, y + ch / 2 + 0.7, m, ha="left", va="center", fontsize=6.5, fontweight="bold")
-    axB.text(0, y + ch / 2 - 1.7, MODE_TEXT[m], ha="left", va="center", fontsize=5.0, color=INK2, linespacing=0.95)
+    axB.text(0, y + ch / 2 + 0.9, m, ha="left", va="center", fontsize=6.5, fontweight="bold")
+    axB.text(0, y + ch / 2 - 1.35, MODE_TEXT[m], ha="left", va="center", fontsize=6.0, color=INK2)
     for side in ("after", "before"):
         x0 = COLX[side]
         src = COPY[m][0] if side == "after" else COPY[m][1]
@@ -358,7 +358,7 @@ for r, m in enumerate(MODES):
                 return C_HIT
             return C_CELL
 
-        xs = cells(axB, x0, y, len(seq), cw, ch, labels=labels, fill=fc, lw=0.35, fs=5.0)
+        xs = cells(axB, x0, y, len(seq), cw, ch, labels=labels, fill=fc, lw=0.35, fs=6.0)
         axB.add_patch(Rectangle((x0 + ip * cw, y), cw, ch, facecolor="none", edgecolor=INK, linewidth=0.6,
                                 linestyle=(0, (1.2, 0.8))))
         if src is not None:
@@ -367,14 +367,12 @@ for r, m in enumerate(MODES):
             rad = 2 * 1.25 / chord               # an arc about 1.25 mm high whatever the distance
             axB.add_patch(FancyArrowPatch((xs[i_src], y + ch), (xs[ip], y + ch), connectionstyle=f"arc3,rad={-rad:.3f}",
                                           arrowstyle="-|>", mutation_scale=4, color=C_VERM, lw=0.55, shrinkA=0, shrinkB=0))
-axB.text(0, 4.3, "Dashed cell: the padding layer, printed with the data index it receives (orange cell);",
-         ha="left", va="center", fontsize=5.3, color=INK2)
-axB.text(0, 2.4, "\"constant\" writes the value 0.  With ONE padding voxel floor \u2261 left and ceil \u2261 right; the 62- and",
-         ha="left", va="center", fontsize=5.3, color=INK2)
-axB.text(0, 0.5, "33-voxel inputs of F (2 and 31 padding voxels) separate them.  The per-axis mixtures apply",
-         ha="left", va="center", fontsize=5.3, color=INK2)
-axB.text(0, -1.4, "a different offset on each axis.",
-         ha="left", va="center", fontsize=5.3, color=INK2)
+for yl, line in zip((5.0, 2.55, 0.1, -2.35), (
+        "Dashed cell: the padding layer, printed with the data index it receives (orange cell);",
+        "\"constant\" writes the value 0.  With ONE padding voxel floor \u2261 left and ceil \u2261 right;",
+        "the 62- and 33-voxel inputs of F (2 and 31 padding voxels) separate them.",
+        "The per-axis mixtures apply a different offset on each axis.")):
+    axB.text(0, yl, line, ha="left", va="center", fontsize=6.0, color=INK2)
 
 # ---- C: the prediction table ------------------------------------------------------------------------------
 axC = mm_axes(fig, 6, 55, 82, 66)
@@ -422,12 +420,11 @@ axC.text(x_off, y + row_h / 2, "scanner output", ha="left", va="center", fontsiz
 for j, v in enumerate(IMPULSE_INPUTS):
     axC.text(x_col0 + (j + 0.5) * colw, y + row_h / 2, str(scanner_seg[v]), ha="center", va="center", fontsize=6.5,
              fontweight="bold")
-axC.text(0, y - 2.0, f"Green: rows equal to the scanner's on all four inputs ({len(consistent)} of 20; with one padding "
-         "voxel", ha="left", va="center", fontsize=5.5, color=INK2)
-axC.text(0, y - 3.9, "ceil and right coincide, F separates them).  Shaded: the padding layer received the impulse's",
-         ha="left", va="center", fontsize=5.5, color=INK2)
-axC.text(0, y - 5.8, "own index (B), doubling the response across the threshold.",
-         ha="left", va="center", fontsize=5.5, color=INK2)
+for dy, line in zip((2.0, 4.4, 6.8), (
+        f"Green: rows equal to the scanner's on all four inputs ({len(consistent)} of 20; with one padding voxel",
+        "ceil and right coincide, F separates them).  Shaded: the padding layer received",
+        "the impulse's own index (B), doubling the response across the threshold.")):
+    axC.text(0, y - dy, line, ha="left", va="center", fontsize=6.0, color=INK2)
 
 # ---- D, E: the float-level readout ------------------------------------------------------------------------
 def profile_panel(ax, v, xr, letter, lx, ly, legend):
@@ -451,8 +448,8 @@ def profile_panel(ax, v, xr, letter, lx, ly, legend):
         ax.spines[sp].set_visible(False)
     ax.set_ylim(-25, 165)
     # the threshold label on the free side
-    ax.text(xr[0] + 2.3 if left else xr[0] - 0.3, THR_FLOAT / 1e3 + (3 if left else -3), "threshold", ha="left",
-            va="bottom" if left else "top", fontsize=5.6, color=INK2)
+    ax.text(xr[1] + 0.3 if left else xr[0] - 0.3, THR_FLOAT / 1e3 - 3, "threshold", ha="right" if left else "left",
+            va="top", fontsize=6.0, color=INK2)
     ax.text(0.02, 0.99, f"impulse at x = {IMPULSE_X[v]}", transform=ax.transAxes, ha="left", va="top", fontsize=6.5,
             fontweight="bold")
     # the separation between the two predictions where it is largest inside the window
@@ -461,12 +458,12 @@ def profile_panel(ax, v, xr, letter, lx, ly, legend):
     lo, hi = sorted((sel[xa], shp[xa]))
     ax.annotate("", xy=(xa, hi), xytext=(xa, lo), arrowprops=dict(arrowstyle="<->", color=C_VERM, lw=0.7, shrinkA=0, shrinkB=0))
     ax.text(xa + (0.3 if left else -0.3), (lo + hi) / 2, fmt_int(round(d[xa] * 1e3)), ha="left" if left else "right",
-            va="center", fontsize=5.8, color=C_VERM)
+            va="center", fontsize=6.0, color=C_VERM)
     txt = (f"max |IPL \u2212 prediction|: {pr['max_abs_diff_selected']:.3f} (selected), "
            f"{fmt_int(round(pr['max_abs_diff_shipped']))} (alternative)\n"
            f"thresholded export: {pr['seg_set_ipl']} voxels set (predicted {pr['seg_set_selected']} / {pr['seg_set_shipped']})")
     ax.text(0.99 if left else 0.01, 0.89 if left else 0.88, txt, transform=ax.transAxes, ha="right" if left else "left",
-            va="top", fontsize=5.5, color=INK2, linespacing=1.15)
+            va="top", fontsize=6.0, color=INK2, linespacing=1.15)
     panel_letter(fig, lx, ly, letter)
     if legend:
         ax.legend(loc="center right", frameon=False, handlelength=1.6, borderaxespad=0.0, bbox_to_anchor=(1.0, 0.33),
@@ -474,14 +471,14 @@ def profile_panel(ax, v, xr, letter, lx, ly, legend):
 
 
 axD = mm_axes(fig, 106, 58, 70, 26)
-profile_panel(axD, "x63i01", (0, 8), "D", 92, 52, legend=True)
-axE = mm_axes(fig, 106, 94, 70, 26)
-profile_panel(axE, "x63i61", (54, 62), "E", 92, 88, legend=False)
+profile_panel(axD, "x63i01", (0, 8), "D", 92, 51.4, legend=True)
+axE = mm_axes(fig, 106, 92.5, 70, 26)
+profile_panel(axE, "x63i61", (54, 62), "E", 92, 86.5, legend=False)
 
 # ---- F: the differential test over every controlled input -------------------------------------------------
 n_r, n_c = len(CANDS), len(ALL_INPUTS)
 map_x, map_y, map_w = 44, 131, 120
-cell_h = 1.72
+cell_h = 1.9                                  # 6-pt row labels without touching
 map_h = cell_h * n_r
 axF = mm_axes(fig, map_x, map_y, map_w, map_h)
 bare(axF)

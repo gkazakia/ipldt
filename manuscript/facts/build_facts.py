@@ -507,7 +507,7 @@ def config_A_section():
     hits = [(k, oslh[k]["A"]["maps"]["TRAB_TH_tseg"]) for k in oslh if oslh[k]["A"]["maps"]["TRAB_TH_tseg"]["mismatches"] > 0]
     put("A.oslh.map.TbTh_trabseg.nonexact_scans", [dict(id=k, site=oslh_site[k], mismatches=m["mismatches"], ours_only=m["ours_only"], ipl_only=m["ipl_only"],
                                                         ipl_value_vox=None) for k, m in hits], SRC_OSLH + " A.maps.TRAB_TH_tseg")
-    # pooled A (patella + OS_LH) for the four reported maps
+    # pooled A (patella + radius / tibia) for the four reported maps
     for mk in ("TbTh_trabseg", "TbSp", "TbN", "CtTh"):
         for stat in ("n_scans", "exact_scans", "mismatches", "ours_only", "ipl_only", "voxels_compared", "support_ipl"):
             put(f"A.pooled.map.{mk}.{stat}", F[f"A.patella.map.{mk}.{stat}"]["value"] + F[f"A.oslh.map.{mk}.{stat}"]["value"],
@@ -518,7 +518,7 @@ def config_A_section():
         f"sum over the four reported maps, {N_TOTAL} scans", "voxels")
     put("A.pooled.exact_comparisons.four_maps", sum(F[f"A.pooled.map.{mk}.exact_scans"]["value"] for mk in ("TbTh_trabseg", "TbSp", "TbN", "CtTh")),
         f"sum over the four reported maps, {N_TOTAL} scans", note=f"scan-map comparisons with 0 differing voxels, of {4 * N_TOTAL}")
-    # timings OS_LH A
+    # timings radius / tibia A
     put("A.oslh.time_s.dt_all_maps.median", float(statistics.median(r["timings"]["A"] for r in oslh.values())), SRC_OSLH + " timings.A", "s",
         note="dt of the five A maps (both Tb.Th objects, Tb.Sp, 1/Tb.N, Ct.Th) per measurement, GPU")
     put("A.oslh.time_s.dt_all_maps.min", min(r["timings"]["A"] for r in oslh.values()), SRC_OSLH + " timings.A", "s")
@@ -612,7 +612,7 @@ def config_B_section():
     assert F["B.patella.dt_run.SEG.mismatches"]["value"] == F["B.patella.SEG.mismatches"]["value"]
     put("B.patella.floor_run.SEG.mismatches", None, "retired 2026-09-18", note="v1 held the SEG (138 voxels) of the superseded floor-padding run validation/results/from_ipl_contour; that directory is no longer a source of any number. See B.patella.dt_run.SEG.*")
     put("B.patella.floor_run.SEG.exact_scans", None, "retired 2026-09-18", note="see B.patella.floor_run.SEG.mismatches")
-    # ---- OS_LH renderings, SEG, maps
+    # ---- radius / tibia renderings, SEG, maps
     So = SRC_OSLH + "/*.json"
     for part in ("cort", "trab"):
         items = [oslh[k]["B"]["renderings"][part] for k in oslh]
@@ -649,7 +649,7 @@ def config_B_section():
     # pooled SEG
     pooled = [pat_B_seg[k]["seg"]["SEG"] for k in PAT_SUBJECTS] + [oslh[k]["B"]["seg"]["SEG"] for k in oslh]
     seg_agg(pooled, "B.patella.SEG (ceil run) + B.oslh.SEG", "B.pooled.SEG", PAT_SUBJECTS + list(oslh))
-    # OS_LH B maps
+    # radius / tibia B maps
     for mk, rk in MAP_KEYS_OSLH.items():
         items = [oslh[k]["B"]["maps"][rk] for k in oslh]
         map_agg(items, So + f" B.maps.{rk}", f"B.oslh.map.{mk}")
@@ -664,7 +664,7 @@ def config_B_section():
         for stat in ("n_scans", "exact_scans", "mismatches", "ours_only", "ipl_only", "voxels_compared", "support_ipl"):
             put(f"B.pooled.map.{mk}.{stat}", F[f"B.patella.map.{mk}.{stat}"]["value"] + F[f"B.oslh.map.{mk}.{stat}"]["value"],
                 "sum of B.patella and B.oslh")
-    # OS_LH timings per stage
+    # radius / tibia timings per stage
     n_por = sum(1 for r in oslh.values() if "porosity" in r["timings"])
     for st in ("read", "step1", "render_B", "lh", "seg", "dt_B", "total"):
         t = [r["timings"][st] for r in oslh.values()]
@@ -863,7 +863,7 @@ def software_section():
     put("software.ipldt.version", "1.0.0", "ipldt/__init__.py (__version__); pyproject.toml")
     put("software.ormir_bqrl.version", "0.1.0", "ormir_bqrl/__init__.py (__version__); README.md")
     put("software.ormir_xct.version", "1.1.0", "installed package in the ormir env (ormir_xct.__version__)")
-    put("software.tests.collected_total", 317, "pytest --collect-only -q tests (2026-09-25)")
+    put("software.tests.collected_total", 330, "pytest --collect-only -q tests (2026-09-26)")
     put("software.tests.gpu_cpu_identity", 26, "pytest --collect-only tests/test_gpu_cpu.py (26 of the 43 collected together with test_ridge_precision.py's 17; 2026-09-18)",
         note="tests/test_gpu_cpu.py: 'GPU (CuPy) and CPU backends must be bit-identical: maps, centres and reports, for all three functions, all three diameter versions, with and without a gobj, and across assign_epsilon'; the GPU tests skip without CUDA")
     put("software.tests.ridge_precision", 17, "pytest --collect-only tests/test_ridge_precision.py (2026-09-18)", note="float64 ridge test against a 60-digit decimal reference, CPU and GPU bit identity")
@@ -1182,7 +1182,7 @@ def write_facts_md(gap_list):
     A(f"- Peak resident memory of the radius/tibia validation worker: {fv('B.oslh.peak_rss_gb.max', 2)} GB; per validation run "
       + ", ".join(f"{k} {v:.2f} GB" for k, v in F["B.oslh.peak_rss_gb.max_by_run"]["value"].items())
       + " (`B.oslh.peak_rss_gb.*`; validation process, not the pipeline alone; each record carries its worker's running peak).")
-    A(f"- GPU == CPU: {F['software.gpu_cpu_identity.evidence']['value']} (`software.gpu_cpu_identity.evidence`). Test suite: {fv('software.tests.collected_total')} tests collected, measured 2026-09-25 (`software.tests.collected_total`).")
+    A(f"- GPU == CPU: {F['software.gpu_cpu_identity.evidence']['value']} (`software.gpu_cpu_identity.evidence`). Test suite: {fv('software.tests.collected_total')} tests collected, measured 2026-09-26 (`software.tests.collected_total`).")
     A("")
     # ---------------- parameters
     A("## 5. IPL parameter values the package uses")

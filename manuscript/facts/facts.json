@@ -1,6 +1,6 @@
 {
  "meta": {
-  "built": "2026-09-25",
+  "built": "2026-09-26",
   "version": "n = 137 (public build): radius/tibia records from oslh_auto_v4 (62 counted) + oslh_noedit_v3 (54, all diaphyseal); 21 patellae",
   "set": "137",
   "builder": "manuscript/facts/build_facts.py",
@@ -65,7 +65,7 @@
    "block": "n137",
    "compared": 106,
    "disagreeing": 0,
-   "worst_relative_deviation": 1.110180376255631e-15
+   "worst_relative_deviation": 8.881781596300383e-16
   },
   "gaps": [],
   "amended": []
@@ -3995,12 +3995,12 @@
   "B.oslh.SEG.top3_scans": {
    "value": [
     {
-     "id": "Distal_REPRO_2095",
+     "id": "Distal_REPRO_322919",
      "site": "UD tibia",
      "mismatches": 41480
     },
     {
-     "id": "Distal_REPRO_2051",
+     "id": "Distal_REPRO_444590",
      "site": "UD tibia",
      "mismatches": 23797
     },
@@ -4474,7 +4474,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.seg.SEG (bone_key D radius + D tibia)"
   },
   "B.site.diaphyseal.SEG.dice.mean": {
-   "value": 0.9999999628643499,
+   "value": 0.99999996286435,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.seg.SEG (bone_key D radius + D tibia)"
   },
   "B.site.diaphyseal.SEG.dice.ge_0_9999": {
@@ -4668,7 +4668,7 @@
    "source": "B.patella.SEG (ceil run) + B.oslh.SEG"
   },
   "B.pooled.SEG.dice.mean": {
-   "value": 0.9999742524179961,
+   "value": 0.9999742524179959,
    "source": "B.patella.SEG (ceil run) + B.oslh.SEG"
   },
   "B.pooled.SEG.dice.ge_0_9999": {
@@ -7889,7 +7889,7 @@
    "note": "configuration A BV/TV = |SEG AND rendered trabecular contour| / |rendered trabecular contour| with IPL's SEG and IPL's contour on both sides: radius/tibia from the records' A.metrics (bvtv(A_frame['seg'], ipl_G['trab'])), patella from validation/results/patella_bvtv_A/records.json (the same function on IPL's files); IPL's value is the same ratio on the same files, so every pair is identical by construction; the patella sheet values (three decimals) equal the rounded ratio on 18/21, all 21 within 0.0006 (A.patella.BVTV.printed.*)"
   },
   "metrics.A.site.UD_tibia.BVTV.mean_ipl": {
-   "value": 0.24459773161582357,
+   "value": 0.24459773161582354,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD tibia)",
    "unit": "-"
   },
@@ -7899,7 +7899,7 @@
    "unit": "-"
   },
   "metrics.A.site.UD_tibia.BVTV.mean_ours": {
-   "value": 0.24459773161582357,
+   "value": 0.24459773161582354,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD tibia)",
    "unit": "-"
   },
@@ -8257,7 +8257,7 @@
    "note": "configuration A BV/TV = |SEG AND rendered trabecular contour| / |rendered trabecular contour| with IPL's SEG and IPL's contour on both sides: radius/tibia from the records' A.metrics (bvtv(A_frame['seg'], ipl_G['trab'])), patella from validation/results/patella_bvtv_A/records.json (the same function on IPL's files); IPL's value is the same ratio on the same files, so every pair is identical by construction; the patella sheet values (three decimals) equal the rounded ratio on 18/21, all 21 within 0.0006 (A.patella.BVTV.printed.*)"
   },
   "metrics.A.site.ultradistal.BVTV.mean_ipl": {
-   "value": 0.24075352543382536,
+   "value": 0.2407535254338254,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "-"
   },
@@ -8267,7 +8267,7 @@
    "unit": "-"
   },
   "metrics.A.site.ultradistal.BVTV.mean_ours": {
-   "value": 0.24075352543382536,
+   "value": 0.2407535254338254,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "-"
   },
@@ -8803,7 +8803,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)"
   },
   "metrics.A.site.D_radius.TbTh_trabseg.mean_ipl": {
-   "value": 0.18794383348918883,
+   "value": 0.18794383348918886,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -8813,7 +8813,7 @@
    "unit": "mm"
   },
   "metrics.A.site.D_radius.TbTh_trabseg.mean_ours": {
-   "value": 0.18794383348918883,
+   "value": 0.18794383348918886,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -8990,7 +8990,7 @@
    "unit": "mm"
   },
   "metrics.A.site.diaphyseal.TbTh_trabseg.sd_ipl": {
-   "value": 0.02820733279224311,
+   "value": 0.028207332792243103,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -9000,7 +9000,7 @@
    "unit": "mm"
   },
   "metrics.A.site.diaphyseal.TbTh_trabseg.sd_ours": {
-   "value": 0.02820733279224311,
+   "value": 0.028207332792243103,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -9283,12 +9283,12 @@
    "unit": "mm"
   },
   "metrics.A.oslh.TbTh_wholeseg.sd_diff": {
-   "value": 0.010538163341665602,
+   "value": 0.010538163341665603,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "mm"
   },
   "metrics.A.oslh.TbTh_wholeseg.loa_low": {
-   "value": -0.010632636750342048,
+   "value": -0.010632636750342052,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "mm"
   },
@@ -9308,7 +9308,7 @@
    "unit": "mm"
   },
   "metrics.A.oslh.TbTh_wholeseg.mean_rel_pct": {
-   "value": 5.166293946341086,
+   "value": 5.166293946341085,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours"
   },
   "metrics.A.oslh.TbTh_wholeseg.max_rel_pct": {
@@ -9324,11 +9324,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours"
   },
   "metrics.A.oslh.TbTh_wholeseg.slope": {
-   "value": 0.873479570803342,
+   "value": 0.8734795708033422,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours"
   },
   "metrics.A.oslh.TbTh_wholeseg.intercept": {
-   "value": 0.035982143733121856,
+   "value": 0.03598214373312177,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "mm"
   },
@@ -9419,7 +9419,7 @@
    "source": "validation/results/sample_means.csv (BV/TV: validation/results/patella_bvtv_A/records.json) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours"
   },
   "metrics.A.pooled.TbTh_wholeseg.intercept": {
-   "value": 0.042700936849887135,
+   "value": 0.04270093684988712,
    "source": "validation/results/sample_means.csv (BV/TV: validation/results/patella_bvtv_A/records.json) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "mm"
   },
@@ -9610,7 +9610,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD tibia)"
   },
   "metrics.A.site.UD_tibia.TbTh_wholeseg.pearson_r": {
-   "value": 0.9985583986884679,
+   "value": 0.9985583986884676,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD tibia)"
   },
   "metrics.A.site.UD_tibia.TbTh_wholeseg.icc21": {
@@ -9622,7 +9622,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)"
   },
   "metrics.A.site.D_radius.TbTh_wholeseg.mean_ipl": {
-   "value": 0.18794383348918883,
+   "value": 0.18794383348918886,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -9701,11 +9701,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)"
   },
   "metrics.A.site.D_radius.TbTh_wholeseg.pearson_r": {
-   "value": 0.9456023031121827,
+   "value": 0.945602303112183,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)"
   },
   "metrics.A.site.D_radius.TbTh_wholeseg.icc21": {
-   "value": 0.7744267621969507,
+   "value": 0.7744267621969506,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)"
   },
   "metrics.A.site.D_tibia.TbTh_wholeseg.n": {
@@ -9809,17 +9809,17 @@
    "unit": "mm"
   },
   "metrics.A.site.diaphyseal.TbTh_wholeseg.sd_ipl": {
-   "value": 0.02820733279224311,
+   "value": 0.028207332792243103,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
   "metrics.A.site.diaphyseal.TbTh_wholeseg.mean_ours": {
-   "value": 0.21526134922585366,
+   "value": 0.2152613492258537,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
   "metrics.A.site.diaphyseal.TbTh_wholeseg.sd_ours": {
-   "value": 0.02919399183265178,
+   "value": 0.029193991832651776,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -9870,16 +9870,16 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.A.site.diaphyseal.TbTh_wholeseg.slope": {
-   "value": 0.9610355507974476,
+   "value": 0.9610355507974481,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.A.site.diaphyseal.TbTh_wholeseg.intercept": {
-   "value": 0.024920440928736333,
+   "value": 0.02492044092873631,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
   "metrics.A.site.diaphyseal.TbTh_wholeseg.r2": {
-   "value": 0.8622158206070563,
+   "value": 0.8622158206070561,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.A.site.diaphyseal.TbTh_wholeseg.pearson_r": {
@@ -9910,7 +9910,7 @@
    "unit": "mm"
   },
   "metrics.A.site.ultradistal.TbTh_wholeseg.sd_ours": {
-   "value": 0.012760457572386924,
+   "value": 0.012760457572386922,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -9920,12 +9920,12 @@
    "unit": "mm"
   },
   "metrics.A.site.ultradistal.TbTh_wholeseg.sd_diff": {
-   "value": 0.0006853747443955826,
+   "value": 0.0006853747443955825,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
   "metrics.A.site.ultradistal.TbTh_wholeseg.loa_low": {
-   "value": 0.001497777488445986,
+   "value": 0.0014977774884459862,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -10441,7 +10441,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)"
   },
   "metrics.A.site.D_radius.TbTh_as_delivered.mean_ipl": {
-   "value": 0.18794383348918883,
+   "value": 0.18794383348918886,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -10451,7 +10451,7 @@
    "unit": "mm"
   },
   "metrics.A.site.D_radius.TbTh_as_delivered.mean_ours": {
-   "value": 0.18794383348918883,
+   "value": 0.18794383348918886,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -10628,7 +10628,7 @@
    "unit": "mm"
   },
   "metrics.A.site.diaphyseal.TbTh_as_delivered.sd_ipl": {
-   "value": 0.02820733279224311,
+   "value": 0.028207332792243103,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -10638,7 +10638,7 @@
    "unit": "mm"
   },
   "metrics.A.site.diaphyseal.TbTh_as_delivered.sd_ours": {
-   "value": 0.02820733279224311,
+   "value": 0.028207332792243103,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -11260,22 +11260,22 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)"
   },
   "metrics.A.site.D_radius.TbSp.mean_ipl": {
-   "value": 2.0627089493804185,
+   "value": 2.062708949380419,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
   "metrics.A.site.D_radius.TbSp.sd_ipl": {
-   "value": 0.9698603977660475,
+   "value": 0.9698603977660474,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
   "metrics.A.site.D_radius.TbSp.mean_ours": {
-   "value": 2.0627089493804185,
+   "value": 2.062708949380419,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
   "metrics.A.site.D_radius.TbSp.sd_ours": {
-   "value": 0.9698603977660475,
+   "value": 0.9698603977660474,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -11533,7 +11533,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.A.site.ultradistal.TbSp.mean_ipl": {
-   "value": 0.6229055941317023,
+   "value": 0.6229055941317024,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -11543,7 +11543,7 @@
    "unit": "mm"
   },
   "metrics.A.site.ultradistal.TbSp.mean_ours": {
-   "value": 0.6229055941317023,
+   "value": 0.6229055941317024,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -11715,7 +11715,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours"
   },
   "metrics.A.oslh.TbN.mean_ipl": {
-   "value": 1.1799554576250395,
+   "value": 1.1799554576250397,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "1/mm"
   },
@@ -11725,7 +11725,7 @@
    "unit": "1/mm"
   },
   "metrics.A.oslh.TbN.mean_ours": {
-   "value": 1.1799554576250395,
+   "value": 1.1799554576250397,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "1/mm"
   },
@@ -11806,7 +11806,7 @@
    "source": "validation/results/sample_means.csv (BV/TV: validation/results/patella_bvtv_A/records.json) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours"
   },
   "metrics.A.pooled.TbN.mean_ipl": {
-   "value": 1.3654237624784056,
+   "value": 1.3654237624784054,
    "source": "validation/results/sample_means.csv (BV/TV: validation/results/patella_bvtv_A/records.json) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "1/mm"
   },
@@ -11816,7 +11816,7 @@
    "unit": "1/mm"
   },
   "metrics.A.pooled.TbN.mean_ours": {
-   "value": 1.3654237624784056,
+   "value": 1.3654237624784054,
    "source": "validation/results/sample_means.csv (BV/TV: validation/results/patella_bvtv_A/records.json) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "1/mm"
   },
@@ -12534,7 +12534,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours"
   },
   "metrics.A.oslh.CtTh.mean_ipl": {
-   "value": 2.7394582182156553,
+   "value": 2.7394582182156557,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "mm"
   },
@@ -12544,7 +12544,7 @@
    "unit": "mm"
   },
   "metrics.A.oslh.CtTh.mean_ours": {
-   "value": 2.7394582182156553,
+   "value": 2.7394582182156557,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "mm"
   },
@@ -12630,7 +12630,7 @@
    "unit": "mm"
   },
   "metrics.A.pooled.CtTh.sd_ipl": {
-   "value": 1.851162243084584,
+   "value": 1.8511622430845842,
    "source": "validation/results/sample_means.csv (BV/TV: validation/results/patella_bvtv_A/records.json) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "mm"
   },
@@ -12640,7 +12640,7 @@
    "unit": "mm"
   },
   "metrics.A.pooled.CtTh.sd_ours": {
-   "value": 1.851162243084584,
+   "value": 1.8511622430845842,
    "source": "validation/results/sample_means.csv (BV/TV: validation/results/patella_bvtv_A/records.json) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours",
    "unit": "mm"
   },
@@ -13176,7 +13176,7 @@
    "unit": "mm"
   },
   "metrics.A.site.ultradistal.CtTh.sd_ipl": {
-   "value": 0.4780606341876494,
+   "value": 0.4780606341876493,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -13186,7 +13186,7 @@
    "unit": "mm"
   },
   "metrics.A.site.ultradistal.CtTh.sd_ours": {
-   "value": 0.4780606341876494,
+   "value": 0.4780606341876493,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json A.metrics_ipl / A.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -13369,7 +13369,7 @@
    "unit": "-"
   },
   "metrics.B.oslh.BVTV.sd_ours": {
-   "value": 0.08581309316615024,
+   "value": 0.08581309316615023,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "-"
   },
@@ -13404,7 +13404,7 @@
    "unit": "-"
   },
   "metrics.B.oslh.BVTV.mean_rel_pct": {
-   "value": 0.0008431458890798985,
+   "value": 0.0008431458890798984,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.BVTV.max_rel_pct": {
@@ -13420,11 +13420,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.BVTV.slope": {
-   "value": 1.000032259650231,
+   "value": 1.0000322596502307,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.BVTV.intercept": {
-   "value": -3.1994276473533146e-06,
+   "value": -3.1994276473326983e-06,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "-"
   },
@@ -13456,7 +13456,7 @@
    "unit": "-"
   },
   "metrics.B.pooled.BVTV.mean_ours": {
-   "value": 0.19734954676890112,
+   "value": 0.19734954676890115,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "-"
   },
@@ -13496,7 +13496,7 @@
    "unit": "-"
   },
   "metrics.B.pooled.BVTV.mean_rel_pct": {
-   "value": 0.000715748363185507,
+   "value": 0.0007157483631855068,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.BVTV.max_rel_pct": {
@@ -13512,11 +13512,11 @@
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.BVTV.slope": {
-   "value": 1.0000131425745056,
+   "value": 1.0000131425745062,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.BVTV.intercept": {
-   "value": -6.985613931453243e-07,
+   "value": -6.985613931227713e-07,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "-"
   },
@@ -13525,7 +13525,7 @@
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.BVTV.pearson_r": {
-   "value": 0.9999999901334928,
+   "value": 0.9999999901334923,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.BVTV.icc21": {
@@ -13628,7 +13628,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)"
   },
   "metrics.B.site.UD_tibia.BVTV.mean_ipl": {
-   "value": 0.24459773161582357,
+   "value": 0.24459773161582354,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)",
    "unit": "-"
   },
@@ -13698,7 +13698,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)"
   },
   "metrics.B.site.UD_tibia.BVTV.intercept": {
-   "value": -3.699641881666361e-05,
+   "value": -3.6996418816643e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)",
    "unit": "-"
   },
@@ -13707,7 +13707,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)"
   },
   "metrics.B.site.UD_tibia.BVTV.pearson_r": {
-   "value": 0.9999996689522405,
+   "value": 0.9999996689522407,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)"
   },
   "metrics.B.site.UD_tibia.BVTV.icc21": {
@@ -13911,7 +13911,7 @@
    "unit": "-"
   },
   "metrics.B.site.diaphyseal.BVTV.mean_ours": {
-   "value": 0.09651166624642978,
+   "value": 0.09651166624642976,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "-"
   },
@@ -13971,7 +13971,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.BVTV.intercept": {
-   "value": 1.8390160794098688e-08,
+   "value": 1.839016080440685e-08,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "-"
   },
@@ -13980,7 +13980,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.BVTV.pearson_r": {
-   "value": 0.9999999999992537,
+   "value": 0.9999999999992536,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.BVTV.icc21": {
@@ -13992,7 +13992,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.BVTV.mean_ipl": {
-   "value": 0.24075352543382536,
+   "value": 0.2407535254338254,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "-"
   },
@@ -14002,12 +14002,12 @@
    "unit": "-"
   },
   "metrics.B.site.ultradistal.BVTV.mean_ours": {
-   "value": 0.24075800752555376,
+   "value": 0.2407580075255538,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "-"
   },
   "metrics.B.site.ultradistal.BVTV.sd_ours": {
-   "value": 0.0382794545300882,
+   "value": 0.03827945453008819,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "-"
   },
@@ -14017,17 +14017,17 @@
    "unit": "-"
   },
   "metrics.B.site.ultradistal.BVTV.sd_diff": {
-   "value": 2.2685678276606e-05,
+   "value": 2.2685678276606004e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "-"
   },
   "metrics.B.site.ultradistal.BVTV.loa_low": {
-   "value": -3.998183769372396e-05,
+   "value": -3.998183769372397e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "-"
   },
   "metrics.B.site.ultradistal.BVTV.loa_high": {
-   "value": 4.8946021150571564e-05,
+   "value": 4.894602115057157e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "-"
   },
@@ -14058,11 +14058,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.BVTV.slope": {
-   "value": 1.000102948475951,
+   "value": 1.0001029484759507,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.BVTV.intercept": {
-   "value": -2.0303116794712606e-05,
+   "value": -2.0303116794747798e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "-"
   },
@@ -14071,7 +14071,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.BVTV.pearson_r": {
-   "value": 0.9999998296909913,
+   "value": 0.9999998296909919,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.BVTV.icc21": {
@@ -14200,17 +14200,17 @@
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_trabseg.sd_diff": {
-   "value": 1.0229852501428574e-05,
+   "value": 1.0229852501428575e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_trabseg.loa_low": {
-   "value": -1.8512947898964434e-05,
+   "value": -1.8512947898964438e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_trabseg.loa_high": {
-   "value": 2.1588073906635576e-05,
+   "value": 2.158807390663558e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -14225,7 +14225,7 @@
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_trabseg.mean_rel_pct": {
-   "value": 0.0006992423762872661,
+   "value": 0.0006992423762872663,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbTh_trabseg.max_rel_pct": {
@@ -14241,11 +14241,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbTh_trabseg.slope": {
-   "value": 1.0000518571447,
+   "value": 1.0000518571446995,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbTh_trabseg.intercept": {
-   "value": -9.10269853432803e-06,
+   "value": -9.10269853438797e-06,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -14277,12 +14277,12 @@
    "unit": "mm"
   },
   "metrics.B.pooled.TbTh_trabseg.mean_ours": {
-   "value": 0.2081086785510567,
+   "value": 0.20810867855105666,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.pooled.TbTh_trabseg.sd_ours": {
-   "value": 0.02239820488306551,
+   "value": 0.022398204883065514,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -14292,17 +14292,17 @@
    "unit": "mm"
   },
   "metrics.B.pooled.TbTh_trabseg.sd_diff": {
-   "value": 9.422931601367774e-06,
+   "value": 9.422931601367772e-06,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.pooled.TbTh_trabseg.loa_low": {
-   "value": -1.7163221564090007e-05,
+   "value": -1.7163221564090003e-05,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.pooled.TbTh_trabseg.loa_high": {
-   "value": 1.9774670313271666e-05,
+   "value": 1.9774670313271663e-05,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -14317,7 +14317,7 @@
    "unit": "mm"
   },
   "metrics.B.pooled.TbTh_trabseg.mean_rel_pct": {
-   "value": 0.0005958802364576293,
+   "value": 0.0005958802364576292,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbTh_trabseg.max_rel_pct": {
@@ -14333,11 +14333,11 @@
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbTh_trabseg.slope": {
-   "value": 1.0000384157119298,
+   "value": 1.0000384157119309,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbTh_trabseg.intercept": {
-   "value": -6.688868510503791e-06,
+   "value": -6.6888685105035526e-06,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -14515,11 +14515,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)"
   },
   "metrics.B.site.UD_tibia.TbTh_trabseg.slope": {
-   "value": 1.0001527834805526,
+   "value": 1.0001527834805544,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)"
   },
   "metrics.B.site.UD_tibia.TbTh_trabseg.intercept": {
-   "value": -2.737859292693234e-05,
+   "value": -2.7378592927367782e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)",
    "unit": "mm"
   },
@@ -14540,7 +14540,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)"
   },
   "metrics.B.site.D_radius.TbTh_trabseg.mean_ipl": {
-   "value": 0.18794383348918883,
+   "value": 0.18794383348918886,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -14550,7 +14550,7 @@
    "unit": "mm"
   },
   "metrics.B.site.D_radius.TbTh_trabseg.mean_ours": {
-   "value": 0.18794383348918883,
+   "value": 0.18794383348918886,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -14727,17 +14727,17 @@
    "unit": "mm"
   },
   "metrics.B.site.diaphyseal.TbTh_trabseg.sd_ipl": {
-   "value": 0.02820733279224311,
+   "value": 0.028207332792243103,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
   "metrics.B.site.diaphyseal.TbTh_trabseg.mean_ours": {
-   "value": 0.19805815675165875,
+   "value": 0.19805815675165872,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
   "metrics.B.site.diaphyseal.TbTh_trabseg.sd_ours": {
-   "value": 0.028207358960200993,
+   "value": 0.028207358960201,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -14788,11 +14788,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_trabseg.slope": {
-   "value": 1.000000927677648,
+   "value": 1.000000927677649,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_trabseg.intercept": {
-   "value": -1.6139711563009878e-07,
+   "value": -1.6139711567158317e-07,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -14801,7 +14801,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_trabseg.pearson_r": {
-   "value": 0.9999999999771076,
+   "value": 0.9999999999771075,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_trabseg.icc21": {
@@ -14863,7 +14863,7 @@
    "unit": "mm"
   },
   "metrics.B.site.ultradistal.TbTh_trabseg.mean_rel_pct": {
-   "value": 0.001380932924497858,
+   "value": 0.0013809329244978577,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.TbTh_trabseg.max_rel_pct": {
@@ -15016,17 +15016,17 @@
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_wholeseg.bias": {
-   "value": 0.010023831021262348,
+   "value": 0.010023831021262345,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_wholeseg.sd_diff": {
-   "value": 0.01053699823966972,
+   "value": 0.010536998239669722,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_wholeseg.loa_low": {
-   "value": -0.010628685528490304,
+   "value": -0.010628685528490311,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -15036,7 +15036,7 @@
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_wholeseg.mean_abs_diff": {
-   "value": 0.010023831021262348,
+   "value": 0.010023831021262345,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -15062,11 +15062,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbTh_wholeseg.slope": {
-   "value": 0.8735373713613792,
+   "value": 0.873537371361379,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbTh_wholeseg.intercept": {
-   "value": 0.03597195159960988,
+   "value": 0.03597195159960982,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -15103,7 +15103,7 @@
    "unit": "mm"
   },
   "metrics.B.pooled.TbTh_wholeseg.sd_ours": {
-   "value": 0.02135511905929523,
+   "value": 0.021355119059295227,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -15158,12 +15158,12 @@
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbTh_wholeseg.intercept": {
-   "value": 0.04269395073321328,
+   "value": 0.042693950733213255,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.pooled.TbTh_wholeseg.r2": {
-   "value": 0.7959560898007803,
+   "value": 0.7959560898007801,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbTh_wholeseg.pearson_r": {
@@ -15361,7 +15361,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)"
   },
   "metrics.B.site.D_radius.TbTh_wholeseg.mean_ipl": {
-   "value": 0.18794383348918883,
+   "value": 0.18794383348918886,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -15440,11 +15440,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)"
   },
   "metrics.B.site.D_radius.TbTh_wholeseg.pearson_r": {
-   "value": 0.9456023031121827,
+   "value": 0.945602303112183,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)"
   },
   "metrics.B.site.D_radius.TbTh_wholeseg.icc21": {
-   "value": 0.7744267621969507,
+   "value": 0.7744267621969506,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)"
   },
   "metrics.B.site.D_tibia.TbTh_wholeseg.n": {
@@ -15548,7 +15548,7 @@
    "unit": "mm"
   },
   "metrics.B.site.diaphyseal.TbTh_wholeseg.sd_ipl": {
-   "value": 0.02820733279224311,
+   "value": 0.028207332792243103,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -15609,16 +15609,16 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_wholeseg.slope": {
-   "value": 0.9610365219763506,
+   "value": 0.9610365219763515,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_wholeseg.intercept": {
-   "value": 0.02492027226943051,
+   "value": 0.024920272269430457,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
   "metrics.B.site.diaphyseal.TbTh_wholeseg.r2": {
-   "value": 0.8622161105504429,
+   "value": 0.8622161105504428,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_wholeseg.pearson_r": {
@@ -15626,7 +15626,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_wholeseg.icc21": {
-   "value": 0.7875501650311961,
+   "value": 0.7875501650311962,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.ultradistal.TbTh_wholeseg.n": {
@@ -15644,12 +15644,12 @@
    "unit": "mm"
   },
   "metrics.B.site.ultradistal.TbTh_wholeseg.mean_ours": {
-   "value": 0.21515448813762728,
+   "value": 0.2151544881376273,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
   "metrics.B.site.ultradistal.TbTh_wholeseg.sd_ours": {
-   "value": 0.012763271221269258,
+   "value": 0.01276327122126926,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -15659,17 +15659,17 @@
    "unit": "mm"
   },
   "metrics.B.site.ultradistal.TbTh_wholeseg.sd_diff": {
-   "value": 0.0006843620126195397,
+   "value": 0.0006843620126195398,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
   "metrics.B.site.ultradistal.TbTh_wholeseg.loa_low": {
-   "value": 0.0015030739960307312,
+   "value": 0.001503073996030731,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
   "metrics.B.site.ultradistal.TbTh_wholeseg.loa_high": {
-   "value": 0.004185773085499327,
+   "value": 0.0041857730854993275,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -15713,7 +15713,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.TbTh_wholeseg.pearson_r": {
-   "value": 0.9985884488921443,
+   "value": 0.9985884488921435,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.TbTh_wholeseg.icc21": {
@@ -15842,17 +15842,17 @@
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_as_delivered.sd_diff": {
-   "value": 1.0229852501428574e-05,
+   "value": 1.0229852501428575e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_as_delivered.loa_low": {
-   "value": -1.8512947898964434e-05,
+   "value": -1.8512947898964438e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_as_delivered.loa_high": {
-   "value": 2.1588073906635576e-05,
+   "value": 2.158807390663558e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -15867,7 +15867,7 @@
    "unit": "mm"
   },
   "metrics.B.oslh.TbTh_as_delivered.mean_rel_pct": {
-   "value": 0.0006992423762872661,
+   "value": 0.0006992423762872663,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbTh_as_delivered.max_rel_pct": {
@@ -15883,11 +15883,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbTh_as_delivered.slope": {
-   "value": 1.0000518571447,
+   "value": 1.0000518571446995,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbTh_as_delivered.intercept": {
-   "value": -9.10269853432803e-06,
+   "value": -9.10269853438797e-06,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -15924,7 +15924,7 @@
    "unit": "mm"
   },
   "metrics.B.pooled.TbTh_as_delivered.sd_ours": {
-   "value": 0.022790521264211102,
+   "value": 0.0227905212642111,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -15959,7 +15959,7 @@
    "unit": "mm"
   },
   "metrics.B.pooled.TbTh_as_delivered.mean_rel_pct": {
-   "value": 0.0005959047957618892,
+   "value": 0.0005959047957618891,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbTh_as_delivered.max_rel_pct": {
@@ -15975,11 +15975,11 @@
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbTh_as_delivered.slope": {
-   "value": 1.0000359274572967,
+   "value": 1.0000359274572965,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbTh_as_delivered.intercept": {
-   "value": -6.188105969363158e-06,
+   "value": -6.1881059693704575e-06,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -15988,7 +15988,7 @@
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbTh_as_delivered.pearson_r": {
-   "value": 0.9999999151712924,
+   "value": 0.9999999151712925,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbTh_as_delivered.icc21": {
@@ -16157,11 +16157,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)"
   },
   "metrics.B.site.UD_tibia.TbTh_as_delivered.slope": {
-   "value": 1.0001527834805526,
+   "value": 1.0001527834805544,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)"
   },
   "metrics.B.site.UD_tibia.TbTh_as_delivered.intercept": {
-   "value": -2.737859292693234e-05,
+   "value": -2.7378592927367782e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)",
    "unit": "mm"
   },
@@ -16182,7 +16182,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)"
   },
   "metrics.B.site.D_radius.TbTh_as_delivered.mean_ipl": {
-   "value": 0.18794383348918883,
+   "value": 0.18794383348918886,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -16192,7 +16192,7 @@
    "unit": "mm"
   },
   "metrics.B.site.D_radius.TbTh_as_delivered.mean_ours": {
-   "value": 0.18794383348918883,
+   "value": 0.18794383348918886,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -16369,17 +16369,17 @@
    "unit": "mm"
   },
   "metrics.B.site.diaphyseal.TbTh_as_delivered.sd_ipl": {
-   "value": 0.02820733279224311,
+   "value": 0.028207332792243103,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
   "metrics.B.site.diaphyseal.TbTh_as_delivered.mean_ours": {
-   "value": 0.19805815675165875,
+   "value": 0.19805815675165872,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
   "metrics.B.site.diaphyseal.TbTh_as_delivered.sd_ours": {
-   "value": 0.028207358960200993,
+   "value": 0.028207358960201,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -16430,11 +16430,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_as_delivered.slope": {
-   "value": 1.000000927677648,
+   "value": 1.000000927677649,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_as_delivered.intercept": {
-   "value": -1.6139711563009878e-07,
+   "value": -1.6139711567158317e-07,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -16443,7 +16443,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_as_delivered.pearson_r": {
-   "value": 0.9999999999771076,
+   "value": 0.9999999999771075,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbTh_as_delivered.icc21": {
@@ -16505,7 +16505,7 @@
    "unit": "mm"
   },
   "metrics.B.site.ultradistal.TbTh_as_delivered.mean_rel_pct": {
-   "value": 0.001380932924497858,
+   "value": 0.0013809329244978577,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.TbTh_as_delivered.max_rel_pct": {
@@ -16704,11 +16704,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbSp.slope": {
-   "value": 1.0000002534317445,
+   "value": 1.000000253431744,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbSp.intercept": {
-   "value": -2.620442189470122e-07,
+   "value": -2.6204421884356137e-07,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -16717,7 +16717,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbSp.pearson_r": {
-   "value": 0.9999999999891903,
+   "value": 0.9999999999891904,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbSp.icc21": {
@@ -16745,7 +16745,7 @@
    "unit": "mm"
   },
   "metrics.B.pooled.TbSp.sd_ours": {
-   "value": 0.824538780397334,
+   "value": 0.8245387803973339,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -16755,17 +16755,17 @@
    "unit": "mm"
   },
   "metrics.B.pooled.TbSp.sd_diff": {
-   "value": 3.6198059376017706e-06,
+   "value": 3.619805937601771e-06,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.pooled.TbSp.loa_low": {
-   "value": -7.080108581944314e-06,
+   "value": -7.0801085819443146e-06,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
   "metrics.B.pooled.TbSp.loa_high": {
-   "value": 7.109530693454628e-06,
+   "value": 7.1095306934546286e-06,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -16796,11 +16796,11 @@
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbSp.slope": {
-   "value": 1.0000002310337082,
+   "value": 1.000000231033708,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbSp.intercept": {
-   "value": -2.1647652322513932e-07,
+   "value": -2.1647652325657078e-07,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -16809,7 +16809,7 @@
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbSp.pearson_r": {
-   "value": 0.9999999999903899,
+   "value": 0.9999999999903902,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbSp.icc21": {
@@ -17003,22 +17003,22 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)"
   },
   "metrics.B.site.D_radius.TbSp.mean_ipl": {
-   "value": 2.0627089493804185,
+   "value": 2.062708949380419,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
   "metrics.B.site.D_radius.TbSp.sd_ipl": {
-   "value": 0.9698603977660475,
+   "value": 0.9698603977660474,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
   "metrics.B.site.D_radius.TbSp.mean_ours": {
-   "value": 2.0627089493804185,
+   "value": 2.062708949380419,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
   "metrics.B.site.D_radius.TbSp.sd_ours": {
-   "value": 0.9698603977660475,
+   "value": 0.9698603977660474,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius)",
    "unit": "mm"
   },
@@ -17251,11 +17251,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbSp.slope": {
-   "value": 0.999999837809758,
+   "value": 0.9999998378097584,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbSp.intercept": {
-   "value": 7.213730573127745e-07,
+   "value": 7.213730574093886e-07,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "mm"
   },
@@ -17276,7 +17276,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.TbSp.mean_ipl": {
-   "value": 0.6229055941317023,
+   "value": 0.6229055941317024,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -17326,7 +17326,7 @@
    "unit": "mm"
   },
   "metrics.B.site.ultradistal.TbSp.mean_rel_pct": {
-   "value": 0.00018377509041698305,
+   "value": 0.00018377509041698302,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.TbSp.max_rel_pct": {
@@ -17355,7 +17355,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.TbSp.pearson_r": {
-   "value": 0.9999999994989971,
+   "value": 0.9999999994989973,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.TbSp.icc21": {
@@ -17459,7 +17459,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbN.mean_ipl": {
-   "value": 1.1799554576250395,
+   "value": 1.1799554576250397,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "1/mm"
   },
@@ -17469,7 +17469,7 @@
    "unit": "1/mm"
   },
   "metrics.B.oslh.TbN.mean_ours": {
-   "value": 1.1799565886609884,
+   "value": 1.1799565886609882,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "1/mm"
   },
@@ -17484,17 +17484,17 @@
    "unit": "1/mm"
   },
   "metrics.B.oslh.TbN.sd_diff": {
-   "value": 1.1662579980402962e-05,
+   "value": 1.1662579980402964e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "1/mm"
   },
   "metrics.B.oslh.TbN.loa_low": {
-   "value": -2.1727620812809933e-05,
+   "value": -2.1727620812809936e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "1/mm"
   },
   "metrics.B.oslh.TbN.loa_high": {
-   "value": 2.3989692710369677e-05,
+   "value": 2.398969271036968e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "1/mm"
   },
@@ -17509,7 +17509,7 @@
    "unit": "1/mm"
   },
   "metrics.B.oslh.TbN.mean_rel_pct": {
-   "value": 0.00013381397220267537,
+   "value": 0.0001338139722026754,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbN.max_rel_pct": {
@@ -17525,11 +17525,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbN.slope": {
-   "value": 1.0000012384513728,
+   "value": 1.0000012384513726,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.TbN.intercept": {
-   "value": -3.302815073397942e-07,
+   "value": -3.302815071265566e-07,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "1/mm"
   },
@@ -17551,7 +17551,7 @@
    "note": "patella B metrics are from the dt-inclusive run under the shipped engine (validation/results/from_ipl_contour_ceil_dt/records)"
   },
   "metrics.B.pooled.TbN.mean_ipl": {
-   "value": 1.3654237624784056,
+   "value": 1.3654237624784054,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "1/mm"
   },
@@ -17617,11 +17617,11 @@
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbN.slope": {
-   "value": 1.0000002928129719,
+   "value": 1.0000002928129714,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.pooled.TbN.intercept": {
-   "value": 6.036623128623478e-07,
+   "value": 6.036623132216242e-07,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "1/mm"
   },
@@ -17799,11 +17799,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)"
   },
   "metrics.B.site.UD_tibia.TbN.slope": {
-   "value": 0.9999941034346991,
+   "value": 0.9999941034346995,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)"
   },
   "metrics.B.site.UD_tibia.TbN.intercept": {
-   "value": 1.1907315226304708e-05,
+   "value": 1.1907315226125628e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD tibia)",
    "unit": "1/mm"
   },
@@ -18076,7 +18076,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)"
   },
   "metrics.B.site.diaphyseal.TbN.intercept": {
-   "value": -4.130011064826978e-08,
+   "value": -4.130011062411625e-08,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key D radius + D tibia)",
    "unit": "1/mm"
   },
@@ -18122,17 +18122,17 @@
    "unit": "1/mm"
   },
   "metrics.B.site.ultradistal.TbN.sd_diff": {
-   "value": 1.648264997136965e-05,
+   "value": 1.6482649971369647e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "1/mm"
   },
   "metrics.B.site.ultradistal.TbN.loa_low": {
-   "value": -3.0025267622793018e-05,
+   "value": -3.002526762279301e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "1/mm"
   },
   "metrics.B.site.ultradistal.TbN.loa_high": {
-   "value": 3.4586720264976e-05,
+   "value": 3.4586720264975996e-05,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "1/mm"
   },
@@ -18163,11 +18163,11 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.TbN.slope": {
-   "value": 0.9999979399083446,
+   "value": 0.9999979399083443,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)"
   },
   "metrics.B.site.ultradistal.TbN.intercept": {
-   "value": 5.410463704216775e-06,
+   "value": 5.410463704566645e-06,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "1/mm"
   },
@@ -18280,7 +18280,7 @@
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours"
   },
   "metrics.B.oslh.CtTh.mean_ipl": {
-   "value": 2.7394582182156553,
+   "value": 2.7394582182156557,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -18290,7 +18290,7 @@
    "unit": "mm"
   },
   "metrics.B.oslh.CtTh.mean_ours": {
-   "value": 2.7394582182156553,
+   "value": 2.7394582182156557,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -18377,7 +18377,7 @@
    "unit": "mm"
   },
   "metrics.B.pooled.CtTh.sd_ipl": {
-   "value": 1.851162243084584,
+   "value": 1.8511622430845842,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -18387,7 +18387,7 @@
    "unit": "mm"
   },
   "metrics.B.pooled.CtTh.sd_ours": {
-   "value": 1.851162243084584,
+   "value": 1.8511622430845842,
    "source": "validation/results/from_ipl_contour_ceil_dt/records/*.json (morphometry, bvtv, maps.*.mean_ipl_mm) + validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours",
    "unit": "mm"
   },
@@ -18923,7 +18923,7 @@
    "unit": "mm"
   },
   "metrics.B.site.ultradistal.CtTh.sd_ipl": {
-   "value": 0.4780606341876494,
+   "value": 0.4780606341876493,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -18933,7 +18933,7 @@
    "unit": "mm"
   },
   "metrics.B.site.ultradistal.CtTh.sd_ours": {
-   "value": 0.4780606341876494,
+   "value": 0.4780606341876493,
    "source": "validation/results/{oslh_auto_v4,oslh_noedit_v3}/records/*.json B.metrics_ipl / B.metrics_ours (bone_key UD radius + UD tibia)",
    "unit": "mm"
   },
@@ -19250,8 +19250,8 @@
    "source": "installed package in the ormir env (ormir_xct.__version__)"
   },
   "software.tests.collected_total": {
-   "value": 317,
-   "source": "pytest --collect-only -q tests (2026-09-25)"
+   "value": 330,
+   "source": "pytest --collect-only -q tests (2026-09-26)"
   },
   "software.tests.gpu_cpu_identity": {
    "value": 26,
@@ -19950,7 +19950,7 @@
     "voxels_ipl": 3511888
    },
    {
-    "scan": "Diaphyseal_CKD_2422",
+    "scan": "Diaphyseal_CKD_251016",
     "site": "D tibia",
     "study": "CKD",
     "source": "oslh_auto_v4",
@@ -20286,6 +20286,18 @@
     "voxels_ipl": 2835958
    },
    {
+    "scan": "Diaphyseal_REPRO_353308",
+    "site": "D radius",
+    "study": "REPRO",
+    "source": "oslh_noedit_v3",
+    "mismatches": 0,
+    "ours_only": 0,
+    "ipl_only": 0,
+    "dice": 1.0,
+    "union_voxels": 7425096,
+    "voxels_ipl": 3461382
+   },
+   {
     "scan": "Diaphyseal_REPRO_368516",
     "site": "D radius",
     "study": "REPRO",
@@ -20392,18 +20404,6 @@
     "dice": 0.9999998371421178,
     "union_voxels": 7752192,
     "voxels_ipl": 3070162
-   },
-   {
-    "scan": "Diaphyseal_REPRO_5876",
-    "site": "D radius",
-    "study": "REPRO",
-    "source": "oslh_noedit_v3",
-    "mismatches": 0,
-    "ours_only": 0,
-    "ipl_only": 0,
-    "dice": 1.0,
-    "union_voxels": 7425096,
-    "voxels_ipl": 3461382
    },
    {
     "scan": "Diaphyseal_REPRO_589348",
@@ -20886,30 +20886,6 @@
     "voxels_ipl": 13771050
    },
    {
-    "scan": "Distal_REPRO_2051",
-    "site": "UD tibia",
-    "study": "REPRO",
-    "source": "oslh_auto_v4",
-    "mismatches": 23797,
-    "ours_only": 23730,
-    "ipl_only": 67,
-    "dice": 0.9993207956380906,
-    "union_voxels": 55327776,
-    "voxels_ipl": 17506460
-   },
-   {
-    "scan": "Distal_REPRO_2095",
-    "site": "UD tibia",
-    "study": "REPRO",
-    "source": "oslh_auto_v4",
-    "mismatches": 41480,
-    "ours_only": 41453,
-    "ipl_only": 27,
-    "dice": 0.9984336732755736,
-    "union_voxels": 48570816,
-    "voxels_ipl": 13220458
-   },
-   {
     "scan": "Distal_REPRO_237035",
     "site": "UD radius",
     "study": "REPRO",
@@ -20970,6 +20946,18 @@
     "voxels_ipl": 4631238
    },
    {
+    "scan": "Distal_REPRO_322919",
+    "site": "UD tibia",
+    "study": "REPRO",
+    "source": "oslh_auto_v4",
+    "mismatches": 41480,
+    "ours_only": 41453,
+    "ipl_only": 27,
+    "dice": 0.9984336732755736,
+    "union_voxels": 48570816,
+    "voxels_ipl": 13220458
+   },
+   {
     "scan": "Distal_REPRO_346361",
     "site": "UD radius",
     "study": "REPRO",
@@ -21016,6 +21004,18 @@
     "dice": 0.9999980326593052,
     "union_voxels": 25082064,
     "voxels_ipl": 4828862
+   },
+   {
+    "scan": "Distal_REPRO_444590",
+    "site": "UD tibia",
+    "study": "REPRO",
+    "source": "oslh_auto_v4",
+    "mismatches": 23797,
+    "ours_only": 23730,
+    "ipl_only": 67,
+    "dice": 0.9993207956380906,
+    "union_voxels": 55327776,
+    "voxels_ipl": 17506460
    },
    {
     "scan": "Distal_REPRO_449250",
@@ -21764,7 +21764,7 @@
     "CtTh_ours": 2.9814031499053306
    },
    {
-    "scan": "Diaphyseal_CKD_2422",
+    "scan": "Diaphyseal_CKD_251016",
     "cohort": "D tibia",
     "study": "CKD",
     "BVTV_ipl": 0.19120062630884838,
@@ -22296,6 +22296,25 @@
     "CtTh_ours": 2.381114319465729
    },
    {
+    "scan": "Diaphyseal_REPRO_353308",
+    "cohort": "D radius",
+    "study": "REPRO",
+    "BVTV_ipl": 0.006320028035844221,
+    "BVTV_ours": 0.006320028035844221,
+    "TbTh_trabseg_ipl": 0.12850657235156512,
+    "TbTh_trabseg_ours": 0.12850657235156512,
+    "TbTh_wholeseg_ipl": 0.12850657235156512,
+    "TbTh_wholeseg_ours": 0.15741667774086376,
+    "TbTh_as_delivered_ipl": 0.12850657235156512,
+    "TbTh_as_delivered_ours": 0.12850657235156512,
+    "TbSp_ipl": 5.49469404553898,
+    "TbSp_ours": 5.49469404553898,
+    "TbN_ipl": 0.1854379634486415,
+    "TbN_ours": 0.1854379634486415,
+    "CtTh_ipl": 2.755009426965728,
+    "CtTh_ours": 2.755009426965728
+   },
+   {
     "scan": "Diaphyseal_REPRO_368516",
     "cohort": "D radius",
     "study": "REPRO",
@@ -22465,25 +22484,6 @@
     "TbN_ours": 0.3252276175661462,
     "CtTh_ipl": 2.391150555917766,
     "CtTh_ours": 2.391150555917766
-   },
-   {
-    "scan": "Diaphyseal_REPRO_5876",
-    "cohort": "D radius",
-    "study": "REPRO",
-    "BVTV_ipl": 0.006320028035844221,
-    "BVTV_ours": 0.006320028035844221,
-    "TbTh_trabseg_ipl": 0.12850657235156512,
-    "TbTh_trabseg_ours": 0.12850657235156512,
-    "TbTh_wholeseg_ipl": 0.12850657235156512,
-    "TbTh_wholeseg_ours": 0.15741667774086376,
-    "TbTh_as_delivered_ipl": 0.12850657235156512,
-    "TbTh_as_delivered_ours": 0.12850657235156512,
-    "TbSp_ipl": 5.49469404553898,
-    "TbSp_ours": 5.49469404553898,
-    "TbN_ipl": 0.1854379634486415,
-    "TbN_ours": 0.1854379634486415,
-    "CtTh_ipl": 2.755009426965728,
-    "CtTh_ours": 2.755009426965728
    },
    {
     "scan": "Diaphyseal_REPRO_589348",
@@ -23246,44 +23246,6 @@
     "CtTh_ours": 1.9114069346137987
    },
    {
-    "scan": "Distal_REPRO_2051",
-    "cohort": "UD tibia",
-    "study": "REPRO",
-    "BVTV_ipl": 0.32230086020495374,
-    "BVTV_ours": 0.32230086020495374,
-    "TbTh_trabseg_ipl": 0.2303924162688126,
-    "TbTh_trabseg_ours": 0.2303924162688126,
-    "TbTh_wholeseg_ipl": 0.2303924162688126,
-    "TbTh_wholeseg_ours": 0.23201321857751406,
-    "TbTh_as_delivered_ipl": 0.2303924162688126,
-    "TbTh_as_delivered_ours": 0.2303924162688126,
-    "TbSp_ipl": 0.544562149818573,
-    "TbSp_ours": 0.544562149818573,
-    "TbN_ipl": 1.5846774592378383,
-    "TbN_ours": 1.5846774592378383,
-    "CtTh_ipl": 1.843409241068085,
-    "CtTh_ours": 1.843409241068085
-   },
-   {
-    "scan": "Distal_REPRO_2095",
-    "cohort": "UD tibia",
-    "study": "REPRO",
-    "BVTV_ipl": 0.26143194108149853,
-    "BVTV_ours": 0.26143194108149853,
-    "TbTh_trabseg_ipl": 0.22365024877422157,
-    "TbTh_trabseg_ours": 0.22365024877422157,
-    "TbTh_wholeseg_ipl": 0.22365024877422157,
-    "TbTh_wholeseg_ours": 0.22711807233083206,
-    "TbTh_as_delivered_ipl": 0.22365024877422157,
-    "TbTh_as_delivered_ours": 0.22365024877422157,
-    "TbSp_ipl": 0.6778542189848562,
-    "TbSp_ours": 0.6778542189848562,
-    "TbN_ipl": 1.3528844339489503,
-    "TbN_ours": 1.3528844339489503,
-    "CtTh_ipl": 1.9448972378888243,
-    "CtTh_ours": 1.9448972378888243
-   },
-   {
     "scan": "Distal_REPRO_237035",
     "cohort": "UD radius",
     "study": "REPRO",
@@ -23379,6 +23341,25 @@
     "CtTh_ours": 0.625489865157092
    },
    {
+    "scan": "Distal_REPRO_322919",
+    "cohort": "UD tibia",
+    "study": "REPRO",
+    "BVTV_ipl": 0.26143194108149853,
+    "BVTV_ours": 0.26143194108149853,
+    "TbTh_trabseg_ipl": 0.22365024877422157,
+    "TbTh_trabseg_ours": 0.22365024877422157,
+    "TbTh_wholeseg_ipl": 0.22365024877422157,
+    "TbTh_wholeseg_ours": 0.22711807233083206,
+    "TbTh_as_delivered_ipl": 0.22365024877422157,
+    "TbTh_as_delivered_ours": 0.22365024877422157,
+    "TbSp_ipl": 0.6778542189848562,
+    "TbSp_ours": 0.6778542189848562,
+    "TbN_ipl": 1.3528844339489503,
+    "TbN_ours": 1.3528844339489503,
+    "CtTh_ipl": 1.9448972378888243,
+    "CtTh_ours": 1.9448972378888243
+   },
+   {
     "scan": "Distal_REPRO_346361",
     "cohort": "UD radius",
     "study": "REPRO",
@@ -23453,6 +23434,25 @@
     "TbN_ours": 1.6990820275343979,
     "CtTh_ipl": 1.0237280194884213,
     "CtTh_ours": 1.0237280194884213
+   },
+   {
+    "scan": "Distal_REPRO_444590",
+    "cohort": "UD tibia",
+    "study": "REPRO",
+    "BVTV_ipl": 0.32230086020495374,
+    "BVTV_ours": 0.32230086020495374,
+    "TbTh_trabseg_ipl": 0.2303924162688126,
+    "TbTh_trabseg_ours": 0.2303924162688126,
+    "TbTh_wholeseg_ipl": 0.2303924162688126,
+    "TbTh_wholeseg_ours": 0.23201321857751406,
+    "TbTh_as_delivered_ipl": 0.2303924162688126,
+    "TbTh_as_delivered_ours": 0.2303924162688126,
+    "TbSp_ipl": 0.544562149818573,
+    "TbSp_ours": 0.544562149818573,
+    "TbN_ipl": 1.5846774592378383,
+    "TbN_ours": 1.5846774592378383,
+    "CtTh_ipl": 1.843409241068085,
+    "CtTh_ours": 1.843409241068085
    },
    {
     "scan": "Distal_REPRO_449250",
@@ -24369,7 +24369,7 @@
     "CtTh_ours": 2.9814031499053306
    },
    {
-    "scan": "Diaphyseal_CKD_2422",
+    "scan": "Diaphyseal_CKD_251016",
     "cohort": "D tibia",
     "study": "CKD",
     "BVTV_ipl": 0.19120062630884838,
@@ -24901,6 +24901,25 @@
     "CtTh_ours": 2.381114319465729
    },
    {
+    "scan": "Diaphyseal_REPRO_353308",
+    "cohort": "D radius",
+    "study": "REPRO",
+    "BVTV_ipl": 0.006320028035844221,
+    "BVTV_ours": 0.006320028035844221,
+    "TbTh_trabseg_ipl": 0.12850657235156512,
+    "TbTh_trabseg_ours": 0.12850657235156512,
+    "TbTh_wholeseg_ipl": 0.12850657235156512,
+    "TbTh_wholeseg_ours": 0.15741667774086376,
+    "TbTh_as_delivered_ipl": 0.12850657235156512,
+    "TbTh_as_delivered_ours": 0.12850657235156512,
+    "TbSp_ipl": 5.49469404553898,
+    "TbSp_ours": 5.49469404553898,
+    "TbN_ipl": 0.1854379634486415,
+    "TbN_ours": 0.1854379634486415,
+    "CtTh_ipl": 2.755009426965728,
+    "CtTh_ours": 2.755009426965728
+   },
+   {
     "scan": "Diaphyseal_REPRO_368516",
     "cohort": "D radius",
     "study": "REPRO",
@@ -25070,25 +25089,6 @@
     "TbN_ours": 0.3252276175661462,
     "CtTh_ipl": 2.391150555917766,
     "CtTh_ours": 2.391150555917766
-   },
-   {
-    "scan": "Diaphyseal_REPRO_5876",
-    "cohort": "D radius",
-    "study": "REPRO",
-    "BVTV_ipl": 0.006320028035844221,
-    "BVTV_ours": 0.006320028035844221,
-    "TbTh_trabseg_ipl": 0.12850657235156512,
-    "TbTh_trabseg_ours": 0.12850657235156512,
-    "TbTh_wholeseg_ipl": 0.12850657235156512,
-    "TbTh_wholeseg_ours": 0.15741667774086376,
-    "TbTh_as_delivered_ipl": 0.12850657235156512,
-    "TbTh_as_delivered_ours": 0.12850657235156512,
-    "TbSp_ipl": 5.49469404553898,
-    "TbSp_ours": 5.49469404553898,
-    "TbN_ipl": 0.1854379634486415,
-    "TbN_ours": 0.1854379634486415,
-    "CtTh_ipl": 2.755009426965728,
-    "CtTh_ours": 2.755009426965728
    },
    {
     "scan": "Diaphyseal_REPRO_589348",
@@ -25851,44 +25851,6 @@
     "CtTh_ours": 1.9114069346137987
    },
    {
-    "scan": "Distal_REPRO_2051",
-    "cohort": "UD tibia",
-    "study": "REPRO",
-    "BVTV_ipl": 0.32230086020495374,
-    "BVTV_ours": 0.3223168147100165,
-    "TbTh_trabseg_ipl": 0.2303924162688126,
-    "TbTh_trabseg_ours": 0.2304176085912946,
-    "TbTh_wholeseg_ipl": 0.2303924162688126,
-    "TbTh_wholeseg_ours": 0.23205006404971557,
-    "TbTh_as_delivered_ipl": 0.2303924162688126,
-    "TbTh_as_delivered_ours": 0.2304176085912946,
-    "TbSp_ipl": 0.544562149818573,
-    "TbSp_ours": 0.5445622776138849,
-    "TbN_ipl": 1.5846774592378383,
-    "TbN_ours": 1.5846716536259144,
-    "CtTh_ipl": 1.843409241068085,
-    "CtTh_ours": 1.843409241068085
-   },
-   {
-    "scan": "Distal_REPRO_2095",
-    "cohort": "UD tibia",
-    "study": "REPRO",
-    "BVTV_ipl": 0.26143194108149853,
-    "BVTV_ours": 0.2615641892869849,
-    "TbTh_trabseg_ipl": 0.22365024877422157,
-    "TbTh_trabseg_ours": 0.22371143071087224,
-    "TbTh_wholeseg_ipl": 0.22365024877422157,
-    "TbTh_wholeseg_ours": 0.22718292570902093,
-    "TbTh_as_delivered_ipl": 0.22365024877422157,
-    "TbTh_as_delivered_ours": 0.22371143071087224,
-    "TbSp_ipl": 0.6778542189848562,
-    "TbSp_ours": 0.6778287001702727,
-    "TbN_ipl": 1.3528844339489503,
-    "TbN_ours": 1.3530030774554096,
-    "CtTh_ipl": 1.9448972378888243,
-    "CtTh_ours": 1.9448972378888243
-   },
-   {
     "scan": "Distal_REPRO_237035",
     "cohort": "UD radius",
     "study": "REPRO",
@@ -25984,6 +25946,25 @@
     "CtTh_ours": 0.625489865157092
    },
    {
+    "scan": "Distal_REPRO_322919",
+    "cohort": "UD tibia",
+    "study": "REPRO",
+    "BVTV_ipl": 0.26143194108149853,
+    "BVTV_ours": 0.2615641892869849,
+    "TbTh_trabseg_ipl": 0.22365024877422157,
+    "TbTh_trabseg_ours": 0.22371143071087224,
+    "TbTh_wholeseg_ipl": 0.22365024877422157,
+    "TbTh_wholeseg_ours": 0.22718292570902093,
+    "TbTh_as_delivered_ipl": 0.22365024877422157,
+    "TbTh_as_delivered_ours": 0.22371143071087224,
+    "TbSp_ipl": 0.6778542189848562,
+    "TbSp_ours": 0.6778287001702727,
+    "TbN_ipl": 1.3528844339489503,
+    "TbN_ours": 1.3530030774554096,
+    "CtTh_ipl": 1.9448972378888243,
+    "CtTh_ours": 1.9448972378888243
+   },
+   {
     "scan": "Distal_REPRO_346361",
     "cohort": "UD radius",
     "study": "REPRO",
@@ -26058,6 +26039,25 @@
     "TbN_ours": 1.6990821848874507,
     "CtTh_ipl": 1.0237280194884213,
     "CtTh_ours": 1.0237280194884213
+   },
+   {
+    "scan": "Distal_REPRO_444590",
+    "cohort": "UD tibia",
+    "study": "REPRO",
+    "BVTV_ipl": 0.32230086020495374,
+    "BVTV_ours": 0.3223168147100165,
+    "TbTh_trabseg_ipl": 0.2303924162688126,
+    "TbTh_trabseg_ours": 0.2304176085912946,
+    "TbTh_wholeseg_ipl": 0.2303924162688126,
+    "TbTh_wholeseg_ours": 0.23205006404971557,
+    "TbTh_as_delivered_ipl": 0.2303924162688126,
+    "TbTh_as_delivered_ours": 0.2304176085912946,
+    "TbSp_ipl": 0.544562149818573,
+    "TbSp_ours": 0.5445622776138849,
+    "TbN_ipl": 1.5846774592378383,
+    "TbN_ours": 1.5846716536259144,
+    "CtTh_ipl": 1.843409241068085,
+    "CtTh_ours": 1.843409241068085
    },
    {
     "scan": "Distal_REPRO_449250",

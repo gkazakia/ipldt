@@ -20,8 +20,8 @@ does, rule by rule, and where the rendered contour differs from the mask it came
      not stored (no contour, nothing rendered); a raw 6-vertex chain is stored (the 4..6 class; 7..8 refuted)
 
 Panels D-G use a 20 x 24 synthetic slice that exercises every rule (a real slice never shows all five in one crop);
-every other panel is real data: IPL's compartment masks of the patellae and IPL's own contour renderings (probe-15
-exports), IPL's stored contour files, and the probe-19 phantom with IPL's rendering and contour file of it.
+every other panel is real data: IPL's compartment masks of the patellae and IPL's own contour renderings (test-run-15
+exports), IPL's stored contour files, and the test-run-19 phantom with IPL's rendering and contour file of it.
 
 Run from the repository root with the ormir python (about 2 min the first time: 42 volumes rendered for panel C and
 compared with IPL's exports; cached afterwards in manuscript/figures/cache/S4_contour_cohort.json):
@@ -32,10 +32,10 @@ compared with IPL's exports; cached afterwards in manuscript/figures/cache/S4_co
 Writes manuscript/figures/supp/S4_contour.png (300 dpi), S4_contour.svg and S4_contour_numbers.json (every number drawn).
 
 Inputs (read only):
-  * IPL's compartment masks    <IPLDT_LAB_ROOT>/PFJOA/XCT_masks_full_grab/<subj>/<base>_{CORT,TRAB}_MASK.AIM
-  * IPL's contour renderings   <IPLDT_LAB_ROOT>/Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs/<base>_P15_<kind>_G2A.AIM
+  * IPL's compartment masks    <IPLDT_LAB_ROOT>/patellae/<subj>/<base>_{CORT,TRAB}_MASK.AIM
+  * IPL's contour renderings   <IPLDT_LAB_ROOT>/ipl_test_runs/run15/aims_and_logs/<base>_T15_<kind>_G2A.AIM
     and stored contour files   .../<base>_<kind>_MASK.GOBJ;n  (P5MASK.GOBJ / P7MASK.GOBJ for two trabecular contours)
-  * the probe-19 phantom       <IPLDT_PROBE19_MIRROR>/{phantom19_manifest.json, oracle/X2420448_P19_TINY.AIM, oracle/P19TINY.GOBJ}
+  * the test-run-19 phantom       <IPLDT_RUN19_MIRROR>/{phantom19_manifest.json, oracle/X2420448_T19_TINY.AIM, oracle/T19TINY.GOBJ}
 Nothing under ipldt/ is modified; every ipldt result comes from calling ipldt.contour on those files.  The only
 re-implementation is an event-logging copy of ipldt.contour.smooth.sweep for the markers of panels E and F, asserted
 equal to the package's sweep on every chain it annotates.
@@ -73,9 +73,9 @@ from ipldt.contour import smooth as SM  # noqa: E402
 from ipldt.contour.gobj_file import read_gobj, path as gobj_path  # noqa: E402
 
 # ------------------------------------------------------------------------------------------------ inputs
-GRAB = lab_path("PFJOA/XCT_masks_full_grab")
-P15 = lab_path("Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs")
-P19 = os.environ.get("IPLDT_PROBE19_MIRROR") or lab_path("ipl_probes/p19_open_halves")
+GRAB = lab_path("patellae")
+T15 = lab_path("ipl_test_runs/run15/aims_and_logs")
+T19 = os.environ.get("IPLDT_RUN19_MIRROR") or lab_path("ipl_test_runs/run19_mirror")
 CACHE = os.path.join(REPO, "manuscript", "figures", "cache", "S4_contour_cohort.json")
 OUT = os.path.join(HERE, "S4_contour")
 VOX_MM = 0.0607
@@ -100,7 +100,7 @@ MASK_GREY, MASK_GREY_LIGHT, RAW_GREY = "#bdbdbd", "#d9d9d9", "#9a9a9a"
 plt.rcParams.update({
     "font.family": "sans-serif", "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
     "font.size": 7, "axes.titlesize": 7, "axes.labelsize": 7, "xtick.labelsize": 6.5, "ytick.labelsize": 6.5,
-    "legend.fontsize": 6.3, "axes.linewidth": 0.5, "axes.edgecolor": C_AXIS, "xtick.major.width": 0.5,
+    "legend.fontsize": 6.5, "axes.linewidth": 0.5, "axes.edgecolor": C_AXIS, "xtick.major.width": 0.5,
     "ytick.major.width": 0.5, "xtick.major.size": 2, "ytick.major.size": 2, "xtick.color": C_INK2,
     "ytick.color": C_INK2, "savefig.dpi": 300, "figure.dpi": 100, "pdf.fonttype": 42, "svg.fonttype": "none",
     "text.color": C_INK, "axes.labelcolor": C_INK2, "legend.frameon": False, "legend.handlelength": 1.4,
@@ -123,8 +123,8 @@ def read_mask(subj, kind):
 
 
 def read_export(subj, kind, tag="G2A"):
-    """IPL's probe-15 export <base>_P15_<kind>_<tag>.AIM: /gobj_to_aim of the mask's /togobj_from_aim contour."""
-    return ipldt.read_aim(f"{P15}/{BASE[subj]}_P15_{kind}_{tag}.AIM")
+    """IPL's test-run-15 export <base>_T15_<kind>_<tag>.AIM: /gobj_to_aim of the mask's /togobj_from_aim contour."""
+    return ipldt.read_aim(f"{T15}/{BASE[subj]}_T15_{kind}_{tag}.AIM")
 
 
 def ipl_on_grid(subj, kind, mask):
@@ -140,7 +140,7 @@ def gobj_name(subj, kind):
 
 def newest_gobj(name):
     """Newest VMS version (name;N) of a stored contour file that reads and holds contours: (basename, slices)."""
-    files = sorted(glob.glob(f"{P15}/{name};*"), key=lambda p: int(p.rsplit(";", 1)[1]))
+    files = sorted(glob.glob(f"{T15}/{name};*"), key=lambda p: int(p.rsplit(";", 1)[1]))
     for gp in reversed(files):
         try:
             _, sl = read_gobj(gp)
@@ -336,8 +336,8 @@ def sweep_events(pts, rules):
 EV_STYLE = {SM.CORNER: ("x", C_VERM, "corner, |d| = (1, 1): vertex deleted"),
             SM.SPUR: ("X", C_PURPLE, "spur tip, d = (0, 0): vertex and its successor deleted"),
             SM.SHARP: ("P", C_ORANGE, "135° turn, |d| = (1, 0) or (0, 1): vertex deleted"),
-            SM.EXCURSION_V: (">", C_GREEN, "excursion on vertical travel, |d| = (0, 2): moved to the midpoint"),
-            SM.EXCURSION_H: ("v", C_BLUE, "excursion on horizontal travel, |d| = (2, 0): moved to the midpoint")}
+            SM.EXCURSION_V: (">", C_GREEN, "vertical excursion, |d| = (0, 2): moved to the midpoint"),
+            SM.EXCURSION_H: ("v", C_BLUE, "horizontal excursion, |d| = (2, 0): moved to the midpoint")}
 
 
 def draw_events(ax, events, ms=5.5):
@@ -559,7 +559,7 @@ def stored_raw_data(subj="PFJ-d81140_R", kind="TRAB", z=0, w=40, h=28):
                 mask_px=int(sl.sum()), ipl_px=int(gi.sum()))
 
 
-# ------------------------------------------------------------------------------------------------ the probe-19 phantom
+# ------------------------------------------------------------------------------------------------ the test-run-19 phantom
 PH_SHOW = [  # (test, caption)
     ("h_v12", "vertical 1 × 2 hole"),
     ("h_h12", "horizontal 1 × 2 hole"),
@@ -573,7 +573,7 @@ PH_CROP = dict(hole=(104, 105, 12, 10), component=(297, 147, 12, 10))    # (x0, 
 
 
 def phantom_data():
-    man = json.load(open(os.path.join(P19, "phantom19_manifest.json")))
+    man = json.load(open(os.path.join(T19, "phantom19_manifest.json")))
     dim, pos = tuple(man["dim"]), tuple(man["pos"])
     a = np.zeros(dim[::-1], bool)
     for t in man["tests"].values():
@@ -586,9 +586,9 @@ def phantom_data():
         else:
             for x, y in t["pixels"]:
                 a[z0:z1 + 1, y, x] = True
-    tiny = ipldt.read_aim(os.path.join(P19, "oracle", "X2420448_P19_TINY.AIM"))
+    tiny = ipldt.read_aim(os.path.join(T19, "oracle", "X2420448_T19_TINY.AIM"))
     T = ipldt.align_to(tiny, dim, pos) > 0
-    _, gsl = read_gobj(os.path.join(P19, "oracle", "P19TINY.GOBJ"))
+    _, gsl = read_gobj(os.path.join(T19, "oracle", "T19TINY.GOBJ"))
     G = render_volume(a)
     assert np.array_equal(G, T), "phantom rendering differs from IPL's"
     tests = {}
@@ -649,15 +649,15 @@ def panel_title(fig, x, y, letter, title, sub, checks, span):
     t1 = ftext(fig, x + 3.8, y + 0.35, title, fontsize=7.5, fontweight="bold", ha="left")
     checks.append((t1, x, x + span, title))
     if sub:
-        t2 = ftext(fig, x, y + 4.1, sub, fontsize=6.4, color=C_INK2, ha="left", linespacing=1.18)
+        t2 = ftext(fig, x, y + 4.1, sub, fontsize=6.5, color=C_INK2, ha="left", linespacing=1.18)
         checks.append((t2, x, x + span, sub))
 
 
-def legend_strip(fig, x, y_top, w, h, handles, ncol, fontsize=6.3):
+def legend_strip(fig, x, y_top, w, h, handles, ncol, fontsize=6.5):
     ax = ax_mm(fig, x, y_top, w, h)
     ax.axis("off")
     ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.0, 1.0), ncol=ncol, fontsize=fontsize, frameon=False,
-              handlelength=1.5, handletextpad=0.5, columnspacing=1.6, labelspacing=0.32, borderaxespad=0.0)
+              handlelength=1.3, handletextpad=0.5, columnspacing=1.2, labelspacing=0.32, borderaxespad=0.0)
     return ax
 
 
@@ -674,18 +674,45 @@ def H_circ(color, label, mec=C_INK, mew=0.6, ms=5, fill=True):
 
 
 def draw(S, A, rows, F, I, PH):
-    fig = plt.figure(figsize=(FIG_W / 25.4, FIG_H / 25.4))
-    checks = []
-    N = dict(A={}, C={}, D={}, E={}, F={}, G={}, H={}, I={}, J={})
-    pw, gap = 56.0, 4.0
+    global FIG_H
+    # ------------------------------------------------------------------ the vertical layout, in mm from the top
+    # The figure is taller than the 228-mm page and prints scaled (the manuscript build: 180 mm wide unless the page height
+    # limits it); the layout is kept compact and every text is >= 6.5 pt at the design size, so it prints >= 6 pt.
+    LP = 6.5 * 1.2 * 25.4 / 72                            # the pitch of one 6.5-pt text line
+    pw, gap = 56.0, 4.0                                   # the D-I columns (their titles and notes)
+    aw = 50.0                                             # the D-G and I image axes, centered in the columns
+    awH = pw                                              # H spans its column: its note needs the width
     xcol = [2.0, 2.0 + pw + gap, 2.0 + 2 * (pw + gap)]
-
-    # ===================================================================================== row 1: the real slice
-    y1, ax_y1, hB = 0.0, 13.0, 40.0
-    # --- A: the whole slice
+    xax = [x + (pw - aw) / 2 for x in xcol]
+    y1, ax_y1, hB, hC = 0.0, 13.0, 32.0, 30.0
     xA, wA = 2.0, 74.0
     Hs, Ws = A["sl"].shape
     hA = wA * Hs / Ws
+    row1_end = max(ax_y1 + hA + 1.4 + 3 * LP, ax_y1 + hB + 3.8 + 3 * LP + 0.8, ax_y1 + hC + 6.0 + 3 * LP)
+    y2 = row1_end + 1.4
+    ax_y2 = y2 + 13.0
+    win = (1, 3, 22, 17)                                  # (x0, y0, w, h) of the synthetic slice shown (rows 3-19)
+    ph2 = aw * win[3] / win[2]
+    leg_h = 4 * LP + 1.4                                  # the four-row legend strips of rows 2 and 3
+    y3 = ax_y2 + ph2 + 4.2 + leg_h + 1.2
+    ax_y3 = y3 + 13.0
+    ph3 = max(ph2, awH * F["crop"][3] / F["crop"][2], aw * I["crop"][3] / I["crop"][2])
+    y4 = ax_y3 + ph3 + 4.2 + leg_h + 1.2
+    ax_y4 = y4 + 4.1 + 2 * LP + 1.4
+    nJ = len(PH_SHOW)
+    mg = 3.0
+    mw = (174.0 - (nJ - 1) * mg) / nJ
+    hJ = max(mw * PH["tests"][name]["crop"][3] / PH["tests"][name]["crop"][2] for name, _ in PH_SHOW)
+    FIG_H = ax_y4 + hJ + 1.2 + 3 * LP + 0.8
+    say(f"layout: rows at {y1:.1f} / {y2:.1f} / {y3:.1f} / {y4:.1f} mm, figure {FIG_W:.0f} x {FIG_H:.1f} mm "
+        f"(prints at {min(1.0, 228.0 / FIG_H):.3f})")
+
+    fig = plt.figure(figsize=(FIG_W / 25.4, FIG_H / 25.4))
+    checks = []
+    N = dict(A={}, C={}, D={}, E={}, F={}, G={}, H={}, I={}, J={})
+
+    # ===================================================================================== row 1: the real slice
+    # --- A: the whole slice
     x0, y0, n = A["crop"]
     panel_title(fig, xA, y1, "A", "A cortical mask slice and its rendered contour",
                 f"one patella, slice {A['z'] + 1} of {A['slices']}; gray = IPL's cortical mask; squares: pixels\n"
@@ -719,7 +746,7 @@ def draw(S, A, rows, F, I, PH):
     xB, wB = 86.0, hB
     panel_title(fig, xB, y1, "B", "The chain and its raster",
                 "the stored contour is a closed polygon\nthrough pixel centers; the raster it renders\nis what every masked IPL command sees",
-                checks, span=wB + 6)
+                checks, span=50.0)                    # to the C column (x = 138)
     ax = ax_mm(fig, xB, ax_y1, wB, hB)
     crop = A["sl"][y0:y0 + n, x0:x0 + n]
     show_mask(ax, crop, x0, y0)
@@ -738,7 +765,7 @@ def draw(S, A, rows, F, I, PH):
     panel_title(fig, xC, y1, "C", "21 patellae, 42 volumes",
                 "voxels the rendering changes, per\nmillion mask voxels; each marker one\ncortical or trabecular mask volume",
                 checks, span=wC + 2)
-    ax = ax_mm(fig, xC + 6.5, ax_y1, wC - 6.5, hB)
+    ax = ax_mm(fig, xC + 6.5, ax_y1, wC - 6.5, hC)
     dr = np.array([r["dropped"] / r["mask"] * 1e6 for r in rows])
     ad = np.array([r["added"] / r["mask"] * 1e6 for r in rows])
     kinds = np.array([r["kind"] for r in rows])
@@ -758,8 +785,8 @@ def draw(S, A, rows, F, I, PH):
         ax.spines[sp].set_visible(False)
     mism = sum(r["mismatch"] for r in rows)
     n_exact = sum(r["mismatch"] == 0 for r in rows)
-    ax.legend(loc="upper left", fontsize=6.3, frameon=False, handletextpad=0.3, borderaxespad=0.3)
-    tC = ftext(fig, xC, ax_y1 + hB + 6.0,
+    ax.legend(loc="upper left", fontsize=6.5, frameon=False, handletextpad=0.3, borderaxespad=0.3)
+    tC = ftext(fig, xC, ax_y1 + hC + 6.0,
                f"dropped {dr.min():.0f}–{dr.max():.0f}, added {ad.min():.0f}–{ad.max():.0f} per 10⁶\n"
                f"(medians {np.median(dr):.0f} and {np.median(ad):.0f}). ipldt vs IPL:\n"
                f"{mism} differing voxels in all {len(rows)} volumes.",
@@ -770,18 +797,13 @@ def draw(S, A, rows, F, I, PH):
                   added_ppm=dict(min=float(ad.min()), max=float(ad.max()), median=float(np.median(ad))),
                   mask_voxels=sum(r["mask"] for r in rows), rendered_voxels=sum(r["ipl"] for r in rows),
                   dropped_voxels=sum(r["dropped"] for r in rows), added_voxels=sum(r["added"] for r in rows), rows=rows)
-    # the legend strip of row 1 (panels A and B)
-    h1 = [H_sq(C_VERM, "in the mask, not rendered (dropped)"), H_sq(C_GREEN, "rendered, not in the mask (added)"),
-          H_line(C_BLUE, "stored chain, vertices at pixel centers (= IPL's)", marker="o"),
-          H_line(C_INK, "IPL's rendered raster edge", lw=1.3), H_line(C_SKY, "ipldt's rendered raster edge (coincident)", ls=(0, (2.2, 2.2)), lw=1.3)]
-    legend_strip(fig, 2.0, ax_y1 + hB + 5.0, 130.0, 9.0, h1, ncol=2)
+    # the key of B, under B (the vermilion / green squares of A and B are named in A's subtitle)
+    h1 = [H_line(C_BLUE, "stored chain (= IPL's)", marker="o"),
+          H_line(C_INK, "IPL's rendered raster edge", lw=1.3), H_line(C_SKY, "ipldt's raster edge (coincident)", ls=(0, (2.2, 2.2)), lw=1.3)]
+    legend_strip(fig, xB - 2.0, ax_y1 + hB + 3.8, 46.0, 3 * LP + 0.8, h1, ncol=1)
 
     # ===================================================================================== row 2: the synthetic rule
-    y2 = 69.0
-    ax_y2 = y2 + 13.0
     sl, comp = S["sl"], S["comp"]
-    win = (1, 3, 22, 16)                                  # (x0, y0, w, h) of the synthetic slice shown
-    ph2 = pw * win[3] / win[2]
 
     def base(ax, img, grey=MASK_GREY):
         show_mask(ax, img, grey=grey)
@@ -793,7 +815,7 @@ def draw(S, A, rows, F, I, PH):
     panel_title(fig, xcol[0], y2, "D", "Pre-trace rule, Moore trace (synthetic)",
                 "a pixel with background W and E is dropped unless\nit is the raster-first pixel or has mask directly\n"
                 "N and S; then a counterclockwise Moore trace", checks, span=pw)
-    ax = ax_mm(fig, xcol[0], ax_y2, pw, ph2)
+    ax = ax_mm(fig, xax[0], ax_y2, aw, ph2)
     base(ax, sl)
     squares(ax, S["dropped"], color=C_VERM, ms=6.4, zorder=3)
     ax.plot(S["start"][0], S["start"][1], "s", color=C_ORANGE, ms=6.4, mec=C_INK, mew=0.6, zorder=5)
@@ -801,9 +823,9 @@ def draw(S, A, rows, F, I, PH):
     chain_line(ax, raw, color=C_BLUE, lw=0.9, ms=1.9)
     ax.annotate("", xy=raw[2], xytext=raw[0], arrowprops=dict(arrowstyle="-|>", color=C_ORANGE, lw=1.6, shrinkA=3, shrinkB=0), zorder=8)
     for k in range(0, len(raw), 10):
-        ax.annotate(str(k), raw[k], xytext=(2.5, 2.5), textcoords="offset points", fontsize=5.5, color=C_BLUE, zorder=9)
-    ax.text(0.02, 0.03, f"{int(sl.sum())} mask px, {int(S['dropped'].sum())} dropped; raw chain {len(raw)} vertices", transform=ax.transAxes,
-            fontsize=6.2, color=C_INK2, ha="left", va="bottom")
+        ax.annotate(str(k), raw[k], xytext=(2.5, 2.5), textcoords="offset points", fontsize=6.5, color=C_BLUE, zorder=9)
+    ax.text(0.02, 0.015, f"{int(sl.sum())} mask px, {int(S['dropped'].sum())} dropped;\nraw chain {len(raw)} vertices", transform=ax.transAxes,
+            fontsize=6.5, color=C_INK2, ha="left", va="bottom", linespacing=1.15)
     N["D"] = dict(mask_px=int(sl.sum()), dropped=int(S["dropped"].sum()), pre_activated=bool(S["pre"]), raw_vertices=len(raw),
                   start=list(S["start"]))
 
@@ -812,14 +834,14 @@ def draw(S, A, rows, F, I, PH):
     panel_title(fig, xcol[1], y2, "E", "Curvature smoothing, stage A (synthetic)",
                 "one in-place sweep, start vertex last, of four\nrules on d = p[i+1] − p[i−1], neighbors as already\n"
                 f"updated; here {len(a_ev)} vertices change: the gate opens", checks, span=pw)
-    ax = ax_mm(fig, xcol[1], ax_y2, pw, ph2)
+    ax = ax_mm(fig, xax[1], ax_y2, aw, ph2)
     base(ax, comp)
     chain_line(ax, raw, color=RAW_GREY, lw=0.8, ms=0)
     chain_line(ax, S["a_pts"], color=C_BLUE, lw=0.9, ms=1.8)
     draw_events(ax, a_ev)
     ax.plot(S["a_pts"][0][0], S["a_pts"][0][1], "o", color=C_ORANGE, ms=6, mec=C_INK, mew=0.6, zorder=7)
-    ax.text(0.02, 0.03, f"{len(raw)} → {len(S['a_pts'])} vertices; the raw start is deleted,\nits predecessor becomes the start",
-            transform=ax.transAxes, fontsize=6.2, color=C_INK2, ha="left", va="bottom", linespacing=1.15)
+    ax.text(0.02, 0.015, f"{len(raw)} → {len(S['a_pts'])} vertices; the raw start is deleted,\nits predecessor becomes the start",
+            transform=ax.transAxes, fontsize=6.5, color=C_INK2, ha="left", va="bottom", linespacing=1.15)
     N["E"] = dict(events=[(e[0], list(e[1])) for e in a_ev], vertices_after=len(S["a_pts"]), start_after=list(S["a_pts"][0]))
 
     # --- F: gate + stage B
@@ -827,14 +849,14 @@ def draw(S, A, rows, F, I, PH):
     panel_title(fig, xcol[2], y2, "F", "The gate and stage B (synthetic)",
                 "stage B needs a stage-A change or a pre-trace drop,\nelse the raw chain is stored; it sweeps all five\n"
                 f"rules until nothing changes ({S['nsweeps']} sweeps here)", checks, span=pw)
-    ax = ax_mm(fig, xcol[2], ax_y2, pw, ph2)
+    ax = ax_mm(fig, xax[2], ax_y2, aw, ph2)
     base(ax, comp)
     chain_line(ax, S["a_pts"], color=RAW_GREY, lw=0.8, ms=0)
     chain_line(ax, final, color=C_BLUE, lw=0.9, ms=1.8)
     draw_events(ax, b_ev)
     ax.plot(final[0][0], final[0][1], "o", color=C_ORANGE, ms=6, mec=C_INK, mew=0.6, zorder=7)
-    ax.text(0.02, 0.03, f"{len(S['a_pts'])} → {len(final)} vertices: the stored chain\n(= IPL's, -curvature_smooth 1)",
-            transform=ax.transAxes, fontsize=6.2, color=C_INK2, ha="left", va="bottom", linespacing=1.15)
+    ax.text(0.02, 0.015, f"{len(S['a_pts'])} → {len(final)} vertices: the stored chain\n(= IPL's, -curvature_smooth 1)",
+            transform=ax.transAxes, fontsize=6.5, color=C_INK2, ha="left", va="bottom", linespacing=1.15)
     N["F"] = dict(events=[(e[0], list(e[1])) for e in b_ev], sweeps=S["nsweeps"], vertices_stored=len(final), start=list(final[0]))
     # the legend strip of row 2
     h2 = [H_line(RAW_GREY, "chain entering the stage", lw=0.8), H_line(C_BLUE, "chain leaving the stage", marker="o"),
@@ -844,8 +866,6 @@ def draw(S, A, rows, F, I, PH):
     legend_strip(fig, 2.0, ax_y2 + ph2 + 4.2, 176.0, 12.0, h2, ncol=3)
 
     # ===================================================================================== row 3
-    y3 = 141.0
-    ax_y3 = y3 + 13.0
     # --- G: even-odd fill (synthetic)
     ys_row = 10
     xs = np.array([p[0] for p in final]); ys = np.array([p[1] for p in final])
@@ -858,7 +878,7 @@ def draw(S, A, rows, F, I, PH):
     panel_title(fig, xcol[0], y3, "G", "Rasterization of a contour (synthetic)",
                 "rendered = chain pixels + centers strictly inside\nthe polygon; an edge crosses the scanline of its\n"
                 "lower end; inside = odd crossings to its left", checks, span=pw)
-    ax = ax_mm(fig, xcol[0], ax_y3, pw, ph2)
+    ax = ax_mm(fig, xax[0], ax_y3, aw, ph2)
     base(ax, sl)
     squares(ax, S["interior"], color=C_SKY, ms=6.4, alpha=0.9, zorder=2.5)
     squares(ax, S["chain_px"], color=C_BLUE, ms=6.4, alpha=0.9, zorder=2.6)
@@ -868,8 +888,8 @@ def draw(S, A, rows, F, I, PH):
     ax.axhline(ys_row, color=C_ORANGE, lw=1.0, ls="--", zorder=6)
     for x in cr:
         ax.plot(x, ys_row, "|", color=C_ORANGE, ms=9, mew=1.6, zorder=9)
-    ax.text(0.02, 0.03, f"scanline y = {ys_row}: crossings at x = {cr[0]} and {cr[1]};\n{int(G.sum())} px rendered of {int(sl.sum())} "
-            f"({int((sl & ~G).sum())} dropped, {int((~sl & G).sum())} added)", transform=ax.transAxes, fontsize=6.2, color=C_INK2,
+    ax.text(0.02, 0.015, f"scanline y = {ys_row}: crossings at x = {cr[0]} and {cr[1]};\n{int(G.sum())} px rendered of {int(sl.sum())} "
+            f"({int((sl & ~G).sum())} dropped, {int((~sl & G).sum())} added)", transform=ax.transAxes, fontsize=6.5, color=C_INK2,
             ha="left", va="bottom", linespacing=1.15)
     N["G"] = dict(rendered_px=int(G.sum()), mask_px=int(sl.sum()), dropped=int((sl & ~G).sum()), added=int((~sl & G).sum()),
                   scanline=ys_row, crossings=cr)
@@ -880,7 +900,7 @@ def draw(S, A, rows, F, I, PH):
     panel_title(fig, xcol[1], y3, "H", "An inner contour on a real slice",
                 "a hole's chain keeps its pixels; only its strict\ninterior is removed; the finger it wraps through\n"
                 f"a 1-px neck has {ncr_left} crossings to its left: kept", checks, span=pw)
-    ax = ax_mm(fig, xcol[1], ax_y3, pw, pw * h / w)
+    ax = ax_mm(fig, xcol[1], ax_y3, awH, awH * h / w)
     show_mask(ax, F["sl"][y0:y0 + h, x0:x0 + w], x0, y0)
     pixel_grid(ax, x0, y0, w, h)
     raster_outline(ax, F["gi"][y0:y0 + h, x0:x0 + w], x0, y0, colors=C_INK, linewidths=1.2, zorder=4)
@@ -894,8 +914,8 @@ def draw(S, A, rows, F, I, PH):
         if x0 - 1 <= x < x0 + w + 1:
             ax.plot(x, F["row"], "|", color=C_ORANGE, ms=8, mew=1.5, zorder=9)
     grid_axes(ax, x0, y0, w, h, step=5)
-    ax.text(0.02, 0.97, f"cortical mask, slice {F['z'] + 1}: inner chain {fmt(F['n_inner'])} vertices;\nfinger {F['lobe_px']} px; "
-            f"filling by connectivity would differ by {F['alt_diff']} px", transform=ax.transAxes, fontsize=6.2, color=C_INK2,
+    ax.text(0.012, 0.975, f"slice {F['z'] + 1}: inner chain {fmt(F['n_inner'])} vertices; finger {F['lobe_px']} px;\n"
+            f"filling by connectivity would differ by {F['alt_diff']} px", transform=ax.transAxes, fontsize=6.5, color=C_INK2,
             ha="left", va="top", linespacing=1.15, bbox=dict(fc="white", ec="none", alpha=0.85, pad=1.0))
     N["H"] = dict(subject=F["subj"], mask=F["kind"], slice_local=F["z"], slice_global=F["z_global"], inner_vertices=F["n_inner"],
                   lobe_px=F["lobe_px"], fill_by_connectivity_vs_ipl=F["alt_diff"], ipldt_vs_ipl=F["ndiff"], crop=list(F["crop"]),
@@ -906,11 +926,11 @@ def draw(S, A, rows, F, I, PH):
     panel_title(fig, xcol[2], y3, "I", "The gate on a real slice: stored raw",
                 f"trabecular mask, slice {I['z'] + 1}: {len(I['exc'])} one-pixel notches in\nhorizontal runs, no other event; "
                 "stage A changes\nnothing: the raw chain is stored; raster = mask", checks, span=pw)
-    ax = ax_mm(fig, xcol[2], ax_y3, pw, pw * h / w)
+    ax = ax_mm(fig, xax[2], ax_y3, aw, aw * h / w)
     show_mask(ax, I["sl"][y0:y0 + h, x0:x0 + w], x0, y0)
     pixel_grid(ax, x0, y0, w, h)
     raster_outline(ax, I["gi"][y0:y0 + h, x0:x0 + w], x0, y0, colors=C_INK, linewidths=1.2, zorder=4)
-    squares(ax, (I["unc_raster"] != I["gi"])[y0:y0 + h, x0:x0 + w], x0, y0, color=C_PURPLE, ms=4.0, zorder=3)
+    squares(ax, (I["unc_raster"] != I["gi"])[y0:y0 + h, x0:x0 + w], x0, y0, color=C_PURPLE, ms=3.7, zorder=3)
     draw_runs(ax, I["raw"], x0, y0, w, h, color=C_BLUE, lw=0.8, ms=1.5)
     for (hx, hy), (mx, my) in I["exc"]:
         if x0 <= hx < x0 + w and y0 <= hy < y0 + h:
@@ -919,8 +939,8 @@ def draw(S, A, rows, F, I, PH):
                                                                           shrinkA=0, shrinkB=1.5), zorder=8)
     ax.plot(I["raw"][0][0], I["raw"][0][1], "o", color=C_ORANGE, ms=6, mec=C_INK, mew=0.6, zorder=9)
     grid_axes(ax, x0, y0, w, h, step=5)
-    ax.text(0.02, 0.03, f"stored chain = raw trace, {fmt(I['n'])} vertices (= IPL's);\nunconditional smoothing would differ from IPL "
-            f"on {I['unc_diff']} px", transform=ax.transAxes, fontsize=6.2, color=C_INK2, ha="left", va="bottom", linespacing=1.15,
+    ax.text(0.02, 0.03, f"stored chain = raw trace, {fmt(I['n'])} vertices\n(= IPL's); unconditional smoothing would\ndiffer from IPL "
+            f"on {I['unc_diff']} px", transform=ax.transAxes, fontsize=6.5, color=C_INK2, ha="left", va="bottom", linespacing=1.15,
             bbox=dict(fc="white", ec="none", alpha=0.85, pad=1.0))
     N["I"] = dict(subject=I["subj"], mask=I["kind"], slice_local=I["z"], slice_global=I["z_global"], vertices=I["n"], notches=len(I["exc"]),
                   unconditional_smoothing_vs_ipl=I["unc_diff"], ipldt_vs_ipl=I["ndiff"], mask_px=I["mask_px"], rendered_px=I["ipl_px"],
@@ -935,22 +955,14 @@ def draw(S, A, rows, F, I, PH):
           Line2D([], [], marker="o", mfc="none", mec=C_VERM, color=C_VERM, ms=4.5, mew=1.3, ls="--", lw=1.0,
                  label="notch, |d| = (2, 0): its stage-B move is never reached"),
           H_sq(C_PURPLE, "where unconditional smoothing would differ from IPL", ms=4)]
-    ph3 = max(ph2, pw * F["crop"][3] / F["crop"][2], pw * I["crop"][3] / I["crop"][2])
     legend_strip(fig, 2.0, ax_y3 + ph3 + 4.2, 176.0, 12.0, h3, ncol=3)
 
     # ===================================================================================== row 4: the minimum-vertex rule
-    y4 = 214.0
     xJ = 2.0
     panel_title(fig, xJ, y4, "J", "The minimum-vertex rule on the tiny-object phantom evaluated by IPL",
-                "a chain left with fewer than 4 vertices is not stored: no contour, nothing rendered (the sweep has no fixed "
-                "point below 8 vertices,\nso a chain still shrinking at 3 is collapsing); a raw chain the gate leaves untouched has at least 4 "
-                "vertices and is therefore always stored.\nThresholds 4–6 render identically; 7 or 8 would also drop the 6-vertex raw chain "
-                "of the vertical 1 × 2 hole and fill the hole that IPL keeps.\nGray = phantom pixels; "
-                "thin gray = raw trace; blue = stored chain (ipldt's = IPL's); black = IPL's rendering.", checks, span=176.0)
-    ax_y4 = y4 + 16.5
-    nJ = len(PH_SHOW)
-    mg = 3.0
-    mw = (176.0 - (nJ - 1) * mg) / nJ
+                "a chain left with fewer than 4 vertices is not stored (below 8 vertices the sweep has no fixed point, so a chain "
+                "still shrinking at 3 is collapsing)\ngray = phantom pixels; thin gray = raw trace; blue = stored chain "
+                "(ipldt's = IPL's); black = IPL's rendering", checks, span=176.0)
     tests = PH["tests"]
     for k, (name, cap) in enumerate(PH_SHOW):
         t = tests[name]
@@ -972,7 +984,7 @@ def draw(S, A, rows, F, I, PH):
         act = "gate closed" if not t["activated"] else f"{t['sweeps']} sweep{'s' if t['sweeps'] != 1 else ''}"
         verdict = "stored" if t["stored"] else "not stored"
         cap2 = f"{cap}\nraw {t['n_raw']} → {t['n_final']}, {act}\n{verdict}; {what}"
-        tj = ftext(fig, xk, ax_y4 + mw * h / w + 1.2, cap2, fontsize=6.2, color=C_INK2, ha="left", linespacing=1.18)
+        tj = ftext(fig, xk, ax_y4 + mw * h / w + 1.2, cap2, fontsize=6.5, color=C_INK2, ha="left", linespacing=1.18)
         checks.append((tj, xk, xk + mw + mg, "J cap " + name))
         N["J"][name] = dict(kind=t["kind"], slice_global=t["z_global"], raw_vertices=t["n_raw"], final_vertices=t["n_final"],
                             activated=t["activated"], sweeps=t["sweeps"], stored=t["stored"], ipl_chain_vertices=t["n_ipl"],
@@ -1016,7 +1028,7 @@ def main():
     plt.close(fig)
     say("wrote", OUT + ".png", "and .svg")
     N["figure"] = dict(width_mm=FIG_W, height_mm=FIG_H, dpi=300, vox_mm=VOX_MM)
-    N["sources"] = dict(masks=public_path(GRAB), ipl_renderings_and_contours=public_path(P15), phantom=public_path(P19),
+    N["sources"] = dict(masks=public_path(GRAB), ipl_renderings_and_contours=public_path(T15), phantom=public_path(T19),
                         cohort_cache=public_path(CACHE))
     json.dump(N, open(OUT + "_numbers.json", "w"), indent=1, default=lambda o: o.tolist() if hasattr(o, "tolist") else str(o))
     say("sidecar", OUT + "_numbers.json")

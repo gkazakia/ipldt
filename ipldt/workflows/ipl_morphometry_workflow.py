@@ -22,11 +22,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--seg", type=str, default=None, help="whole-bone segmentation (cortical + trabecular bone)")
     parser.add_argument("--trab-mask", type=str, default=None, help="trabecular contour mask (raw raster)")
     parser.add_argument("--cort-mask", type=str, default=None, help="cortical compartment mask (raw raster) for Ct.Th")
-    parser.add_argument("--trab-seg", type=str, default=None, help="IPL's TRAB_SEG for the old Tb.Th definition (AIM mode)")
+    parser.add_argument("--trab-seg", type=str, default=None, help="IPL's TRAB_SEG, for the evaluation scripts' Tb.Th definition (dt_thickness on TRAB_SEG; AIM mode)")
     parser.add_argument("--rendered", action="store_true", help="image mode: the masks are already rendered contours")
     parser.add_argument("--map-format", choices=("nifti", "aim"), default="nifti")
     parser.add_argument("--no-maps", action="store_true", help="report only")
-    parser.add_argument("--no-old-tbth", action="store_true", help="AIM mode: skip dt_thickness on TRAB_SEG (old Tb.Th)")
+    parser.add_argument("--no-old-tbth", action="store_true", help="AIM mode: skip dt_thickness on TRAB_SEG (the evaluation scripts' Tb.Th definition)")
     add_dt_arguments(parser)
     return parser
 

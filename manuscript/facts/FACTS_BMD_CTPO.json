@@ -390,7 +390,7 @@
   },
   "ctpo.printed.radius_tibia_ids": {
    "value": [
-    "Diaphyseal/CKD/2422",
+    "Diaphyseal/CKD/251016",
     "Diaphyseal/CKD/449824",
     "Diaphyseal/CKD/558517",
     "Distal/CKD/113739",
@@ -592,7 +592,7 @@
     "n": 29,
     "identical": 29,
     "mismatch": 0,
-    "ctpo_mean": 0.029888768557133485,
+    "ctpo_mean": 0.029888768557133488,
     "ctpo_sd": 0.024264902158321087,
     "ctpo_min": 0.003834933598729293,
     "ctpo_max": 0.10213310029735548
@@ -666,11 +666,11 @@
    "source": "validation/results/porosity_AB_summary_n137.json (validation/porosity_AB_stats.py --set 137; records of validation/results/{oslh_auto_v4,porosity_AB_patella,oslh_noedit_v3})"
   },
   "pore.B.ctpo_mean": {
-   "value": 0.06091145276466292,
+   "value": 0.060911452764662935,
    "source": "validation/results/porosity_AB_summary_n137.json (validation/porosity_AB_stats.py --set 137; records of validation/results/{oslh_auto_v4,porosity_AB_patella,oslh_noedit_v3})"
   },
   "pore.B.ctpo_sd": {
-   "value": 0.0424166180471629,
+   "value": 0.04241661804716291,
    "source": "validation/results/porosity_AB_summary_n137.json (validation/porosity_AB_stats.py --set 137; records of validation/results/{oslh_auto_v4,porosity_AB_patella,oslh_noedit_v3})"
   },
   "pore.B.bias": {
@@ -678,13 +678,13 @@
    "source": "validation/results/porosity_AB_summary_n137.json (validation/porosity_AB_stats.py --set 137; records of validation/results/{oslh_auto_v4,porosity_AB_patella,oslh_noedit_v3})"
   },
   "pore.B.sd_diff": {
-   "value": 6.637952848750884e-05,
+   "value": 6.637952848750882e-05,
    "source": "validation/results/porosity_AB_summary_n137.json (validation/porosity_AB_stats.py --set 137; records of validation/results/{oslh_auto_v4,porosity_AB_patella,oslh_noedit_v3})"
   },
   "pore.B.loa": {
    "value": [
-    -0.00012722950990959913,
-    0.0001329782417614355
+    -0.0001272295099095991,
+    0.00013297824176143548
    ],
    "source": "validation/results/porosity_AB_summary_n137.json (validation/porosity_AB_stats.py --set 137; records of validation/results/{oslh_auto_v4,porosity_AB_patella,oslh_noedit_v3})"
   },
@@ -705,11 +705,11 @@
    "source": "validation/results/porosity_AB_summary_n137.json (validation/porosity_AB_stats.py --set 137; records of validation/results/{oslh_auto_v4,porosity_AB_patella,oslh_noedit_v3})"
   },
   "pore.B.intercept": {
-   "value": -6.934618315759811e-07,
+   "value": -6.934618315621033e-07,
    "source": "validation/results/porosity_AB_summary_n137.json (validation/porosity_AB_stats.py --set 137; records of validation/results/{oslh_auto_v4,porosity_AB_patella,oslh_noedit_v3})"
   },
   "pore.B.r2": {
-   "value": 0.999997554388736,
+   "value": 0.9999975543887363,
    "source": "validation/results/porosity_AB_summary_n137.json (validation/porosity_AB_stats.py --set 137; records of validation/results/{oslh_auto_v4,porosity_AB_patella,oslh_noedit_v3})"
   },
   "pore.B.icc": {
@@ -730,7 +730,7 @@
     "n": 58,
     "identical": 44,
     "mismatch": 68,
-    "ctpo_mean": 0.05167351320087096,
+    "ctpo_mean": 0.05167351320087097,
     "ctpo_sd": 0.03457694785191145,
     "ctpo_min": 0.003834933598729293,
     "ctpo_max": 0.13810046721023653

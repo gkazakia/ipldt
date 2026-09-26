@@ -21,7 +21,10 @@ Panels
   F  Ct.Po by site: IPL's value for every scan with ipldt's overlaid, so the reader sees the range the
      agreement holds over (the two diaphyseal sites in their own columns, their Ct.Po differs by 2.5x).
 Panel letters are bold capitals in the upper-left corner, as in Figures 2-5.  Every text is set in the
-figure's own font (no mathtext): powers of ten with Unicode superscripts.  Slice numbers are printed
+figure's own font (no mathtext): powers of ten with Unicode superscripts.  The figure prints no scan
+identifier: the two displayed scans are named by their site only ('a diaphyseal tibia', 'an ultradistal
+tibia'); the record ids stay in the sidecar (A.id, B.id) for provenance, next to the printed label
+(printed_labels).  Slice numbers are printed
 1-based, as in Figure 3 (index z is "slice z + 1 of N"); the cache and the sidecar keep the 0-based index.
 
 CONFIGURATIONS.  A: IPL's cortical segmentation and IPL's rendered cortical contour are the input, so only
@@ -107,12 +110,12 @@ def scan_folder(r):
     """The folder of IPL's products of a scan under the non-public data roots (validation/datapaths.py): the
     published records carry no local paths, so it is rebuilt from the record's dataset and id (panels A / B only)."""
     if r.get("dataset") == "patella":
-        return os.path.join(lab_path("PFJOA/XCT_masks_full_grab"), r["id"]).replace("\\", "/")
-    for root in (lab_path("Cross_validation_IPL/OS_LH_AUTO"), lab_path("Cross_validation_IPL/OS_LH_NOEDIT")):
+        return os.path.join(lab_path("patellae"), r["id"]).replace("\\", "/")
+    for root in (lab_path("radius_tibia/set1"), lab_path("radius_tibia/set2")):
         p = os.path.join(root, *r["id"].split("/")).replace("\\", "/")
         if os.path.isdir(p):
             return p
-    return os.path.join(lab_path("Cross_validation_IPL/OS_LH_AUTO"), *r["id"].split("/")).replace("\\", "/")
+    return os.path.join(lab_path("radius_tibia/set1"), *r["id"].split("/")).replace("\\", "/")
 CACHE = os.path.join(REPO, "manuscript", "figures", "cache", "fig6_porosity_cache")
 OUT = os.path.join(HERE, "fig6_porosity")
 
@@ -125,7 +128,7 @@ EXPECT_SITES = {"patella": 21, "ultradistal radius": 29, "ultradistal tibia": 29
 #: patella -- the weak-evidence label it grows into is empty on every patella of the cohort
 #: (ipldt/porosity.py) -- and this is the scan Supplementary Figure S9 follows stage by stage, so the two
 #: figures show the same measurement.  The panel-B scan is not fixed here: it is whichever scan the records make worst.
-SCAN_A = "Diaphyseal/CKD/2422"
+SCAN_A = "Diaphyseal/CKD/251016"
 ZOOM = 44                       # panel B: the window drawn, in voxels
 T0 = time.time()
 
@@ -335,6 +338,7 @@ def block(rows, cfg):
     out["ctpo_ipl_min_all"] = float(ref.min())
     out["ctpo_ipl_max_all"] = float(ref.max())
     out["ctpo_ipl_min_id"] = rows[int(np.argmin(ref))]["id"]
+    out["ctpo_ipl_min_site"] = rows[int(np.argmin(ref))]["site"]      # what the legend names it by
     out["ctpo_ipl_fold_range"] = float(ref.max() / ref.min())
     return out
 
@@ -396,7 +400,7 @@ def load_inputs(row):
     """IPL's delivered files of one measurement: (periosteal raster, cortical contour rendering, trabecular
     contour rendering, CORT_SEG, PORE, grayscale, element size, the grid the cascade runs its contour on).
 
-    OS_LH: the renderings are files (<base>_CT / _CORT_MASK_CT / _TRAB_MASK_CT).  Patella: no rendering is on
+    Radius / tibia: the renderings are files (<base>_CT / _CORT_MASK_CT / _TRAB_MASK_CT).  Patella: no rendering is on
     disk, so the raw masks are rendered here exactly as ipldt.porosity's docstring and validate_dataset do,
     onto the CORT_MASK | TRAB_MASK union box."""
     import validate_dataset as vd
@@ -631,6 +635,12 @@ def panel_letter(fig, x, y, s):
     return ftext(fig, x, y, s, fontsize=9, fontweight="bold", ha="left", color=INK)
 
 
+def neutral_label(site):
+    """The printed name of a displayed scan: its site with an indefinite article ('a diaphyseal tibia',
+    'an ultradistal tibia') -- never a study, measurement number or file base."""
+    return f"{'an' if site[:1].lower() in 'aeiou' else 'a'} {site}"
+
+
 def hex_rgb(h):
     return np.array([int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)])
 
@@ -709,13 +719,15 @@ def draw(rows, stats, prop, N, A, sheets, check):
     NOTE_DY, DESC_FS, NOTE_FS = 3.0, 7.0, 7.0
 
     # ------------------------------------------------------------------ every description, wrapped first
+    # the scans are named by their site only: the figure prints no scan identifier
+    lab_a, lab_b = neutral_label(a["site_phrase"]), neutral_label(b["site_phrase"])
     D_ = {
         "A": ("The pore map on one slice",
-              f"{a['site_phrase']} {a['id']} ({a['el'] * 1000:.1f} µm voxels), slice {a['slice'] + 1} of "
+              f"{lab_a} ({a['el'] * 1000:.1f} µm voxels), slice {a['slice'] + 1} of "
               f"{a['slices']}: the slice with the most pore voxels in IPL's map"),
         "B": ("What a difference looks like",
               f"the largest cluster of differing voxels of the worst scan of configuration B "
-              f"({b['site_phrase']} {b['id']}), {w['win']} × {w['win']} voxels of slice {w['z'] + 1} of "
+              f"({lab_b}), {w['win']} × {w['win']} voxels of slice {w['z'] + 1} of "
               f"{b['slices']}; same colors as A, one square per voxel"),
         "C": ("Differing pore voxels per scan, both configurations",
               "every scan, grouped by site and ordered by decreasing configuration-B count within a "
@@ -964,7 +976,8 @@ def draw(rows, stats, prop, N, A, sheets, check):
                     zorder=2)
     # R^2 and ICC to 7 decimals, as the facts sheet quotes them (6 would round 0.9999988 up to 0.999999)
     # scalars are 'equal', never 'identical' (the paper keeps that word for voxel maps with 0 differing voxels)
-    txt = (f"slope {B_['slope']:.6f}\n$R^2$ {B_['r2']:.7f}\nICC {B_['icc']:.7f}\n"
+    # R² as a Unicode glyph, not mathtext: a mathtext superscript prints at 0.7 x the note size (< 6 pt)
+    txt = (f"slope {B_['slope']:.6f}\nR² {B_['r2']:.7f}\nICC {B_['icc']:.7f}\n"
            f"equal {B_['identical_ctpo']}/{B_['n']}\n"
            + (f"configuration A: equal\non {A_['identical_ctpo']}/{A_['n']} scans" if a_identity else
               f"configuration A (×): equal\non {A_['identical_ctpo']}/{A_['n']}"))
@@ -1047,6 +1060,9 @@ def draw(rows, stats, prop, N, A, sheets, check):
                           B_cluster_slices=[w["cluster_z_range"][0] + 1, w["cluster_z_range"][1] + 1],
                           note="1-based, as printed; 'slice', 'z' and '*_z_range' under A and B are 0-based indices")
     P = dict(A=a, B=b, printed_slices=printed_slices,
+             printed_labels=dict(A=lab_a, B=lab_b, F_ctpo_ipl_min=neutral_label(B_["ctpo_ipl_min_site"]),
+                                 note="the figure and its legend name a scan by its site only; A.id and B.id "
+                                      "are the record ids, kept for provenance and never printed"),
              C=dict(configuration_A=A_, configuration_B=B_, config_A_scans_with_a_difference=n_a_nonzero,
                     propagation=prop,
                     per_scan=[dict(id=s["id"], cohort=s["cohort"], site=s["site"], A=s["A"]["mismatch"],

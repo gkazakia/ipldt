@@ -25,7 +25,7 @@ the 42.5 M-voxel box); --recompute redoes it.
 
 Inputs (read only):
   * the scan's greyscale AIM (GREY_AIM) and IPL's exports of the periosteal rendering (stage 00) and of the
-    /seg_gauss stage (stage 01) of its own evaluation (P16_DIR);
+    /seg_gauss stage (stage 01) of its own evaluation (T16_DIR);
   * validation/results/from_ipl_contour_ceil_dt/records/*.json     (21 patellae: header calibrations);
   * validation/results/oslh_auto_vN/records/<Group>_<Study>_<n>.json  (62 radius / tibia scans: header calibrations);
   * validation/results/oslh_noedit_vN/records/<Group>_<Study>_<n>.json  (54 diaphyseal radius / tibia scans: the same).
@@ -59,9 +59,9 @@ from ipldt.io import read_aim  # noqa: E402
 from ipldt import ipl_ops as ops  # noqa: E402
 
 # ------------------------------------------------------------------------------------------------ inputs
-P16_DIR = lab_path("Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs")   # IPL's stage exports
-EXPORT_BASE = "X2420448_P16_"                                                                  # <base>_<TAG>.AIM;n
-GREY_AIM = lab_path("PFJOA/XCT_masks_full_grab/PFJ-0be66a_R/X2420448.AIM")           # the scan's greyscale
+T16_DIR = lab_path("ipl_test_runs/run15/aims_and_logs")   # IPL's stage exports
+EXPORT_BASE = "X2420448_T16_"                                                                  # <base>_<TAG>.AIM;n
+GREY_AIM = lab_path("patellae/PFJ-0be66a_R/X2420448.AIM")           # the scan's greyscale
 PATELLA_RECORDS = os.path.join(REPO, "validation", "results", "from_ipl_contour_ceil_dt", "records")
 OSLH_RECORDS = [os.path.join(REPO, "validation", "results", d, "records") for d in (OSLH_AUTO, OSLH_NOEDIT)]
 OSLH_RX = re.compile(r"^[A-Za-z]+_[A-Za-z]+_\d+\.json$")
@@ -115,12 +115,12 @@ def say(*a):
 
 # ------------------------------------------------------------------------------------------------ helpers
 def find_export(tag):
-    """The newest VMS version (';n') of <EXPORT_BASE><TAG>.AIM in P16_DIR."""
+    """The newest VMS version (';n') of <EXPORT_BASE><TAG>.AIM in T16_DIR."""
     rx = re.compile("^" + re.escape(EXPORT_BASE + tag) + r"\.AIM(?:;(\d+))?$", re.I)
-    cands = [(int(m.group(1) or 0), f) for f in os.listdir(P16_DIR) for m in [rx.match(f)] if m]
+    cands = [(int(m.group(1) or 0), f) for f in os.listdir(T16_DIR) for m in [rx.match(f)] if m]
     if not cands:
-        raise FileNotFoundError(f"no export for {tag} in {P16_DIR}")
-    return os.path.join(P16_DIR, max(cands)[1])
+        raise FileNotFoundError(f"no export for {tag} in {T16_DIR}")
+    return os.path.join(T16_DIR, max(cands)[1])
 
 
 def native(mgha, cal):
@@ -264,7 +264,7 @@ def load_calibrations():
 
 
 # ------------------------------------------------------------------------------------------------ drawing
-FIG_W, FIG_H = 180.0, 139.0          # mm
+FIG_W, FIG_H = 180.0, 153.0          # mm (printed at this size: every text >= 6 pt)
 
 
 def ax_mm(fig, x, y_top, w, h):
@@ -313,7 +313,7 @@ def draw(R, scans):
     H, W = S["std"].shape
     fig = plt.figure(figsize=(FIG_W / 25.4, FIG_H / 25.4))
     checks = []
-    y1, h1, head1 = 0.8, 47.0, 11.0              # row 1: letters at y1, axes from y1 + head1 to y1 + h1
+    y1, h1, head1 = 0.8, 61.0, 11.0              # row 1: letters at y1, axes from y1 + head1 to y1 + h1
 
     # ------------------------------------------------------------------------------- A: the kernel
     xA, wA = 8.5, 47.0
@@ -351,7 +351,7 @@ def draw(R, scans):
                  transform=ax.transAxes, fontsize=6.0, color=C_INK2, ha="right", va="top", linespacing=1.12)
 
     # ------------------------------------------------------------------------------- B: the conversion
-    xB, wB = 69.0, 41.0                            # room left of the strips for the tick labels and the rotated labels
+    xB, wB = 69.0, 40.0                            # room left of the strips for the tick labels and the rotated labels
     nS = len(scans)
     panel_head(fig, 59.5, y1, "B", "Thresholds in native units, per scan",
                "native = round((\u03c1 \u2212 b) / a \u00d7 8192); a, b read from\n"
@@ -365,9 +365,9 @@ def draw(R, scans):
         n = sum(r["site"] == s for r in scans)
         bounds.append((s, xb, xb + n))
         xb += n
-    hB, gapB, foot = 11.2, 2.6, 7.2
+    hB, gapB, foot = 15.0, 3.0, 9.8               # strips tall enough for 6-pt tick labels 17 native units apart
     for j, (which, mg) in enumerate((("lower", 500), ("upper", 3000))):
-        ax = ax_mm(fig, xB, y1 + head1 + 3.4 + j * (hB + gapB), wB, hB)
+        ax = ax_mm(fig, xB, y1 + head1 + 5.2 + j * (hB + gapB), wB, hB)
         vals = np.array([r[which] for r in scans])
         ax.scatter(np.arange(nS), vals, s=2.2, color=C_INK2, zorder=3, lw=0)
         levels = sorted({int(v) for v in vals})
@@ -377,39 +377,39 @@ def draw(R, scans):
         for lev in levels:
             n = int((vals == lev).sum())
             ax.axhline(lev, color=C_GRID, lw=0.4, zorder=1)
-            ax.text(nS + 1.5, lev, f"n = {n}", fontsize=5.6, color=C_INK2, va="center", ha="left")
+            ax.text(nS + 1.5, lev, f"n = {n}", fontsize=6.0, color=C_INK2, va="center", ha="left")
         for s, a, b in bounds:
             if a > 0:
                 ax.axvline(a - 0.5, color=C_GRID, lw=0.4, zorder=1)
         ax.set_xlim(-1, nS)
         ax.set_xticks([])
-        ax.tick_params(axis="y", labelsize=5.6, pad=1.5)
+        ax.tick_params(axis="y", labelsize=6.0, pad=1.5)
         ax.yaxis.set_major_locator(plt.FixedLocator(levels))
         ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, p: fmt(v)))
-        ax.set_ylabel(f"{fmt(mg)}\nmg HA/cm\u00b3", labelpad=3.0, fontsize=5.6, linespacing=1.15)
+        ax.set_ylabel(f"{fmt(mg)}\nmg HA/cm\u00b3", labelpad=3.0, fontsize=6.0, linespacing=1.15)
         for sp in ("top", "right"):
             ax.spines[sp].set_visible(False)
         if j == 0:
             for s, a, b in bounds:
                 if a > 0:           # the site boundary carried up between the labels
-                    ax.plot([a - 0.5, a - 0.5], [1.0, 1.24], transform=ax.get_xaxis_transform(), color=C_AXIS, lw=0.4,
+                    ax.plot([a - 0.5, a - 0.5], [1.0, 1.32], transform=ax.get_xaxis_transform(), color=C_AXIS, lw=0.4,
                             clip_on=False)
                 if SITE_LABEL[s]:
-                    t = ax.text((a + b - 1) / 2, 1.05, SITE_LABEL[s], transform=ax.get_xaxis_transform(), fontsize=5.4,
-                                color=C_INK2, ha="center", va="bottom")
+                    t = ax.text((a + b - 1) / 2, 1.04, SITE_LABEL[s].replace(" ", "\n"), transform=ax.get_xaxis_transform(),
+                                fontsize=6.0, color=C_INK2, ha="center", va="bottom", linespacing=1.0)
                     checks.append((t, xB + wB * (a - 0.5 + 1) / (nS + 1) - 0.6, xB + wB * (b - 0.5 + 1) / (nS + 1) + 0.6,
                                    f"site label {s}"))
-    cal_lines = ["the three calibrations (a, b) and the exact values before rounding:"]
+    cal_lines = ["the three calibrations (a, b); exact values before rounding:"]
     for (a, b, mu), rs in sorted(groups.items(), key=lambda kv: -len(kv[1])):
         calg = dict(slope=a, intercept=b, mu_scaling=mu)
         cal_lines.append(f"n = {len(rs)}:  a = {fmt2(a)}, b = {fmt2(b)}  \u2192  {fmt2(exact_native(500, calg))}, "
                          f"{fmt2(exact_native(3000, calg))}")
-    tB = ftext(fig, 59.5, y1 + h1 - foot + 0.8, "\n".join(cal_lines), fontsize=5.4, color=C_INK2, ha="left", va="top",
+    tB = ftext(fig, 59.5, y1 + h1 - foot + 0.8, "\n".join(cal_lines), fontsize=6.0, color=C_INK2, ha="left", va="top",
                linespacing=1.12)
-    checks.append((tB, 59.5, xB + wB + 12, "calibration list"))
+    checks.append((tB, 59.5, 116.0, "calibration list"))
 
     # ------------------------------------------------------------------------------- C: the profile
-    xC, wC = 125.5, 53.0
+    xC, wC = 127.0, 51.5
     panel_head(fig, 118.0, y1, "C", "One row through the cortex",
                f"native and smoothed values (\u03c3 = 1 / 2 / 3) and this scan's\nnative thresholds; row marked in E. 3,000 mg HA/cm\u00b3 =\n"
                f"{fmt(TN['3000'])} is off scale (largest smoothed value here: {fmt(V['std']['smoothed_max'])})",
@@ -425,7 +425,7 @@ def draw(R, scans):
         ax.plot(gx, ROWS[key], color=col, lw=lw, zorder=3)
     for mg, ls, lw in ((500, "--", 0.8), (300, ":", 0.6), (700, ":", 0.6)):
         ax.axhline(TN[str(mg)], color=C_INK, lw=lw, ls=ls, zorder=2)
-    ymax = 12500                                   # head-room: the legend sits above the profile and the 700 line
+    ymax = 14200                                   # head-room: the legend sits above the profile and the 700 line
     ax.set_ylim(0, ymax)
     ax.set_yticks(range(0, 8001, 2000))
     ax.set_xlim(gx[0] - 0.5, gx[-1] + 0.5)
@@ -442,8 +442,8 @@ def draw(R, scans):
           patches.Patch(fc=C_SHADE, ec=C_MUTED, lw=0.5, label="set in IPL's export"),
           Line2D([], [], color=C_INK, lw=0.8, ls="--", label=f"500 mg HA/cm\u00b3 = {fmt(TN['500'])} (IPL)"),
           Line2D([], [], color=C_INK, lw=0.6, ls=":", label=f"300 / 700 mg HA/cm\u00b3 = {fmt(TN['300'])} / {fmt(TN['700'])}")]
-    ax.legend(handles=hC, loc="upper right", bbox_to_anchor=(1.0, 1.0), fontsize=5.0, handlelength=1.4, handletextpad=0.5,
-              borderaxespad=0.8, labelspacing=0.15, frameon=True, facecolor="white", edgecolor="none", framealpha=1.0,
+    ax.legend(handles=hC, loc="upper right", bbox_to_anchor=(1.0, 1.0), fontsize=6.0, handlelength=1.4, handletextpad=0.5,
+              borderaxespad=0.4, labelspacing=0.12, frameon=True, facecolor="white", edgecolor="none", framealpha=1.0,
               borderpad=0.3).set_zorder(5)
 
     # ------------------------------------------------------------------------------- D-I: the slices

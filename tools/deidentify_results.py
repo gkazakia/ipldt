@@ -40,9 +40,10 @@ Scan identifiers get keyed pseudonyms from the same key and the same HMAC-SHA256
   the scanner's file base (<letter>0nnnnnn, the name of every AIM / GOBJ file of a measurement)  ->
     'X' and seven digits, 1000000 + HMAC(key, 'BASE|<base>') mod 9000000.
 They are applied consistently to file names, record fields, CSV cells, sidecars, facts, tables, documentation and the
-comments, docstrings and strings of the shipped code and tests, so every cross-reference still resolves.  The only
-scan identifiers kept as they are are the ones the paper itself prints (PRINTED_BY_THE_PAPER); `stage` re-reads the
-paper under <src>/manuscript (text and the drawn text of its SVG figures) and stops if the two lists disagree.
+comments, docstrings and strings of the shipped code and tests, so every cross-reference still resolves.  No scan
+identifier is kept as it is: the paper prints none (its figures name a scan by its site), so PRINTED_BY_THE_PAPER is
+empty; `stage` re-reads the paper under <src>/manuscript (text and the drawn text of its SVG figures) and stops if it
+prints a scan identifier that the list does not hold (or the list holds one it does not print).
 --mapping writes every pseudonym with its code (PRIVATE; outside the tree); an existing map is checked first, and a
 pseudonym that would change (a different key) stops the run.
 
@@ -109,16 +110,12 @@ PATELLA_B_TOP = {"base", "bvtv", "contours", "dt_backend", "grey", "ipl_log", "m
 STUDY_TOKEN = re.compile(r";\s*([A-Za-z]+study)\b", re.I)
 
 # ------------------------------------------------------------------------------------------------ scan identifiers
-# The scan identifiers the paper prints stay as they are (everything else of the three kinds is pseudonymised).  The
-# list is checked against the paper by `stage` (check_paper); where each one is printed:
-PRINTED_BY_THE_PAPER = OrderedDict([
-    ("Diaphyseal/CKD/2422", "main text: Figure 6 legend (A) and the text drawn in panel A; supplement: Figure S9 legend"),
-    ("Distal/REPRO/2095", "main text: Figure 6 legend (B) and the text drawn in panel B"),
-    ("Diaphyseal/REPRO/5876", "main text: Figure 6 legend (F)"),
-    ("Distal/REPRO/2051", "supplement: Figure S9 legend (I) and the text drawn in panel I"),
-])
+# The scan identifiers the paper prints would stay as they are (everything else of the three kinds is pseudonymised).
+# The paper prints none: its text and figures name a scan by its site only, so the list is empty and every scan
+# identifier is pseudonymised.  `stage` checks the list against the paper (check_paper), identifier -> where printed.
+PRINTED_BY_THE_PAPER = OrderedDict()
 KEEP_MEAS = {k.rsplit("/", 1)[1] for k in PRINTED_BY_THE_PAPER if "/" in k}
-KEEP_KNEES = {k for k in PRINTED_BY_THE_PAPER if k.startswith("PF")}          # none: the paper prints no patella
+KEEP_KNEES = {k for k in PRINTED_BY_THE_PAPER if k.startswith("PF")}
 KEEP_PARTICIPANTS = {k.split("_")[0] for k in KEEP_KNEES}
 KEEP_BASES = set()
 # synthetic file bases of the unit tests (not scanner files)
@@ -730,7 +727,7 @@ STATIC = OrderedDict([
     ("scanner_data_dir", _rx(r"xct[2]\.data", re.I)),
     ("scanner_account", _rx(r"User:\s*XC[T]2")),
     ("vms_logical_UE", _rx(r"\bU[E]:[A-Z_]")),
-    ("versioned_vms_file", _rx(r"\.(?:CO[M]|GOB[J]|AI[M]|IS[Q]|PD[F]|LO[G]|DA[T]);\d+", re.I)),
+    ("versioned_vms_file", _rx(r"\.(?:CO[M]|GOB[J]|AI[M]|IS[Q]|PD[F]|LO[G]|DA[T]|TX[T])\s*;\s*\d+", re.I)),
     ("eval_log_patient_index", _rx(r"EVA[L]_\w*_\d{8}_\d{8}\.LOG", re.I)),
     ("vendor_com_file", _rx(r"\b[A-Z0-9_$]+\.CO[M]\b")),
     ("vendor_batch", _rx(r"\$ IPL_BATC[H]")),
@@ -743,7 +740,7 @@ STATIC = OrderedDict([
     ("participant_code", _rx(r"\b(?:CK[D]|CD[K]|REPR[O0]|MA[T]|BMA[T]|XCTPF[J])_?\d{3}\b")),
     ("participant_code_pfj", _rx(r"XCTPF[J]")),
     ("scanco_sample_name", _rx(r"\b[A-Z]{3,}_[_][A-Z0-9]+")),
-    # scan identifiers in their raw form (the ones the paper prints are exempt: PRINTED_BY_THE_PAPER)
+    # scan identifiers in their raw form (the ones the paper prints would be exempt: PRINTED_BY_THE_PAPER, empty)
     ("raw_patella_code", _rx(_LB + r"(?:PF[J]\s?\d{2,3}(?:_[LR])?(?!\d)|PF[J]_\d{3}(?![0-9A-Fa-f]))", re.I)),
     ("raw_record_id", _rx(rf"{_LB}{_REG}{_IDSEP}{_STU}{_IDSEP}\d{{4}}(?!\d)")),
     ("raw_record_id_study_first", _rx(rf"{_LB}{_STU}[_/]{_REG}[_/]\d{{4}}(?!\d)")),
@@ -801,14 +798,11 @@ def _kept(rule, text):
 DATA_ONLY = OrderedDict([
     ("patient_field_label", _rx(r"patient_nam[e]|Patient Nam[e]|\bpat_n[o]\b|\bPat-N[o]|\bBor[n]\b|Meas-Dat[e]|Eval-Dat[e]|"
                                 r"Index Patien[t]|Original Creation-Dat[e]|Process I[D]\b|\bAge:")),
-    ("internal_folder_ref", _rx(r"data/ipl_probe[s]")),
+    ("internal_folder_ref", _rx(r"data/ipl_prob[e]s")),
 ])
-# Per-file exceptions, each with its reason (the rule still runs everywhere else).
-ALLOW = {
-    # the staging scripts read OpenVMS file versions (<name>;<n>) of the scanner fetch by design
-    "validation/stage_noedit_set.py": {"versioned_vms_file"},
-    "validation/stage_automatic_set.py": {"versioned_vms_file"},
-}
+# Per-file exceptions, each with its reason (the rule still runs everywhere else).  None since 2026-09-26: the two
+# staging scripts build the scanner's versioned file names in code instead of spelling a version out.
+ALLOW = {}
 # Synthetic VMS dates are allowed only in the parser tests, and only in the year 2000.
 SYNTHETIC_DATE_FILES = {"tests/test_validate_dataset_variants.py": "2000"}
 WORDING = _rx(r"\breplic(?:a|as|ated|ation)\b|\bbit[- ]exact\b|\bbit for bi[t]\b", re.I)
@@ -1094,8 +1088,8 @@ def stage(a):
     if printed is None:
         print("  (no paper under --src/manuscript: PRINTED_BY_THE_PAPER not re-checked against it)")
     else:
-        print(f"the paper prints {len(printed)} scan identifier(s), exactly the kept ones: "
-              + "; ".join(f"{k[1]} ({len(v)} place(s))" for k, v in printed.items()))
+        print(f"the paper prints {len(printed)} scan identifier(s), exactly the kept ones"
+              + (": " + "; ".join(f"{k[1]} ({len(v)} place(s))" for k, v in printed.items()) if printed else ""))
     ps = Pseudonyms(key, ids)
     print(f"scan identifiers: {len(ids.meas)} radius/tibia measurement numbers ({len(ids.meas) - len(set(ids.meas) - KEEP_MEAS)} "
           f"printed by the paper and kept), {len(ids.meas_patella)} patella measurement numbers, {len(ids.knees)} patella "

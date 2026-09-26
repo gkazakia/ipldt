@@ -3,33 +3,33 @@ the dilation's grid growth (N+1 per side) and reach (N voxels), close / open on 
 /seg_gauss float32 weights, per-pass truncation (seeds 2 / 47 pin the float32 centre-out pair accumulation),
 inclusive bounds and 'valid' output grid, the slicewise fraction-of-total rule (all-cleared slice, 50 % tie),
 subtract / add on the union grid (char arithmetic: -127 where only input2 is set, saturation at 127),
-bounding_box_cut, the component / peel / set_value commands (the rank tie-break of probe 18 on the phantom's
+bounding_box_cut, the component / peel / set_value commands (the rank tie-break of test run 18 on the phantom's
 own 41-entry size table, -connect_boundary true), the by-position (never by-shape) paste of on_grid and the
 parameter contracts (1-based ranks, integral native thresholds, support >= 1, distances >= 0).  Every
 expectation is stated independently of the implementation.
-Fast, added after probe 20 (2026-09-15): -continuous_at_boundary on dilation / close -- the default (0, 0, 0) is
+Fast, added after test run 20 (2026-09-15): -continuous_at_boundary on dilation / close -- the default (0, 0, 0) is
 the empty border of every existing call site, an int is the same flag on all three axes, and the flag is per axis
 in IPL's x, y, z order (a block on the x1 face moves by 77 voxels under (1, 0, 0) only, the same block on the z1
 face under (0, 0, 1) only; a 5x5 pit 2 deep in a face closes 24 of its 50 voxels with an empty border and all 50
 with the mirror) -- checked against the chamfer ball itself, not against the distance transform.
-Slow (needs the probe-18 folder): every probe-18 export of IPL (2026-09-13) reproduced whole-volume, grid
+Slow (needs the test-run-18 folder): every test-run-18 export of IPL (2026-09-13) reproduced whole-volume, grid
 included, from the uploaded phantom.  The /open mechanism (ipl_ops.open_, implemented 2026-09-14 evening: the erosion's mirror-padded buffer reused by the
-dilation half) on the plate-over-cave phantom of probe 20 (T = 15 / 16 / 17 / 18 restore 0 / 0 / 117 / 117 disc
+dilation half) on the plate-over-cave phantom of test run 20 (T = 15 / 16 / 17 / 18 restore 0 / 0 / 117 / 117 disc
 voxels; the pre-mechanism rule 0 / 0 / 0 / 0; the edge-exclusive mirror 0 / 0 / 0 / 249), its equality with the
 pre-mechanism rule where no extra margin survivor exists, the thin-volume warning and the helper's contracts.
-Slow (needs the probe-17 folder): the open / close oracles of probe 17 (2026-09-14; open 15 on four subjects, close
+Slow (needs the test-run-17 folder): the open / close oracles of test run 17 (2026-09-14; open 15 on four subjects, close
 15 / 30 / 50), PFJ-411dfd_R 15_open15 now exact (17,696,233 = 17,696,233), and the discrimination of the mechanism on
 that volume: the pre-mechanism rule differs from IPL by exactly the 3 last-slice voxels, the mirror margin at depth
 N + 1 / N + 3 / N by 19 / 2 / 48, the edge-exclusive mirror by 28, edge replication / wrap / object / background by
 14,423 / 76,168 / 28,338 / 238,083 (so a change of the rule or of the margin depth is deliberate).
-Slow (needs the probe-19 folder): the halves of /open 15 on that very input (2026-09-14): /erosion 15 and /dilation 15
+Slow (needs the test-run-19 folder): the halves of /open 15 on that very input (2026-09-14): /erosion 15 and /dilation 15
 as separate commands equal erosion / dilation exactly (the dilation's grid growth N + 1 = 16 per side included),
 /open 15 is deterministic, equals open_ (the mechanism) exactly and differs from the chained primitives (the
 pre-mechanism rule) by exactly the 3 residual voxels, the mechanism reproduces IPL's /open on the three /sub_get
 copies (the residual persists on the two that keep the last slice and is absent on the one without it), /open's
 cut-face behaviour equals the rule's (identical locality counts), and -use_previous_margin true writes the shrunk
 grid.
-Slow (needs the probe-20 folder): the prospective confirmation of the mechanism (predictions written 2026-09-14
+Slow (needs the test-run-20 folder): the prospective confirmation of the mechanism (predictions written 2026-09-14
 18:12:42, scanner run fetched 2026-09-15).  The N-scan /open 11 / 12 / 13 / 14 / 16 / 17 / 18 (0 mismatches at every
 N; the pre-mechanism rule 86 / 62 / 34 / 51 / 0 / 0 / 0 IPL-only voxels; reflect / edge / object / wrap / background
 213 / 8,018 / 14,981 / 54,881 / 143,717 at N = 11), IPL's six /sub_get crops including the 12-slice z156 that settles
@@ -125,7 +125,7 @@ def test_dilation_grows_the_grid_by_n_plus_1_and_reaches_n_voxels(n):
     assert out["data"][c, c, c + n + 1] == 0 and out["data"][c + n + 1, c, c] == 0
 
 
-# --------------------------------------------------------- -continuous_at_boundary (probe 20's flag, synthetic)
+# --------------------------------------------------------- -continuous_at_boundary (test run 20's flag, synthetic)
 def chamfer_ball(n):
     """The structuring element of the metric-11 dilation: every offset whose EXACT chamfer 3-4-5 distance is
     < 3N + 2.  'out = in | (dt(~in) < 3N + 2)' is exactly the binary dilation by this ball and 'keep <=> dt(in) >=
@@ -174,7 +174,7 @@ def ref_close(M, n, flags_xyz):
 
 
 def test_continuous_at_boundary_is_per_axis_in_x_y_z_order_and_defaults_to_the_empty_border():
-    """The flag added after probe 20 (2026-09-15), on volumes small enough to check against the chamfer metric
+    """The flag added after test run 20 (2026-09-15), on volumes small enough to check against the chamfer metric
     itself.  (1) DEFAULT (0, 0, 0) = today's behaviour: an empty border on all six faces, identical to the
     no-argument call -- Scripts 32 / 33 pass 0 0 0, so no call site moves.  (2) The flag is PER AXIS and is read in
     IPL's x, y, z order: a 3x3x5 block touching only the x1 face of a 13^3 volume (every other face is 5 voxels
@@ -475,12 +475,12 @@ def test_rank_extract_keeps_the_requested_ranks_6_connected():
     assert int((ops.cl_ow_rank_extract(v, 1, 99)["data"] != 0).sum()) == 36
 
 
-# The 41 component sizes of the probe-18 phantom in raster label order (scipy.ndimage.label), compressed
+# The 41 component sizes of the test-run-18 phantom in raster label order (scipy.ndimage.label), compressed
 # order-preservingly to small integers (ties kept): label 19 = T1 and 22 = T2 (20,000 -> 27), 20 = a
 # (15,000 -> 26), 21 = b and 23 = c (10,000 -> 25).  IPL's exports RANK1..5 = T2, T1, a, b, c.
-P18_SIZES = [13, 9, 5, 8, 8, 5, 4, 2, 7, 3, 2, 9, 5, 11, 1, 15, 14, 16, 27, 26, 25, 27, 25, 21, 10, 18, 12,
+T18_SIZES = [13, 9, 5, 8, 8, 5, 4, 2, 7, 3, 2, 9, 5, 11, 1, 15, 14, 16, 27, 26, 25, 27, 25, 21, 10, 18, 12,
              24, 23, 19, 19, 19, 19, 22, 6, 17, 17, 17, 17, 20, 13]
-P18_RANKS = [22, 19, 20, 21, 23]                 # labels of ranks 1..5 in IPL's exports
+T18_RANKS = [22, 19, 20, 21, 23]                 # labels of ranks 1..5 in IPL's exports
 
 
 def _runs_along_x(sizes):
@@ -494,17 +494,17 @@ def _runs_along_x(sizes):
     return ops.vol(row[None, None, :], (row.size, 1, 1), (0, 0, 0)), row
 
 
-def test_rank_tie_break_is_ipl_s_unstable_sort_on_the_probe18_table():
+def test_rank_tie_break_is_ipl_s_unstable_sort_on_the_run18_table():
     """rank_order on the phantom's size table puts the later of the two largest equal components first and
     the earlier of the two 10,000 pair first -- what IPL's RANK1..5 exports showed -- while a stable
     largest-first sort would put label 19 (T1) at rank 1."""
-    sizes = np.array(P18_SIZES)
-    assert (ops.rank_order(sizes)[:5] + 1).tolist() == P18_RANKS
+    sizes = np.array(T18_SIZES)
+    assert (ops.rank_order(sizes)[:5] + 1).tolist() == T18_RANKS
     assert (np.argsort(-sizes, kind="stable")[:5] + 1).tolist() == [19, 22, 20, 21, 23]
-    v, row = _runs_along_x(P18_SIZES)
+    v, row = _runs_along_x(T18_SIZES)
     lab, n, cnt = ops.label6(v["data"] != 0)
-    assert n == 41 and cnt[1:].tolist() == P18_SIZES                       # label order = list order
-    for rank, label in enumerate(P18_RANKS, start=1):
+    assert n == 41 and cnt[1:].tolist() == T18_SIZES                       # label order = list order
+    for rank, label in enumerate(T18_RANKS, start=1):
         out = ops.cl_ow_rank_extract(v, rank, rank)["data"] != 0
         assert np.array_equal(out, lab == label), f"rank {rank}: expected label {label}"
     both = ops.cl_ow_rank_extract(v, 1, 2)["data"] != 0
@@ -514,7 +514,7 @@ def test_rank_tie_break_is_ipl_s_unstable_sort_on_the_probe18_table():
 
 
 def _cb_volume():
-    """The probe-18 connect_boundary sub-volume at small scale: B1 (large) and B2 (small) touch z = 0, B4 touches
+    """The test-run-18 connect_boundary sub-volume at small scale: B1 (large) and B2 (small) touch z = 0, B4 touches
     z = last, B3 is interior; sizes chosen so every reading gives a different rank 1 / rank 2."""
     m = np.zeros((10, 20, 40), bool)
     m[0:4, 2:6, 2:12] = True                # B1 160, touches z0
@@ -585,7 +585,7 @@ def test_subtract_and_add_on_the_union_grid():
 
 
 def test_subtract_and_add_keep_char_arithmetic_and_reject_short_operands():
-    """The arithmetic is char arithmetic (a negative difference is stored, -127 for 0 - 127, as IPL's probe-18
+    """The arithmetic is char arithmetic (a negative difference is stored, -127 for 0 - 127, as IPL's test-run-18
     export SUB showed; sums saturate at 127, export ADD), never a boolean AND NOT / OR; a short greyscale
     operand is refused (IPL's arithmetic on a short volume was never observed, and it would silently become a
     constant-127 mask).  Saturation at -127 for a difference below it is the implemented, unobserved choice."""
@@ -666,12 +666,12 @@ def test_gobj_maskaimpeel_pastes_by_position_and_peels_slicewise():
     assert mg["data"].dtype == np.int16 and (mg["data"][1:4] == -7).all() and not mg["data"][0].any()
 
 
-# ------------------------------------------------------------------------------------------- probe 18 (slow)
-P18_ROOT = os.environ.get("IPLDT_PROBE18_ROOT", lab_path("Python/scripts/IPL/probes/p18_step1_edges"))
+# ------------------------------------------------------------------------------------------- test run 18 (slow)
+T18_ROOT = os.environ.get("IPLDT_RUN18_ROOT", lab_path("ipl_test_runs/run18"))
 
 
-def _p18(tag):
-    fs = vms_versions(os.path.join(P18_ROOT, "outputs"), f"X2420448_P18_{tag}.AIM")
+def _run18(tag):
+    fs = vms_versions(os.path.join(T18_ROOT, "outputs"), f"X2420448_T18_{tag}.AIM")
     return read_aim(fs[-1]) if fs else None
 
 
@@ -740,7 +740,7 @@ def old_rule_open(v, n):
 
 
 def cave_block(T, size=100, mg=18, H=40, r_in=9.0, w=2.0):
-    """One block of the plate-over-cave phantom of probe 20 (make_phantoms20.cave_blocks with a single T): a plate of
+    """One block of the plate-over-cave phantom of test run 20 (the cave blocks of the test-run-20 phantom generator, not distributed, with a single T): a plate of
     thickness T, size x size in-plane, touching the z1 face (z H-T .. H-1) over a background cave (z 0 .. H-T-1), with a
     ring trench 1 slice deep at radius r_in .. r_in + w around the block centre cut into the face slice; 18 background
     voxels around the plate.  Returns (volume bool (z, y, x), the disc r < r_in on the face slice)."""
@@ -757,7 +757,7 @@ def cave_block(T, size=100, mg=18, H=40, r_in=9.0, w=2.0):
 
 
 def test_open_mechanism_on_the_plate_over_cave_phantom():
-    """The synthetic isolation of the mechanism (probe 20 block C, predictions written 2026-09-14 18:12 before any
+    """The synthetic isolation of the mechanism (test run 20 block C, predictions written 2026-09-14 18:12 before any
     scanner run): in the volume the trench erodes the disc inside the ring and nothing restores it under the
     pre-mechanism rule (the nearest in-volume survivors are 27 voxels away), whatever T.  Under the mechanism the
     N + 2 = 17 margin above the face holds the mirror image of the plate: for T <= 16 the mirrored cave bottom lies at
@@ -766,9 +766,9 @@ def test_open_mechanism_on_the_plate_over_cave_phantom():
     and seed the dilation back to the face slice: 117 of the 249 disc voxels (and 21 more on the slice below, 138 in
     all) are restored, exactly the same count for T = 17 and 18.  The edge-exclusive mirror (numpy 'reflect', the
     nearest refuted alternative) puts the mirrored cave one slice nearer, so it restores nothing at T = 17 and, at
-    T = 18, the whole disc (249).  These are the counts the probe predicted for its cave export (0 / 0 / 117 / 117),
+    T = 18, the whole disc (249).  These are the counts the test run predicted for its cave export (0 / 0 / 117 / 117),
     and IPL returned exactly them on 2026-09-15 -- against the export itself in
-    test_probe20_cave_discs_and_the_six_face_mirror, on the same geometry rebuilt here."""
+    test_run20_cave_discs_and_the_six_face_mirror, on the same geometry rebuilt here."""
     n, m = 15, 17
     got = {}
     for T in (15, 16, 17, 18):
@@ -814,11 +814,11 @@ def test_open_equals_the_pre_mechanism_rule_without_extra_margin_survivors():
 
 def test_open_padded_contracts_and_the_thin_volume_warning(monkeypatch):
     """The helper: mode names, margin 0 = the uncropped buffer, negative margins / unknown modes raise; and the
-    NARROWED thin-volume warning (2026-09-15).  Probe 20's z156 export -- 12 slices opened with N = 15, i.e. a
+    NARROWED thin-volume warning (2026-09-15).  Test run 20's z156 export -- 12 slices opened with N = 15, i.e. a
     mirrored margin of 17 against 12 slices, one full reflection plus 5 repeated layers -- matched numpy's
     'symmetric' at 0 mismatching voxels, so that regime is settled and no longer warns; ThinVolumeWarning now fires
     ONCE per process only when the mirrored margin is deeper than TWICE an axis (more than one repeat of the
-    reflection), which probe 20 does not reach.  A background margin (the default of dilation / close) never
+    reflection), which test run 20 does not reach.  A background margin (the default of dilation / close) never
     warns, however thin the volume."""
     a = np.zeros((7, 7, 7), bool)
     a[2:5, 2:5, 2:5] = True
@@ -856,20 +856,20 @@ def test_open_padded_contracts_and_the_thin_volume_warning(monkeypatch):
     assert out.shape == a.shape and not (out & ~a).any()
 
 
-# ------------------------------------------------------------------------------------------- probe 17 (slow)
-P17_ROOT = os.environ.get("IPLDT_PROBE17_ROOT", lab_path("Python/scripts/IPL/probes/p17_step1_radius"))
-P17_BASES = {"PFJ-0be66a_R": "X2420448", "PFJ-42293d_L": "X3623103", "PFJ-6f5538_R": "X5492058", "PFJ-411dfd_R": "X5143651"}
+# ------------------------------------------------------------------------------------------- test run 17 (slow)
+T17_ROOT = os.environ.get("IPLDT_RUN17_ROOT", lab_path("ipl_test_runs/run17"))
+T17_BASES = {"PFJ-0be66a_R": "X2420448", "PFJ-42293d_L": "X3623103", "PFJ-6f5538_R": "X5492058", "PFJ-411dfd_R": "X5143651"}
 
 
-def _p17(subject, tag):
-    fs = vms_versions(os.path.join(P17_ROOT, "aims_and_logs"), f"{P17_BASES[subject]}_P17_{tag}.AIM")
+def _run17(subject, tag):
+    fs = vms_versions(os.path.join(T17_ROOT, "aims_and_logs"), f"{T17_BASES[subject]}_T17_{tag}.AIM")
     if not fs:
         return None
     a = read_aim(fs[-1])
     return ops.vol(np.ascontiguousarray(a["data"]), a["dim"], a["pos"])
 
 
-P17_RESIDUAL = [(1469, 175, 167), (1470, 179, 167), (1471, 178, 167)]        # sorted global (x, y, z), the last slice
+T17_RESIDUAL = [(1469, 175, 167), (1470, 179, 167), (1471, 178, 167)]        # sorted global (x, y, z), the last slice
 
 
 def _mismatch_counts(out_bool, ref):
@@ -879,8 +879,8 @@ def _mismatch_counts(out_bool, ref):
 
 
 @pytest.mark.slow
-def test_probe17_open_and_close_oracles_and_the_pfj_411dfd_open_mechanism():
-    """Probe 17 (scanner run fetched 2026-09-14): /open 15 (15 <- 14) and /close 30 (23 <- 22, the RADIUS preset)
+def test_run17_open_and_close_oracles_and_the_pfj_411dfd_open_mechanism():
+    """Test run 17 (scanner run fetched 2026-09-14): /open 15 (15 <- 14) and /close 30 (23 <- 22, the RADIUS preset)
     reproduce IPL's exports with 0 mismatching voxels and identical grids on PFJ-0be66a_R, PFJ-42293d_L and PFJ-6f5538_R;
     /close 15 (12 <- 11) and /close 50 (23 <- 22) likewise on PFJ-411dfd_R; and PFJ-411dfd_R 15 <- 14 -- the residual of
     the pre-mechanism rule (3 IPL-only voxels on the last slice) -- is exact under the mirror-margin mechanism
@@ -890,9 +890,9 @@ def test_probe17_open_and_close_oracles_and_the_pfj_411dfd_open_mechanism():
     IPL by exactly the 3 voxels at global (x, y, z) (1469, 175, 167), (1471, 178, 167), (1470, 179, 167) and by
     nothing else; the mirror margin at depth N + 1 / N + 3 / N differs by 19 / 2 / 48; the edge-exclusive mirror by
     28 (27 ours-only, 1 IPL-only); edge replication, wrap, an object margin and a background margin by 14,423 /
-    76,168 / 28,338 / 238,083.  Probe 20 (predictions written 2026-09-14 18:12) is the prospective confirmation."""
-    if _p17("PFJ-411dfd_R", "14_bbc") is None or _p17("PFJ-0be66a_R", "14_bbc") is None:
-        pytest.skip("probe-17 exports not found")
+    76,168 / 28,338 / 238,083.  Test run 20 (predictions written 2026-09-14 18:12) is the prospective confirmation."""
+    if _run17("PFJ-411dfd_R", "14_bbc") is None or _run17("PFJ-0be66a_R", "14_bbc") is None:
+        pytest.skip("test-run-17 exports not found")
     table = [("PFJ-0be66a_R", "14_bbc", "15_open15", ops.open_, 15, 20_163_367),
              ("PFJ-0be66a_R", "22_trabadd", "23_close50", ops.close, 30, 20_302_109),
              ("PFJ-42293d_L", "14_bbc", "15_open15", ops.open_, 15, 21_006_474),
@@ -904,14 +904,14 @@ def test_probe17_open_and_close_oracles_and_the_pfj_411dfd_open_mechanism():
              ("PFJ-411dfd_R", "22_trabadd", "23_close50", ops.close, 50, 17_989_866)]
     bad = {}
     for subj, tin, tout, fn, n, count in table:
-        vin, ref = _p17(subj, tin), _p17(subj, tout)
+        vin, ref = _run17(subj, tin), _run17(subj, tout)
         assert vin is not None and ref is not None, (subj, tin, tout)
         ours = fn(vin, n)
         mism, same = _same(ours, ref)
         if mism or not same or int((ref["data"] != 0).sum()) != count or int((ours["data"] != 0).sum()) != count:
             bad[(subj, tout)] = (mism, same, int((ours["data"] != 0).sum()), int((ref["data"] != 0).sum()))
     assert bad == {}, bad
-    vin, ref = _p17("PFJ-411dfd_R", "14_bbc"), _p17("PFJ-411dfd_R", "15_open15")
+    vin, ref = _run17("PFJ-411dfd_R", "14_bbc"), _run17("PFJ-411dfd_R", "15_open15")
     assert vin["dim"] == (721, 290, 168) and vin["pos"] == (856, 24, 0) and ref["dim"] == vin["dim"] and ref["pos"] == vin["pos"]
     assert (vin["data"] != 0)[167, [151, 154, 155], [613, 615, 614]].all()          # object in 14, last slice
     M, b = vin["data"] != 0, ref["data"] != 0
@@ -921,7 +921,7 @@ def test_probe17_open_and_close_oracles_and_the_pfj_411dfd_open_mechanism():
     old = old_rule_open(vin, 15)["data"] != 0
     assert np.array_equal(old, ops._open_padded(M, 15, 17, "open_boundary"))
     assert int(old.sum()) == 17_696_230 and int((old & ~b).sum()) == 0
-    assert sorted((int(x) + 856, int(y) + 24, int(z)) for z, y, x in np.argwhere(b & ~old)) == P17_RESIDUAL
+    assert sorted((int(x) + 856, int(y) + 24, int(z)) for z, y, x in np.argwhere(b & ~old)) == T17_RESIDUAL
     assert mech[167, [151, 154, 155], [613, 615, 614]].all()                        # the 3 voxels, restored
     got = {(mode, margin): _mismatch_counts(ops._open_padded(M, 15, margin, mode), ref)
            for mode, margin in (("symmetric", 16), ("symmetric", 18), ("symmetric", 15), ("symmetric", 30), ("reflect", 17),
@@ -933,18 +933,18 @@ def test_probe17_open_and_close_oracles_and_the_pfj_411dfd_open_mechanism():
 
 
 @pytest.mark.slow
-def test_probe18_exports_are_reproduced_whole_volume():
-    """Every probe-18 export of IPL (scanner run 2026-09-13) from the uploaded char phantom and, for seg_gauss,
+def test_run18_exports_are_reproduced_whole_volume():
+    """Every test-run-18 export of IPL (scanner run 2026-09-13) from the uploaded char phantom and, for seg_gauss,
     from IPL's own masked / cut short phantom (SGBBC): 0 mismatching voxels and identical grids.  This pins the
     three corrections (SUB / SUB2: -127; CBT1 / CBT2: all face-touching components joined; RANK1..5: the tie
     order) and the confirmed readings (SW, NRMIN, NRMAX, ERO3, ERO1, DIL15, DIL1, CLOSE3, OPEN3, SG)."""
-    upload = os.path.join(P18_ROOT, "upload", "x2420448_p18cl.aim")
-    if not os.path.exists(upload) or _p18("RANK1") is None:
-        pytest.skip("probe-18 phantom / exports not found")
+    upload = os.path.join(T18_ROOT, "upload", "x2420448_t18cl.aim")
+    if not os.path.exists(upload) or _run18("RANK1") is None:
+        pytest.skip("test-run-18 phantom / exports not found")
     a = read_aim(upload)
     cl = ops.vol(np.ascontiguousarray(a["data"]), a["dim"], a["pos"])
     assert cl["dim"] == (743, 348, 168) and cl["pos"] == (795, 94, 168) and int((cl["data"] != 0).sum()) == 105_201
-    assert _same(cl, _p18("RT")) == (0, True)
+    assert _same(cl, _run18("RT")) == (0, True)
 
     def crop(v, z0, nz, x0=0, nx=None, y0=0, ny=None):          # /sub_get -global_pos_flag false
         nx = v["dim"][0] - x0 if nx is None else nx
@@ -968,13 +968,13 @@ def test_probe18_exports_are_reproduced_whole_volume():
     }
     for k in range(1, 6):
         checks[f"RANK{k}"] = ops.cl_ow_rank_extract(cl, k, k)
-    sgbbc = _p18("SGBBC")
+    sgbbc = _run18("SGBBC")
     if sgbbc is not None:
         assert sgbbc["dim"] == (738, 343, 168) and sgbbc["pos"] == (798, 97, 168)
         checks["SG"] = ops.seg_gauss(ops.vol(np.ascontiguousarray(sgbbc["data"]), sgbbc["dim"], sgbbc["pos"]), 2.0, 3, 4524, 17173)
     bad = {}
     for tag, ours in checks.items():
-        ref = _p18(tag)
+        ref = _run18(tag)
         assert ref is not None, f"export {tag} missing"
         n, same = _same(ours, ref, valued=tag in ("SUB", "SUB2", "ADD"))
         if n or not same:
@@ -988,13 +988,13 @@ def test_probe18_exports_are_reproduced_whole_volume():
     assert [int((checks[f"RANK{k}"]["data"] != 0).sum()) for k in range(1, 6)] == [20000, 20000, 15000, 10000, 10000]
 
 
-# ------------------------------------------------------------------------------------------- probe 19 (slow)
-P19_ROOT = os.environ.get("IPLDT_PROBE19_ROOT", lab_path("Python/scripts/IPL/probes/p19_open_halves"))
-P19_RESIDUAL = [(1469, 175, 167), (1470, 179, 167), (1471, 178, 167)]        # sorted global (x, y, z), the last slice
+# ------------------------------------------------------------------------------------------- test run 19 (slow)
+T19_ROOT = os.environ.get("IPLDT_RUN19_ROOT", lab_path("ipl_test_runs/run19"))
+T19_RESIDUAL = [(1469, 175, 167), (1470, 179, 167), (1471, 178, 167)]        # sorted global (x, y, z), the last slice
 
 
-def _p19(tag):
-    fs = vms_versions(os.path.join(P19_ROOT, "aims_and_logs"), f"X5143651_P19_{tag}.AIM")
+def _run19(tag):
+    fs = vms_versions(os.path.join(T19_ROOT, "aims_and_logs"), f"X5143651_T19_{tag}.AIM")
     if not fs:
         return None
     a = read_aim(fs[-1])
@@ -1018,12 +1018,12 @@ def _ipl_only(ours, ref):
 
 
 @pytest.mark.slow
-def test_probe19_open_halves_primitives_are_exact_and_the_mechanism_reproduces_open():
-    """Probe 19 (scanner run fetched 2026-09-14) on PFJ-411dfd_R's stage 14 (X5143651_P17_14_BBC, 721x290x168 @ 856,24,0),
+def test_run19_open_halves_primitives_are_exact_and_the_mechanism_reproduces_open():
+    """Test run 19 (scanner run fetched 2026-09-14) on PFJ-411dfd_R's stage 14 (X5143651_T17_14_BBC, 721x290x168 @ 856,24,0),
     the input of the /open 15 residual.  (1) /erosion 15 (ERO15) == erosion(14): 13,640,114 set voxels, 0 mismatches;
     a second run (ERO15B) is identical.  (2) /dilation 15 -use_previous_margin false on IPL's ero15 (DIL15) ==
     dilation(ero15) on the grown grid 753x322x200 @ 840,8,-16 (N + 1 = 16 per side): 20,637,201, 0 mismatches.
-    (3) /open 15 run again (OPEN15) == the P17 stage-15 export (deterministic) == open_(14) under the mirror-margin
+    (3) /open 15 run again (OPEN15) == the T17 stage-15 export (deterministic) == open_(14) under the mirror-margin
     mechanism (implemented 2026-09-14 evening): 0 mismatches, 17,696,233 set voxels; the pre-mechanism rule (the two
     chained primitives) differs from it by exactly the 3 pinned IPL-only voxels, and DIL15 restricted to the 14 grid
     equals the pre-mechanism rule exactly -- so IPL's chained primitives differ from IPL's /open by exactly those 3
@@ -1037,10 +1037,10 @@ def test_probe19_open_halves_primitives_are_exact_and_the_mechanism_reproduces_o
     / 61,036; IPL's full open restricted to each sub grid differs from IPL's sub open by 2,600 / 4,412 / 719 voxels,
     exactly the counts the rule gives for open_(full) restricted vs open_(sub) -- /open's cut-face behaviour is the
     rule's."""
-    v14 = _p17("PFJ-411dfd_R", "14_bbc")
-    if v14 is None or _p19("OPEN15") is None or _p19("SUBA_IN") is None:
-        pytest.skip("probe-17 stage 14 or probe-19 exports not found")
-    ero, dil, opn, erob, pm = (_p19(t) for t in ("ERO15", "DIL15", "OPEN15", "ERO15B", "DIL15PM"))
+    v14 = _run17("PFJ-411dfd_R", "14_bbc")
+    if v14 is None or _run19("OPEN15") is None or _run19("SUBA_IN") is None:
+        pytest.skip("test-run-17 stage 14 or test-run-19 exports not found")
+    ero, dil, opn, erob, pm = (_run19(t) for t in ("ERO15", "DIL15", "OPEN15", "ERO15B", "DIL15PM"))
     assert v14["dim"] == (721, 290, 168) and v14["pos"] == (856, 24, 0)
     # (1) the erosion half
     assert _same(ops.erosion(v14, 15), ero) == (0, True)
@@ -1053,16 +1053,16 @@ def test_probe19_open_halves_primitives_are_exact_and_the_mechanism_reproduces_o
     assert _same(D, dil) == (0, True)
     assert int((dil["data"] != 0).sum()) == 20_637_201
     # (3) /open: deterministic, = open_ (the mechanism), = the chained primitives + exactly the 3 residual voxels
-    assert _same(opn, _p17("PFJ-411dfd_R", "15_open15")) == (0, True)
+    assert _same(opn, _run17("PFJ-411dfd_R", "15_open15")) == (0, True)
     O = ops.open_(v14, 15)
     assert int((O["data"] != 0).sum()) == 17_696_233 and int((opn["data"] != 0).sum()) == 17_696_233
     assert _same(O, opn) == (0, True) and _ipl_only(O, opn) == []
     O_old = old_rule_open(v14, 15)
     assert int((O_old["data"] != 0).sum()) == 17_696_230
-    assert _ipl_only(O_old, opn) == P19_RESIDUAL
+    assert _ipl_only(O_old, opn) == T19_RESIDUAL
     dil_inside = _restrict(dil, v14)
     assert _same(dil_inside, O_old) == (0, True)
-    assert _ipl_only(dil_inside, opn) == P19_RESIDUAL
+    assert _ipl_only(dil_inside, opn) == T19_RESIDUAL
     assert (v14["data"] != 0)[167, [151, 154, 155], [613, 615, 614]].all()          # object in 14, eroded by both
     assert not (ero["data"] != 0)[167, [151, 154, 155], [613, 615, 614]].any()
     assert (O["data"] != 0)[167, [151, 154, 155], [613, 615, 614]].all()             # restored by the margin seeds
@@ -1074,11 +1074,11 @@ def test_probe19_open_halves_primitives_are_exact_and_the_mechanism_reproduces_o
         assert _same(_restrict(opn, pm), pm) == (0, True)
     # (5) the /sub_get copies: exact primitives, open_ exact, the pre-mechanism residual follows the last slice, cut
     #     faces as the rule; the alternatives' counts on suba
-    subs = {"SUBA": ((0, 0, 100), (721, 290, 68), P19_RESIDUAL, 7_196_729, 2_600),
+    subs = {"SUBA": ((0, 0, 100), (721, 290, 68), T19_RESIDUAL, 7_196_729, 2_600),
             "SUBB": ((0, 0, 0), (721, 290, 167), [], 17_595_873, 4_412),
-            "SUBC": ((400, 40, 100), (321, 250, 68), P19_RESIDUAL, 3_247_584, 719)}
+            "SUBC": ((400, 40, 100), (321, 250, 68), T19_RESIDUAL, 3_247_584, 719)}
     for s, ((x0, y0, z0), dim, expect_old, count, locality) in subs.items():
-        vin, se, sd, so = (_p19(f"{s}_{t}") for t in ("IN", "ERO15", "DIL15", "OPEN15"))
+        vin, se, sd, so = (_run19(f"{s}_{t}") for t in ("IN", "ERO15", "DIL15", "OPEN15"))
         assert None not in (vin, se, sd, so), s
         crop = ops.vol(np.ascontiguousarray(v14["data"][z0:z0 + dim[2], y0:y0 + dim[1], x0:x0 + dim[0]]), dim,
                        (v14["pos"][0] + x0, v14["pos"][1] + y0, v14["pos"][2] + z0))
@@ -1100,23 +1100,23 @@ def test_probe19_open_halves_primitives_are_exact_and_the_mechanism_reproduces_o
                            "open_boundary": (3, 0, 3)}, got
 
 
-# ------------------------------------------------------------------------------------------- probe 20 (slow)
-P20_ROOT = os.environ.get("IPLDT_PROBE20_ROOT", lab_path("Python/scripts/IPL/probes/p20_open_mechanism"))
-P20_RESIDUAL = [(1469, 175, 167), (1470, 179, 167), (1471, 178, 167)]        # sorted global (x, y, z), the last slice
+# ------------------------------------------------------------------------------------------- test run 20 (slow)
+T20_ROOT = os.environ.get("IPLDT_RUN20_ROOT", lab_path("ipl_test_runs/run20"))
+T20_RESIDUAL = [(1469, 175, 167), (1470, 179, 167), (1471, 178, 167)]        # sorted global (x, y, z), the last slice
 
 
-def _p20(tag):
-    """IPL's probe-20 export X5143651_P20_<TAG>.AIM (the scanner run fetched 2026-09-15), or None."""
-    fs = vms_versions(os.path.join(P20_ROOT, "aims_and_logs"), f"X5143651_P20_{tag}.AIM")
+def _run20(tag):
+    """IPL's test-run-20 export X5143651_T20_<TAG>.AIM (the scanner run fetched 2026-09-15), or None."""
+    fs = vms_versions(os.path.join(T20_ROOT, "aims_and_logs"), f"X5143651_T20_{tag}.AIM")
     if not fs:
         return None
     a = read_aim(fs[-1])
     return ops.vol(np.ascontiguousarray(a["data"]), a["dim"], a["pos"])
 
 
-def _p20_upload(name):
-    """One of the 14 phantoms uploaded to the scanner for probe 20 (the input of <NAME>_OPEN15), or None."""
-    fs = vms_versions(os.path.join(P20_ROOT, "upload"), f"x5143651_p20_{name}.aim")
+def _run20_upload(name):
+    """One of the 14 phantoms uploaded to the scanner for test run 20 (the input of <NAME>_OPEN15), or None."""
+    fs = vms_versions(os.path.join(T20_ROOT, "upload"), f"x5143651_t20_{name}.aim")
     if not fs:
         return None
     a = read_aim(fs[-1])
@@ -1131,9 +1131,9 @@ def _crop(v, pos_local, dim):
 
 
 def sym_z_open(M, n):
-    """The 'z faces only' reading of /open (p20_rules 'sym_z'): the z margin mirrored, the x / y margins as the
+    """The 'z faces only' reading of /open (the test-run-20 rule 'sym_z'): the z margin mirrored, the x / y margins as the
     pre-mechanism rule (an open boundary in the erosion, a background margin in the dilation).  No oracle before
-    probe 20 separated it from the six-face mirror; the transposed phantoms and cavex do."""
+    test run 20 separated it from the six-face mirror; the transposed phantoms and cavex do."""
     m, t = n + 2, ops.metric11_threshold(n)
     Mp = np.pad(np.asarray(M, bool), ((m, m), (0, 0), (0, 0)), mode="symmetric")
     surv = Mp & (ops.chamfer_dt_345(ops._u8(Mp)) >= t)
@@ -1143,7 +1143,7 @@ def sym_z_open(M, n):
 
 def _face_discs(a, face):
     """The discs inside the ring trenches of a plate-over-cave phantom, located IN THE PHANTOM ITSELF (not read
-    from the probe's manifest): the 4-connected components of the face slice that have 249 voxels, ordered along
+    from the test run's manifest): the 4-connected components of the face slice that have 249 voxels, ordered along
     the axis the blocks lie on (increasing T).  Returns a list of bool volumes on a's grid."""
     slc = a[-1] if face == "z1" else a[:, :, -1]
     lab, k = ndi.label(slc, ndi.generate_binary_structure(2, 1))
@@ -1162,10 +1162,10 @@ def _face_discs(a, face):
 
 
 @pytest.mark.slow
-def test_probe20_n_scan_and_the_sub_get_crops():
-    """PROBE 20, blocks 1 and 2 (the prospective confirmation of the /open mechanism; predictions written
+def test_run20_n_scan_and_the_sub_get_crops():
+    """TEST RUN 20, blocks 1 and 2 (the prospective confirmation of the /open mechanism; predictions written
     2026-09-14 18:12:42 BEFORE the scanner run, run fetched 2026-09-15).
-    (1) THE N-SCAN on PFJ-411dfd_R's stage 14 (X5143651_P17_14_BBC, 721x290x168 @ 856,24,0): /open N for N = 11, 12,
+    (1) THE N-SCAN on PFJ-411dfd_R's stage 14 (X5143651_T17_14_BBC, 721x290x168 @ 856,24,0): /open N for N = 11, 12,
     13, 14, 16, 17, 18 (exports OPEN11 .. OPEN18) equals open_ at 0 mismatching voxels with identical grids at
     every N, while the PRE-MECHANISM rule (the two chained primitives) leaves exactly 86 / 62 / 34 / 51 / 0 / 0 / 0
     IPL-only voxels and never an ours-only voxel -- digit for digit the prospective prediction.  At N = 11 / 12 the
@@ -1176,9 +1176,9 @@ def test_probe20_n_scan_and_the_sub_get_crops():
     pre-mechanism rule is off by 3 / 3 / 8 / 30 / 8 / 36.  z156 is 12 slices deep -- THINNER than the margin
     N + 2 = 17, so numpy's 'symmetric' pad repeats the reflection -- and IPL matches it exactly (1,240,454 set
     voxels), which is why open_ no longer warns there."""
-    v14 = _p17("PFJ-411dfd_R", "14_bbc")
-    if v14 is None or _p20("OPEN11") is None:
-        pytest.skip("probe-17 stage 14 or probe-20 exports not found")
+    v14 = _run17("PFJ-411dfd_R", "14_bbc")
+    if v14 is None or _run20("OPEN11") is None:
+        pytest.skip("test-run-17 stage 14 or test-run-20 exports not found")
     assert v14["dim"] == (721, 290, 168) and v14["pos"] == (856, 24, 0)
     M = v14["data"] != 0
     assert int(M.sum()) == 17_962_446
@@ -1187,7 +1187,7 @@ def test_probe20_n_scan_and_the_sub_get_crops():
     old_only = {11: 86, 12: 62, 13: 34, 14: 51, 16: 0, 17: 0, 18: 0}
     got_old, got_mism = {}, {}
     for n in (11, 12, 13, 14, 16, 17, 18):
-        ref = _p20(f"OPEN{n}")
+        ref = _run20(f"OPEN{n}")
         assert ref is not None, n
         ours = ops.open_(v14, n)
         got_mism[n] = _same(ours, ref)
@@ -1195,7 +1195,7 @@ def test_probe20_n_scan_and_the_sub_get_crops():
         got_old[n] = _mismatch_counts(ops._open_padded(M, n, n + 2, "open_boundary"), ref)
     assert got_mism == {n: (0, True) for n in counts}, got_mism
     assert got_old == {n: (old_only[n], 0, old_only[n]) for n in counts}, got_old
-    alt = {(mode, n): _mismatch_counts(ops._open_padded(M, n, n + 2, mode), _p20(f"OPEN{n}"))[0]
+    alt = {(mode, n): _mismatch_counts(ops._open_padded(M, n, n + 2, mode), _run20(f"OPEN{n}"))[0]
            for n in (11, 12) for mode in ("reflect", "edge", "object", "wrap", "background")}
     assert alt == {("reflect", 11): 213, ("reflect", 12): 162, ("edge", 11): 8_018, ("edge", 12): 8_491,
                    ("object", 11): 14_981, ("object", 12): 16_617, ("wrap", 11): 54_881, ("wrap", 12): 61_216,
@@ -1207,7 +1207,7 @@ def test_probe20_n_scan_and_the_sub_get_crops():
             "Y1CUT": ((560, 100, 130), (121, 59, 38), 248_229, 8),
             "Z156": ((0, 0, 156), (721, 290, 12), 1_240_454, 36)}
     for tag, (pos_local, dim, count, old) in subs.items():
-        vin, ref = _p20(f"{tag}_IN"), _p20(f"{tag}_OPEN15")
+        vin, ref = _run20(f"{tag}_IN"), _run20(f"{tag}_OPEN15")
         assert vin is not None and ref is not None, tag
         assert vin["dim"] == dim, tag
         assert _same(_crop(v14, pos_local, dim), vin) == (0, True), tag
@@ -1218,13 +1218,13 @@ def test_probe20_n_scan_and_the_sub_get_crops():
         assert _same(ours, ref) == (0, True), tag
         assert int((ref["data"] != 0).sum()) == count, tag
         assert _mismatch_counts(ops._open_padded(vin["data"] != 0, 15, 17, "open_boundary"), ref) == (old, 0, old), tag
-    thin = _p20("Z156_IN")
+    thin = _run20("Z156_IN")
     assert thin["dim"][2] == 12 < 17 and ops._mirror_repeat_axes(thin["data"].shape, 17, ("symmetric",) * 3) == ()
 
 
 @pytest.mark.slow
-def test_probe20_boundary_flag_oracles():
-    """PROBE 20, block 1: IPL's -continuous_at_boundary on PFJ-411dfd_R's stage 14, the oracles for the flag added to
+def test_run20_boundary_flag_oracles():
+    """TEST RUN 20, block 1: IPL's -continuous_at_boundary on PFJ-411dfd_R's stage 14, the oracles for the flag added to
     dilation() and close() on 2026-09-15.  /close 15 with '0 0 0' (CLOSE15C0) is the default at 0 mismatching
     voxels (17,964,657 set) and with '1 1 1' (CLOSE15C1) the mirrored margin at 0 (18,003,002); /dilation 15 with
     '1 1 1' (DIL15C1) and with '0 0 1' (DIL15C001) match at 0 ON THE WHOLE WRITTEN GRID, the 16 written margin
@@ -1234,10 +1234,10 @@ def test_probe20_boundary_flag_oracles():
     the default (empty border) is 787,238 from DIL15C1; reading the three flags in z, y, x order instead (mirror on
     x only) is 598,104 from DIL15C001; and the edge-EXCLUSIVE mirror is 70,802 from DIL15C1 -- the discrimination
     /close cannot make, since 'symmetric' and 'reflect' both match CLOSE15C1 at 0."""
-    v14 = _p17("PFJ-411dfd_R", "14_bbc")
-    c0, c1, d1, d001 = (_p20(t) for t in ("CLOSE15C0", "CLOSE15C1", "DIL15C1", "DIL15C001"))
+    v14 = _run17("PFJ-411dfd_R", "14_bbc")
+    c0, c1, d1, d001 = (_run20(t) for t in ("CLOSE15C0", "CLOSE15C1", "DIL15C1", "DIL15C001"))
     if v14 is None or c0 is None or d1 is None:
-        pytest.skip("probe-17 stage 14 or probe-20 flag exports not found")
+        pytest.skip("test-run-17 stage 14 or test-run-20 flag exports not found")
     assert _same(ops.close(v14, 15), c0) == (0, True)
     assert _same(ops.close(v14, 15, (0, 0, 0)), c0) == (0, True)
     assert _same(ops.close(v14, 15, (1, 1, 1)), c1) == (0, True)
@@ -1260,26 +1260,26 @@ def test_probe20_boundary_flag_oracles():
 
 
 @pytest.mark.slow
-def test_probe20_cave_discs_and_the_six_face_mirror():
-    """PROBE 20, block 3: the purpose-built phantoms (predicted before the run).
+def test_run20_cave_discs_and_the_six_face_mirror():
+    """TEST RUN 20, block 3: the purpose-built phantoms (predicted before the run).
     (1) THE CAVE T-SCAN.  Plates of thickness T touching a face over a background cave, with a 1-deep ring trench
     in the face slice around each block centre, so the 249-voxel disc inside the trench is eroded and NOTHING
     in-volume can restore it.  IPL restores 0 / 0 / 117 / 117 disc voxels at T = 15 / 16 / 17 / 18 (cave, the z1
     face) and 0 / 117 at T = 16 / 17 (cavex, the x1 face), and open_ restores exactly the same -- T = 17 = N + 2 is
     the first thickness at which the truncation of the mirror bites, so the T-scan reads the MARGIN DEPTH off the
     data.  The pre-mechanism rule restores 0 everywhere and the edge-exclusive mirror 0 / 0 / 0 / 249 and 0 / 0.
-    The discs are located here by labelling the face slice of the phantom itself, not read from the probe's
+    The discs are located here by labelling the face slice of the phantom itself, not read from the test run's
     manifest.
     (2) THE SIX FACES.  cavex (the same construction transposed so the plate face is the x1 FACE) and the four
     transposed crops tzx / tzx0 / tzy / tzy0 (the residual geometry on the x1 / x0 / y1 / y0 face) are reproduced at
     0 mismatches, while a z-faces-only mirror is refuted by 138 voxels (cavex) and 3 each (the crops) and the
     edge-exclusive mirror by 138 and 9.  All 14 uploaded phantoms round-trip (<NAME>_RT) at 0 and are opened at 0."""
-    if _p20_upload("cave") is None or _p20("CAVE_OPEN15") is None:
-        pytest.skip("probe-20 phantoms not found")
+    if _run20_upload("cave") is None or _run20("CAVE_OPEN15") is None:
+        pytest.skip("test-run-20 phantoms not found")
     disc_counts = {}
     for name, face, Ts in (("cave", "z1", (15, 16, 17, 18)), ("cavex", "x1", (16, 17))):
-        up = _p20_upload(name)
-        ipl = _p20(f"{name.upper()}_OPEN15")
+        up = _run20_upload(name)
+        ipl = _run20(f"{name.upper()}_OPEN15")
         a = up["data"] != 0
         ours = ops.open_(up, 15)
         assert _same(ours, ipl) == (0, True), name
@@ -1297,7 +1297,7 @@ def test_probe20_cave_discs_and_the_six_face_mirror():
     assert disc_counts["cavex"] == dict(ipl=[0, 117], ours=[0, 117], old=[0, 0], reflect=[0, 0]), disc_counts["cavex"]
     six = {}
     for name in ("cavex", "tzx", "tzx0", "tzy", "tzy0"):
-        up, ipl = _p20_upload(name), _p20(f"{name.upper()}_OPEN15")
+        up, ipl = _run20_upload(name), _run20(f"{name.upper()}_OPEN15")
         a = up["data"] != 0
         six[name] = (_mismatch_counts(sym_z_open(a, 15), ipl)[0],
                      _mismatch_counts(ops._open_padded(a, 15, 17, "reflect"), ipl)[0])
@@ -1307,7 +1307,7 @@ def test_probe20_cave_discs_and_the_six_face_mirror():
             "obj17": 502_844, "cave": 400_409, "cavex": 256_949}
     bad = {}
     for name, count in sets.items():
-        up, rt, opn = _p20_upload(name), _p20(f"{name.upper()}_RT"), _p20(f"{name.upper()}_OPEN15")
+        up, rt, opn = _run20_upload(name), _run20(f"{name.upper()}_RT"), _run20(f"{name.upper()}_OPEN15")
         got = (_same(up, rt), _same(ops.open_(up, 15), opn), int((opn["data"] != 0).sum()))
         if got != ((0, True), (0, True), count):
             bad[name] = got
@@ -1315,8 +1315,8 @@ def test_probe20_cave_discs_and_the_six_face_mirror():
 
 
 @pytest.mark.slow
-def test_probe20_k_scan_and_the_primitives_inside_the_region_phantom():
-    """PROBE 20, block 3: the whole effect reproduced inside a 121x101x38 phantom, and the k-scan that switches it
+def test_run20_k_scan_and_the_primitives_inside_the_region_phantom():
+    """TEST RUN 20, block 3: the whole effect reproduced inside a 121x101x38 phantom, and the k-scan that switches it
     off.  The uploaded 'reg' phantom is the residual's own region with 20 empty slices above; IPL's /sub_get of its
     first 38 + k slices gives the k-scan (k = 0, 1, 2, 3, 5, 8, 11 .. 17).  open_ matches IPL's K<k>_OPEN15 at 0
     mismatching voxels for EVERY k; k = 0 keeps the 3 residual voxels at global (1469,175,167), (1471,178,167),
@@ -1326,27 +1326,27 @@ def test_probe20_k_scan_and_the_primitives_inside_the_region_phantom():
     K0_ERO15 at 0 (713,838 on 153x133x70 @ 1400,108,114), and IPL's K0_OPEN15 exceeds that chain by EXACTLY the
     three residual voxels and by nothing the other way.  Controls: K0_OPEN15 (from the uploaded phantom) equals
     SREG_OPEN15 (IPL's own /sub_get of the same box) at 0."""
-    reg = _p20_upload("reg")
-    if reg is None or _p20("K0_OPEN15") is None:
-        pytest.skip("probe-20 phantoms not found")
+    reg = _run20_upload("reg")
+    if reg is None or _run20("K0_OPEN15") is None:
+        pytest.skip("test-run-20 phantoms not found")
     assert reg["dim"] == (121, 101, 58) and reg["pos"] == (1416, 124, 130)
     bad = {}
     for k in (0, 1, 2, 3, 5, 8, 11, 12, 13, 14, 15, 16, 17):
-        ref = _p20(f"K{k}_OPEN15")
+        ref = _run20(f"K{k}_OPEN15")
         assert ref is not None, k
         ours = ops.open_(_crop(reg, (0, 0, 0), (121, 101, 38 + k)), 15)
         p, b = ours["pos"], ours["data"] != 0
-        kept = [bool(b[z - p[2], y - p[1], x - p[0]]) for x, y, z in P20_RESIDUAL]
+        kept = [bool(b[z - p[2], y - p[1], x - p[0]]) for x, y, z in T20_RESIDUAL]
         got = (_same(ours, ref), int((ref["data"] != 0).sum()), kept)
         want = ((0, True), 291_699 if k == 0 else 278_712, [k == 0] * 3)
         if got != want:
             bad[k] = (got, want)
     assert bad == {}, bad
-    k0, ero, dil = _p20("K0_OPEN15"), _p20("K0_ERO15"), _p20("K0_DIL15")
+    k0, ero, dil = _run20("K0_OPEN15"), _run20("K0_ERO15"), _run20("K0_DIL15")
     crop0 = _crop(reg, (0, 0, 0), (121, 101, 38))
     assert _same(ops.erosion(crop0, 15), ero) == (0, True) and int((ero["data"] != 0).sum()) == 192_181
     assert _same(ops.dilation(ero, 15), dil) == (0, True) and int((dil["data"] != 0).sum()) == 713_838
     assert dil["dim"] == (153, 133, 70) and dil["pos"] == (1400, 108, 114)
     chain = ops.mask_vol(ops.on_grid(dil, k0["dim"], k0["pos"]) != 0, k0["dim"], k0["pos"])
-    assert _ipl_only(chain, k0) == P20_RESIDUAL                          # /open minus IPL's own chained primitives
-    assert _same(k0, _p20("SREG_OPEN15")) == (0, True)
+    assert _ipl_only(chain, k0) == T20_RESIDUAL                          # /open minus IPL's own chained primitives
+    assert _same(k0, _run20("SREG_OPEN15")) == (0, True)

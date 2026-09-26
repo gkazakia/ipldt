@@ -11,9 +11,9 @@ The 'conventions' section pins choices the cohort cannot discriminate (connectiv
 component nested in another component's hole): they are the package's convention, labelled as such, so that
 a change is deliberate -- not IPL-verified behaviour.  The tiny-component rule (a chain the smoothing leaves
 at 3 vertices is a collapsing chain and is not stored: MIN_VERTICES = 4, 2026-09-14) IS IPL-verified: PFJ-6f5538_R
-P17 29_trabfinal z332 (8-px hexagon, IPL stores no contour) and the frozen-at-3 chains of
+T17 29_trabfinal z332 (8-px hexagon, IPL stores no contour) and the frozen-at-3 chains of
 X3931708_CORT_MASK_version2 / the 8-element contours of X2420448_CORT_MASK.GOBJ (version 1).  The MIN_VERTICES class is
-pinned by the probe-19 tiny-hole phantom (2026-09-14; a test on the probe-19 exports, which are not
+pinned by the test-run-19 tiny-hole phantom (2026-09-14; a test on the test-run-19 exports, which are not
 distributed, so it skips without them): IPL stores the raw un-activated 6-vertex inner chain of a vertical 1x2
 hole and keeps the hole (4..6 confirmed, 7..8 refuted; 4 vs 5 vs 6 is not observable), and the 17 other tiny
 holes / components render and chain exactly as the rule says.
@@ -34,7 +34,7 @@ from ipldt.contour.render import phase1, outer_components, raster_first, polygon
 from ipldt.contour.smooth import smooth_chain, sweep, STAGE_A_RULES, ALL_RULES, MAX_SWEEPS
 
 Y0, Y1, X0, X1 = 10, 30, 8, 32          # the block occupies rows Y0..Y1-1, columns X0..X1-1
-PROBE15 = os.environ.get("IPLDT_PROBE15", lab_path("Python/scripts/IPL/probes/p15_gobj_render/aims_and_logs"))
+RUN15 = os.environ.get("IPLDT_RUN15", lab_path("ipl_test_runs/run15/aims_and_logs"))
 
 
 def block(shape=(40, 40)):
@@ -621,12 +621,12 @@ def test_empty_and_tiny_slices():
 
 
 def test_frozen_three_vertex_chain_is_not_stored():
-    """PFJ-6f5538_R P17 29_trabfinal z332 (2026-09-14): an 8-pixel hexagon (rows ..##.. / .####. / ..##..) on the mask's
+    """PFJ-6f5538_R T17 29_trabfinal z332 (2026-09-14): an 8-pixel hexagon (rows ..##.. / .####. / ..##..) on the mask's
     last slice.  Phase 1 drops nothing, the CCW Moore trace has 6 vertices, stage A leaves 3 -- two vertical
     excursions moved, two corners and one 135-degree turn deleted, the start among them -- and the sweep's
     guard (n < 4) freezes the chain there.  IPL stored NO contour for that slice (its /gobj_to_aim grid ends one
     slice short of the mask), so the frozen triangle is not a stored chain: MIN_VERTICES = 4, nothing rendered.
-    MIN_VERTICES = 3 rendered the 3-pixel triangle (the stage-31 residual of the probe-17 verification, 3 -> 0)."""
+    MIN_VERTICES = 3 rendered the 3-pixel triangle (the stage-31 residual of the test-run-17 verification, 3 -> 0)."""
     assert MIN_VERTICES == 4
     sl = np.zeros((8, 10), bool)
     for y, x in [(2, 3), (2, 4), (3, 2), (3, 3), (3, 4), (3, 5), (4, 3), (4, 4)]:      # local (x - 1123, y - 34)
@@ -679,26 +679,26 @@ def test_sweep_has_no_fixed_point_below_8_vertices():
     assert counts == {3: (24, 0), 4: (96, 0), 5: (360, 0), 6: (1512, 0), 7: (6664, 0), 8: (31056, 16)}
 
 
-P17_ROOT = os.environ.get("IPLDT_PROBE17_ROOT", lab_path("Python/scripts/IPL/probes/p17_step1_radius/aims_and_logs"))
+T17_ROOT = os.environ.get("IPLDT_RUN17_ROOT", lab_path("ipl_test_runs/run17/aims_and_logs"))
 
 
-def _p17(base, tag):
+def _run17(base, tag):
     from conftest import vms_versions
-    fs = vms_versions(P17_ROOT, f"{base}_P17_{tag}.AIM")
+    fs = vms_versions(T17_ROOT, f"{base}_T17_{tag}.AIM")
     return fs[-1] if fs else None
 
 
 @pytest.mark.slow
-def test_pfj_6f5538_probe17_trabecular_rendering_matches_ipl_export():
-    """The tiny-component oracle on the real volume: render_volume(IPL's X5492058_P17_29_TRABFINAL) vs IPL's
-    /gobj_to_aim of the new trabecular gobj (X5492058_P17_31_TRABGOBJ), by global position on the union grid:
+def test_pfj_6f5538_run17_trabecular_rendering_matches_ipl_export():
+    """The tiny-component oracle on the real volume: render_volume(IPL's X5492058_T17_29_TRABFINAL) vs IPL's
+    /gobj_to_aim of the new trabecular gobj (X5492058_T17_31_TRABGOBJ), by global position on the union grid:
     0 mismatching voxels, |IPL| = |ours| = 1,893,500.  The mask has 165 non-empty slices (global z 168..332), IPL's
     rendering 164 (its grid ends at z 331): the 8-px hexagon of z 332 gets no contour.  MIN_VERTICES = 3 gave 3
     ours-only voxels at global (1127, 37, 332), (1128, 37, 332), (1128, 38, 332)."""
     from ipldt.io import read_aim, align_to
-    f29, f31 = _p17("X5492058", "29_trabfinal"), _p17("X5492058", "31_trabgobj")
+    f29, f31 = _run17("X5492058", "29_trabfinal"), _run17("X5492058", "31_trabgobj")
     if not (f29 and f31):
-        pytest.skip("probe-17 exports of PFJ-6f5538_R not available")
+        pytest.skip("test-run-17 exports of PFJ-6f5538_R not available")
     m = read_aim(f29)
     M, dim, pos = m["data"] > 0, m["dim"], m["pos"]
     z_last = pos[2] + int(np.nonzero(M.any(axis=(1, 2)))[0].max())
@@ -758,25 +758,25 @@ def test_wrong_rank_and_wrong_chain_inputs_are_refused():
 
 # ------------------------------------------------------------------------------------ real data (slow)
 def _find(pattern):
-    if not os.path.isdir(PROBE15):
+    if not os.path.isdir(RUN15):
         return []
     rx = re.compile("^" + re.escape(pattern) + "(;\\d+)?$", re.I)
-    fs = sorted((f for f in os.listdir(PROBE15) if rx.match(f)), key=lambda f: int(f.split(";")[1]) if ";" in f else 0)
-    return [os.path.join(PROBE15, f) for f in fs]
+    fs = sorted((f for f in os.listdir(RUN15) if rx.match(f)), key=lambda f: int(f.split(";")[1]) if ";" in f else 0)
+    return [os.path.join(RUN15, f) for f in fs]
 
 
 @pytest.mark.slow
 def test_pfj_0be66a_cortical_rendering_matches_ipl_export(data_root):
-    """render_volume(X2420448_CORT_MASK) == IPL's /gobj_to_aim export of the cortical gobj (probe 15),
+    """render_volume(X2420448_CORT_MASK) == IPL's /gobj_to_aim export of the cortical gobj (test run 15),
     compared by global position on the union of the two grids, and every chain of the stored
     CORT_MASK.GOBJ reproduced with its start vertex, in the stored order and with no extra chain
     (per-slice list equality on all 168 slices, 336 chains)."""
     from ipldt.io import read_aim, align_to
     mask_f = os.path.join(data_root, "PFJ-0be66a_R", "X2420448_CORT_MASK_decompressed.AIM")
-    g2a = _find("X2420448_P15_CORT_G2A.AIM")
+    g2a = _find("X2420448_T15_CORT_G2A.AIM")
     gobj = _find("X2420448_CORT_MASK.GOBJ")
     if not (os.path.exists(mask_f) and g2a and gobj):
-        pytest.skip("PFJ-0be66a_R cortical mask or probe-15 exports not available")
+        pytest.skip("PFJ-0be66a_R cortical mask or test-run-15 exports not available")
     m = read_aim(mask_f)
     M, dim, pos = m["data"] > 0, m["dim"], m["pos"]
     G = render_volume(M)
@@ -804,20 +804,20 @@ def test_pfj_0be66a_cortical_rendering_matches_ipl_export(data_root):
     assert n == 336 and slices_ok == 168
 
 
-# ------------------------------------------------------------------------------- probe 19, the tiny-hole phantom (fast)
-P19_MIRROR = os.environ.get("IPLDT_PROBE19_MIRROR",
-                            lab_path("ipl_probes/p19_open_halves"))
-P19_CHAIN_LENGTHS = {                       # stored contour lengths per test slice (outer first, then inner)
+# ------------------------------------------------------------------------------- test run 19, the tiny-hole phantom (fast)
+T19_MIRROR = os.environ.get("IPLDT_RUN19_MIRROR",
+                            lab_path("ipl_test_runs/run19_mirror"))
+T19_CHAIN_LENGTHS = {                       # stored contour lengths per test slice (outer first, then inner)
     "h_v12": [72, 6], "h_h12": [72], "h_11": [72], "h_22": [72, 8], "h_diag": [72], "h_v13": [72, 8], "h_v14": [72, 10],
     "c_hex8": [], "c_line3h": [], "c_line3v": [], "c_2x2": [], "c_3x3": [], "c_4x4": [8], "c_5x5": [12],
     "c_rib2x12": [], "c_rib3x12": [], "c_rib4x12": [24], "c_disc12": [8]}
 
 
 def _phantom19():
-    """The probe-19 char phantom rebuilt from its manifest (the design of make_phantoms19.py: one test per 3-slice
+    """The test-run-19 char phantom rebuilt from its manifest (the design of the test-run-19 phantom generator, not distributed: one test per 3-slice
     z range on PFJ-0be66a_R's TRAB_MASK grid, 20x20 blocks with one tiny hole each, free-standing tiny components):
     (bool (z, y, x) volume, manifest)."""
-    man = json.load(open(os.path.join(P19_MIRROR, "phantom19_manifest.json")))
+    man = json.load(open(os.path.join(T19_MIRROR, "phantom19_manifest.json")))
     a = np.zeros(tuple(man["dim"])[::-1], bool)
     for t in man["tests"].values():
         z0, z1 = t["z"]
@@ -832,15 +832,15 @@ def _phantom19():
     return a, man
 
 
-@pytest.mark.skipif(not os.path.exists(os.path.join(P19_MIRROR, "phantom19_manifest.json")),
-                    reason="the probe-19 exports are not public (set IPLDT_PROBE19_MIRROR or IPLDT_LAB_ROOT)")
-def test_probe19_tiny_hole_phantom_pins_min_vertices_class_4_to_6():
-    """Probe 19 block B (scanner run 2026-09-14; the exports are not distributed): the
+@pytest.mark.skipif(not os.path.exists(os.path.join(T19_MIRROR, "phantom19_manifest.json")),
+                    reason="the test-run-19 exports are not public (set IPLDT_RUN19_MIRROR or IPLDT_LAB_ROOT)")
+def test_run19_tiny_hole_phantom_pins_min_vertices_class_4_to_6():
+    """Test run 19 block B (scanner run 2026-09-14; the exports are not distributed): the
     phantom uploaded to IPL survives the read / write round trip (PHRT, 8,910 voxels); IPL's /togobj_from_aim
     -curvature_smooth 1 + /gobj_to_aim rendering (TINY, 8,544 voxels on the contour bounding box 217x59x88 @
     893,192,172) equals render_volume under MIN_VERTICES = 4 voxel for voxel, and would differ under 8 by exactly the
     6 hole voxels of h_v12 (a vertical 1x2 hole on 3 slices, global (905, 204..205, 172..174)); every stored chain of
-    P19TINY.GOBJ (45 chains on 33 slices) equals slice_chains under 4 -- count, order, start vertex and vertices --
+    T19TINY.GOBJ (45 chains on 33 slices) equals slice_chains under 4 -- count, order, start vertex and vertices --
     while 8 would drop the 6-vertex inner chain of h_v12 on its 3 slices and nothing else.  So the raw un-activated
     6-vertex inner chain IS stored: MIN_VERTICES in 4..6 (the package's 4), 7..8 refuted.  The controls: the 2x2 /
     1x3 / 1x4 holes are stored raw with 8 / 8 / 10 elements, the 1x1 / horizontal 1x2 / diagonal holes are filled,
@@ -851,10 +851,10 @@ def test_probe19_tiny_hole_phantom_pins_min_vertices_class_4_to_6():
     a, man = _phantom19()
     dim, pos = tuple(man["dim"]), tuple(man["pos"])
     assert dim == (743, 348, 168) and pos == (795, 94, 168) and int(a.sum()) == 8_910
-    phrt = read_aim(os.path.join(P19_MIRROR, "oracle", "X2420448_P19_PHRT.AIM"))
+    phrt = read_aim(os.path.join(T19_MIRROR, "oracle", "X2420448_T19_PHRT.AIM"))
     assert tuple(phrt["dim"]) == dim and tuple(phrt["pos"]) == pos
     assert np.array_equal(phrt["data"] != 0, a)
-    tiny = read_aim(os.path.join(P19_MIRROR, "oracle", "X2420448_P19_TINY.AIM"))
+    tiny = read_aim(os.path.join(T19_MIRROR, "oracle", "X2420448_T19_TINY.AIM"))
     assert tuple(tiny["dim"]) == (217, 59, 88) and tuple(tiny["pos"]) == (893, 192, 172)
     T = align_to(tiny, dim, pos) > 0
     assert int(T.sum()) == 8_544
@@ -875,7 +875,7 @@ def test_probe19_tiny_hole_phantom_pins_min_vertices_class_4_to_6():
     assert sorted(set(map(tuple, np.argwhere(d)[:, ::-1] + pos))) == [(905, 204, 172), (905, 204, 173), (905, 204, 174),
                                                                        (905, 205, 172), (905, 205, 173), (905, 205, 174)]
     # the stored chains
-    _, slices = read_gobj(os.path.join(P19_MIRROR, "oracle", "P19TINY.GOBJ"))
+    _, slices = read_gobj(os.path.join(T19_MIRROR, "oracle", "T19TINY.GOBJ"))
     ipl = {}
     for s in slices:
         if s["contours"]:
@@ -886,7 +886,7 @@ def test_probe19_tiny_hole_phantom_pins_min_vertices_class_4_to_6():
     for name, t in man["tests"].items():
         for z in range(t["z"][0], t["z"][1] + 1):
             stored = ipl.get(z, [])
-            assert [len(c) for c in stored] == P19_CHAIN_LENGTHS[name], (name, z)
+            assert [len(c) for c in stored] == T19_CHAIN_LENGTHS[name], (name, z)
             assert [c["vertices"] for c in slice_chains(a[z])] == stored, (name, z)          # MIN_VERTICES 4
             if name == "h_v12":
                 assert ours8[z] == stored[:1] and len(stored[1]) == 6, z                     # 8 drops the 6-chain

@@ -48,9 +48,10 @@ Three layers, all adapters (ipldt.core / field / gpu / contour are untouched):
   suggest.  Its TRAB_TH was produced by an evaluation outside these three scripts: its processing log
   shows D3P_SetAllNonZeroOW to 126, D3P_Concatenate in overlay and D3P_BoundingBoxCut before the distance
   transform, against the gobj p5mask.gobj rather than the trabecular contour.
-                            5c the cortical pore cascade (ipldt.porosity.pore_cascade) on the rendered cortical
-                               contour and CORT_SEG, on the input AIM's grid -> the PORE map and Ct.Po
-                               (compute_porosity, on by default)
+                            5c the cortical pore cascade (step5c_porosity: ipldt.porosity.pore_cascade_ipl_grid)
+                               on the rendered cortical contour and CORT_SEG, on IPL's render grid of the
+                               contour (see Grids below), pasted back onto the input AIM's grid -> the PORE
+                               map and Ct.Po (compute_porosity, on by default)
                             6  JSON + CSV report (IPL's statistics + Tb.N + BV/TV + Ct.Po [+ BMD]) and the
                                masks, SEG, PORE map and dt maps as NIfTI (default) or AIM (input AIM header via
                                ipldt.io.write_aim)
@@ -61,6 +62,13 @@ Grids: IPL runs the trabecular dt_* on SEG.AIM, which is /bounding_box_cut -bord
 segmentation, and Ct.Th on CORT_MASK.AIM (the bounding box of the cortical raster).  The vector distance
 transform treats 'outside the image' as object, so the box matters at its faces; this module reproduces
 those boxes and pastes the results back onto the input grid by global position (ipldt.io.align_to).
+The cortical pore cascade (STEP 5c, step5c_porosity) runs on the grid IPL's /gobj_to_aim renders the
+cortical contour on, ipldt.porosity.render_grid: per in-plane axis from 2 voxels below the contour's lowest
+coordinate (clipped at 0) to 2 voxels above its highest, one more where a slice of even extent reaches that
+highest coordinate, over the contour's slices, zero-padded where it reaches past the AIM; CORT_SEG sits on
+the tight box of its voxels.  The cascade's slice-wise 0..5 % passes count each slice's non-bone voxels in
+that grid, so the grid changes the pore map; with IPL's own contour and CORT_SEG held on the greyscale-AIM
+grid, step5c_porosity reproduces IPL's PORE.AIM on all 137 validation scans.
 """
 from __future__ import annotations
 
@@ -121,7 +129,7 @@ LH_EL_SIZE_FALLBACK_MM = (139852.0 / 2304.0 / 1000.0, 139852.0 / 2304.0 / 1000.0
 # (radius), slicewise 50..100 %.  The former module constants SEG_GAUSS_SIGMA, CORT_LOWER_BMD, CORT_UPPER_BMD,
 # PEEL_ITER, TRAB_*_R, CORNER_* and the chamfer-3-4-5 SimpleITK helpers (threshold radius + 1 instead of IPL's
 # 3N + 2, background-padded erosion, SmoothingRecursiveGaussian instead of IPL's float32 kernel) were refuted
-# by the P16 stage exports and removed on 2026-09-13.
+# by the T16 stage exports and removed on 2026-09-13.
 SITE_PARAMS = {"tibia": TIBIA, "radius": RADIUS}
 LP_CUT_OFF_FREQ = 0.3               # IPL fft_laplace_hamming
 LAPLACE_EPS = 0.45
@@ -317,7 +325,8 @@ def ipl_morphometry(seg, trab_gobj, cort_mask=None, cort_gobj=None, voxel_size_m
     seg        bool (z, y, x): the whole-bone SEG (cortical + trabecular bone) on IPL's SEG grid
     trab_gobj  bool, RENDERED trabecular contour on the same grid
     cort_mask  bool, the cortical compartment raster (its own grid); cort_gobj its RENDERED contour
-    trab_seg   optional bool on the SEG grid: IPL's TRAB_SEG, for the OLD Tb.Th definition ('TRAB_TH_old')
+    trab_seg   optional bool on the SEG grid: IPL's TRAB_SEG, for the evaluation scripts' Tb.Th definition ('TRAB_TH_old',
+               the name of IPL's file of that map)
     which      subset of TRAB_TH, TRAB_SP, TRAB_1N, CORT_TH, TRAB_TH_old
     Returns dict(results={name: DTResult}, metrics={IPL statistics + Tb.N + BV/TV}, timing_s)."""
     log = _log_or_none(log)
@@ -364,7 +373,7 @@ def ipl_morphometry(seg, trab_gobj, cort_mask=None, cort_gobj=None, voxel_size_m
             results["TRAB_TH_old"] = res
             metrics.update(_ipl_stats(res, "Tb_Th_old", "Th"))
             timing["TRAB_TH_old"] = time.time() - t
-            log(f"  Tb.Th old (dt_thickness TRAB_SEG | trab gobj): {metrics['Tb_Th_old_mm']:.6f} mm [{timing['TRAB_TH_old']:.1f}s]")
+            log(f"  Tb.Th, the scripts' definition (dt_thickness TRAB_SEG | trab gobj): {metrics['Tb_Th_old_mm']:.6f} mm [{timing['TRAB_TH_old']:.1f}s]")
     if "CORT_TH" in which and cort_mask is not None:
         t = time.time()
         cm = np.ascontiguousarray(cort_mask, dtype=bool)
@@ -517,16 +526,16 @@ def step3_trab_cort_seg(native, prx_mask, params=TIBIA, calib=None, log=None):
     return cort_out, trab_out, info
 
 
-LH_PAD_OFFSET = "ceil"              # IPL's D3P_FFT_AdjustDimensionsMirror data offset: derived by probe 21 (see lh_pad_plan)
+LH_PAD_OFFSET = "ceil"              # IPL's D3P_FFT_AdjustDimensionsMirror data offset: derived by test run 21 (see lh_pad_plan)
 LH_PAD_OFFSETS = ("ceil", "floor")
 LH_DTYPE = "float32"                # the FFT / filter arithmetic of lh_filter_core; "float64" is an opt-in (see there)
 LH_DTYPES = ("float32", "float64")
 
 
 def _npow2(n):
-    """IPL's per-axis redimension for /fft_laplace_hamming: the next power of two >= n.  Probe 15's log names the
+    """IPL's per-axis redimension for /fft_laplace_hamming: the next power of two >= n.  Test run 15's log names the
     routine D3P_FFT_AdjustDimensionsMirror and prints the box on its `dim:` line (748 x 353 x 170 -> 1024 x 512 x
-    256); probe 21's log prints 64 for every 62 / 63 / 33 / 34 input and omits the routine altogether when n is
+    256); test run 21's log prints 64 for every 62 / 63 / 33 / 34 input and omits the routine altogether when n is
     already a power of two, so such an input is not padded at all."""
     return 1 if n <= 1 else 2 ** int(np.ceil(np.log2(n)))
 
@@ -535,7 +544,7 @@ def lh_pad_plan(shape, pad_offset=LH_PAD_OFFSET):
     """Where D3P_FFT_AdjustDimensionsMirror puts an array of `shape` (array order, i.e. (z, y, x)) inside its
     power-of-two box, and the numpy pad widths / crop slices that realise it.  Per axis, with d = nt - n:
       'ceil'   lo = d - d // 2  = ceil(d / 2): when d is odd the EXTRA padding voxel goes BEFORE the data.
-               THIS IS IPL'S RULE -- probe 21 (prediction timestamped 2026-09-16T05:01:34Z, scanner run 2026-09-17)
+               THIS IS IPL'S RULE -- test run 21 (prediction timestamped 2026-09-16T05:01:34Z, scanner run 2026-09-17)
                fed 31 impulse / plane / slab / real-data phantoms of 62, 63, 64, 33 and 34 voxels straight into
                /fft_laplace_hamming and compared IPL's FLOAT, SHORT and thresholded exports with every candidate of
                4 offsets x 5 mirror modes (+ per-axis floor / ceil mixes): 'ceil' + numpy 'reflect' (the
@@ -546,7 +555,7 @@ def lh_pad_plan(shape, pad_offset=LH_PAD_OFFSET):
                voxels set; the corner phantom a63c01 agrees.  A 64^3 input is not padded, so the two rules coincide
                there (and on any power-of-two axis).
       'floor'  lo = d // 2: the rule ipldt shipped until 2026-09-17, kept selectable so that every number published
-               under it stays reproducible.  On the 2022 / 2024 OS_LH and patella
+               under it stays reproducible.  On the 2022 / 2024 radius / tibia and patella
                volumes it is one voxel off IPL on every odd-padded axis.
     The fill is numpy 'reflect' in both cases.  Returns (pad_widths, inner) with pad_widths a list of (lo, hi) per
     axis and inner the tuple of slices that crop the filtered box back to the input grid."""
@@ -584,7 +593,7 @@ def _lh_transfer(shape, el, ft, lp_cut_off_freq=LP_CUT_OFF_FREQ):
     K2 = K2 + (kz * kz)[:, None, None]                                  # ... + KZ * KZ, the same order of additions
     Kmag = np.sqrt(K2)
     k_lp = ft(lp_cut_off_freq) / ez                   # IPL log: lp_phys_freq 4.942469 = 0.3 / el_z
-    #  per measurement: IPL's SEG proclog prints it as fft.lp_cut_off_freq.  116 of the 117 OS_LH measurements
+    #  per measurement: IPL's SEG proclog prints it as fft.lp_cut_off_freq.  116 of the 117 radius / tibia measurements
     #  use 0.30000; Diaphyseal/CKD/991161's automatic run used 0.20000 (validate_dataset reads it and passes it).
     half_amp = ft(HAMMING_AMP) * ft(0.5)
     win = np.where(Kmag < k_lp, (ft(1.0) - half_amp) + half_amp * np.cos(np.pi * Kmag / k_lp), ft(0.0)).astype(ft)
@@ -598,8 +607,8 @@ def lh_filter_core(volume_float32, el_size_mm, pad_offset=LH_PAD_OFFSET, dtype=L
                    lp_cut_off_freq=LP_CUT_OFF_FREQ):
     """IPL /fft_laplace_hamming (eps 0.45, cut-off 0.3, amp 1 = Hann) followed by /norm_max -max 200000 -type_out
     short on `volume_float32` EXACTLY AS GIVEN -- no border duplicate, no crop: what IPL computes when an AIM is read
-    and handed straight to the filter (the probe-21 phantoms, and the 2024 diaphyseal script whose
-    /fill_offset_duplicate errored).  laplace_hamming_threshold wraps this with Script 32's 1-voxel duplicated border.
+    and handed straight to the filter (the phantoms of test run 21, and the 2024 diaphyseal evaluation, in which
+    no border fill precedes the filter).  laplace_hamming_threshold wraps this with Script 32's 1-voxel duplicated border.
     el_size_mm: the (x, y, z) element sizes of the AIM header (IPL's filter is anisotropic: its log prints the
     per-axis physical lengths) with the radial Hann cut-off at 0.3 / el_z (log: lp_phys_freq 4.942630 = 0.3 /
     0.06069643).  pad_offset: see lh_pad_plan.
@@ -607,7 +616,7 @@ def lh_filter_core(volume_float32, el_size_mm, pad_offset=LH_PAD_OFFSET, dtype=L
     'float32' (LH_DTYPE, the shipped engine: nothing published changes) or 'float64' (an opt-in: the same
     operations in double precision, the result rounded to float32 BEFORE IPL's float -> short conversion below,
     which stays exactly as it is).  The two differ only in rounding; the float64 study of 2026-09-17
-    (internal runs, not distributed) measured it against IPL's own exports: on IPL's full-volume probe-15 export float64
+    (internal runs, not distributed) measured it against IPL's own exports: on IPL's full-volume test-run-15 export float64
     sits at RMS 0.0160 vs 0.0243 float units, 89,114 vs 134,765 +/- 1 short flips and 2 vs 3 SEG flips of 44.9 M;
     the configuration-B SEG residual under 'ceil' drops from 39 to 27 voxels on the 53 radius / tibia
     measurements of that study and from 50 to 37 on the 21 patellae (pooled 89 -> 64; 7 measurements worse, none by more than 2 voxels); the
@@ -616,11 +625,11 @@ def lh_filter_core(volume_float32, el_size_mm, pad_offset=LH_PAD_OFFSET, dtype=L
     (decided 2026-09-17).
     Returns (lh, short): the float32 filter output and IPL's short on the INPUT grid.  The short is
     trunc(float32(lh) * float32(32767 / 200000)) after clipping, which reproduces IPL's _NM exports voxel for voxel
-    on the six probe-21 pairs tested (C64IMP, C64F6, C64MID, R64, X63CMB, Y63CMB: 0 mismatches; every other
+    on the six test-run-21 pairs tested (C64IMP, C64F6, C64MID, R64, X63CMB, Y63CMB: 0 mismatches; every other
     ordering or rounding fails).  NOISE FLOOR: against IPL's own FLOAT exports this arithmetic agrees to max |d|
     0.016 - 0.094 float units on peaks of 8.7e4 - 3.2e5 (r64: RMS 0.017): the difference between two FFT
     implementations.  ATTRIBUTION (the float64 verifier, 2026-09-17): the engine's scipy.fft float32 fftn error is
-    the largest of the float32 variants measured -- on IPL's probe-15 full volume the engine sits at RMS 0.0243
+    the largest of the float32 variants measured -- on IPL's test-run-15 full volume the engine sits at RMS 0.0243
     float units against IPL's float, a numpy float32 fftn at 0.0199, a scipy per-axis float32 transform at 0.0185,
     and float64 at 0.0160, where float64 is implementation-independent to 6e-8.  Float64 is therefore the point at
     which everything left (RMS 0.0160 vs IPL's float; 64 SEG voxels over the 74 measurements of that study, both
@@ -661,7 +670,7 @@ def laplace_hamming_threshold(native_int16, voxel_size_mm=None, pad_offset=LH_PA
     + threshold 475/1000 on the NATIVE int16 volume, with IPL's border duplicate and power-of-2 mirror
     padding.  Returns the raw thresholded bool volume on the input grid (unmasked, uncleaned).
     = Script 32's /bounding_box_cut -border 1 1 1 + /offset_add + /fill_offset_duplicate (np.pad 'edge'), then
-    lh_filter_core (the padding, FFT, filter, scale and truncation -- see there for the probe-21 derivation of the
+    lh_filter_core (the padding, FFT, filter, scale and truncation -- see there for the test-run-21 derivation of the
     padding and for the FFT noise floor), then /threshold -lower_in_perm 475 (short >= 15564) and the crop of the
     border.  pad_offset 'ceil' (IPL's rule, the default since 2026-09-17) or 'floor' (the rule shipped before, see
     lh_pad_plan; with it this function is byte-identical to the pre-refactor code).  dtype: the FFT / filter
@@ -721,7 +730,7 @@ def step4_render_and_segment(native, prx_mask, cort_out, trab_out, lh_voxel_size
     else:
         lh_el, src = tuple(float(e) for e in lh_voxel_size_mm), "override, per axis"
     log(f"  Laplace-Hamming element sizes (x, y, z) = {lh_el[0]:.7f} / {lh_el[1]:.7f} / {lh_el[2]:.7f} mm ({src}); "
-        f"power-of-two padding offset '{LH_PAD_OFFSET}' (probe 21)")
+        f"power-of-two padding offset '{LH_PAD_OFFSET}' (IPL's rule)")
     lh = laplace_hamming_threshold(native["data"], lh_el, pad_offset=LH_PAD_OFFSET)
     cort_seg, trab_seg = ipl_seg_assembly(lh, sitk_to_bool(prx_mask), G["cort"], G["trab"])
     seg = np.zeros(lh.shape, np.uint8)
@@ -745,6 +754,46 @@ def step5_bmd(img_hu, G_trab, G_cort, calib, log=None):
         out[f"{name}_BMD_sd_mgHA_cm3"] = float(s)
         log(f"  {name}.BMD = {m:.2f} +- {s:.2f} mgHA/cm3 (ORMIR bmd_masked, rendered {name} contour)")
     return out
+
+
+def _grid_dict(g):
+    return {"dim_xyz": [int(v) for v in g[0]], "pos_xyz": [int(v) for v in g[1]]}
+
+
+def step5c_porosity(G_cort, cort_seg, dim, pos, log=None):
+    """(5c) Script 32's cortical pore cascade and Ct.Po on IPL's grids.
+
+    G_cort (the rendered cortical contour) and cort_seg are bool (z, y, x) arrays on the AIM grid (dim, pos).
+    The cascade does not run on that grid: ipldt.porosity.pore_cascade_ipl_grid moves the contour onto the
+    grid IPL's /gobj_to_aim renders it on (ipldt.porosity.render_grid: the contour's slice-header box grown by
+    2 voxels low and 2 or 3 high per in-plane axis, clipped at 0, zero-padded where it reaches past the AIM)
+    and CORT_SEG onto the tight box of its set voxels, runs there, and the pore map is pasted back onto the AIM
+    grid by global position.  Ct.Po = ipldt.porosity.ct_po = |PORE & contour| / |contour|, unchanged.
+    Returns (PORE bool on the AIM grid, metrics {Ct_Po, Ct_Po_pore_voxels, Ct_Po_compartment_voxels},
+    grids {render, cort_seg, cascade} as dim_xyz / pos_xyz dicts)."""
+    from . import porosity as _por
+    log = _log_or_none(log)
+    log("STEP 5c - cortical pore cascade (Burghardt) + Ct.Po ...")
+    cr = volume(np.asarray(G_cort, bool).astype(np.uint8) * 127, dim, pos)
+    cs = volume(np.asarray(cort_seg, bool).astype(np.uint8) * 127, dim, pos)
+    res = _por.pore_cascade_ipl_grid(cr, cs)
+    pore = res["pore"]
+    po = _por.ct_po(pore, res["cort_render"])
+    on_aim = align_to(pore, dim, pos) != 0
+    grids = {"render": _grid_dict(res["render_grid"]), "cort_seg": _grid_dict(res["seg_grid"]),
+             "cascade": _grid_dict(res["grid"])}
+    log(f"  cascade grid dim {tuple(res['grid'][0])} pos {tuple(res['grid'][1])} = the cortical contour's "
+        f"/gobj_to_aim grid {tuple(res['render_grid'][0])} @ {tuple(res['render_grid'][1])} united with the CORT_SEG "
+        f"box (AIM grid dim {tuple(int(d) for d in dim)} pos {tuple(int(p) for p in pos)})")
+    metrics = {"Ct_Po": float(po["ct_po"]), "Ct_Po_pore_voxels": int(po["pore_voxels"]),
+               "Ct_Po_compartment_voxels": int(po["mask_voxels"])}
+    log(f"  Ct.Po = {po['ct_po']:.5f}  ({po['pore_voxels']:,d} pore voxels of "
+        f"{po['mask_voxels']:,d} in the cortical compartment)")
+    off = po["pore_voxels"] - int(on_aim.sum())
+    if off:
+        log(f"  note: {off:,d} pore voxels lie in the render grid's margin outside the AIM grid; they count in "
+            "Ct_Po_pore_voxels but cannot be written on the AIM grid")
+    return on_aim, metrics, grids
 
 
 # ============================================================================================ output helpers
@@ -900,22 +949,13 @@ def run_pipeline(aim_path, out_dir, map_format="nifti", backend="auto", voxel_si
             log(f"  BMD skipped: {type(exc).__name__}: {exc}")
         timing["5b_bmd"] = time.time() - t
 
-    poro = {}
+    poro, poro_grids = {}, None
     if compute_porosity:
-        log("STEP 5c - cortical pore cascade (Burghardt) + Ct.Po ...")
         t = time.time()
         try:
-            from . import porosity as _por
-            _cr = volume(s4["G_cort"].astype(np.uint8) * 127, dim, pos)
-            _cs = volume(s4["cort_seg"].astype(np.uint8) * 127, dim, pos)
-            _pore = _por.pore_cascade(_cr, _cs)["pore"]
-            _po = _por.ct_po(_pore, _cr)
-            poro = {"Ct_Po": float(_po["ct_po"]), "Ct_Po_pore_voxels": int(_po["pore_voxels"]),
-                    "Ct_Po_compartment_voxels": int(_po["mask_voxels"])}
-            log(f"  Ct.Po = {_po['ct_po']:.5f}  ({_po['pore_voxels']:,d} pore voxels of "
-                f"{_po['mask_voxels']:,d} in the cortical compartment)")
+            _pore, poro, poro_grids = step5c_porosity(s4["G_cort"], s4["cort_seg"], dim, pos, log)
             if save_masks:
-                save("PORE", (align_to(_pore, dim, pos) != 0).astype(np.uint8) * 127)
+                save("PORE", _pore.astype(np.uint8) * 127)
         except Exception as exc:   # porosity is a courtesy: never fail the morphometry for it
             log(f"  porosity skipped: {type(exc).__name__}: {exc}")
         timing["5c_porosity"] = time.time() - t
@@ -944,7 +984,7 @@ def run_pipeline(aim_path, out_dir, map_format="nifti", backend="auto", voxel_si
                          "LH_threshold_voxels": int(s4["lh"].sum()), "CORT_SEG_voxels": int(s4["cort_seg"].sum()),
                          "TRAB_SEG_voxels": int(s4["trab_seg"].sum()), "SEG_voxels": int((s4["seg"] > 0).sum())},
         "morphometry": m["metrics"],
-        "bmd": bmd, "porosity": poro,
+        "bmd": bmd, "porosity": poro, "porosity_grids": poro_grids,
         "timing_s": {**timing, **{f"dt_{k}": v for k, v in m["timing_s"].items()}},
     }
     write_report(report, os.path.join(out_dir, f"{base}_report.json"), os.path.join(out_dir, f"{base}_report.csv"))
@@ -1081,5 +1121,6 @@ __all__ = ["DTParams", "IPL_SCRIPT32", "SITE_PARAMS", "Logger", "bbox_cut", "vol
            "ipl_trabecular_microarchitecture_sitk", "ipl_cortical_thickness_sitk", "ipl_morphometry",
            "step1_load_aim", "step2_autocontour", "step1_params_for", "step1_calibration", "step3_trab_cort_seg",
            "LH_PAD_OFFSET", "LH_PAD_OFFSETS", "LH_DTYPE", "LH_DTYPES", "lh_pad_plan", "lh_filter_core",
-           "laplace_hamming_threshold", "ipl_seg_assembly", "step4_render_and_segment", "step5_bmd", "cl_nr_extract",
+           "laplace_hamming_threshold", "ipl_seg_assembly", "step4_render_and_segment", "step5_bmd", "step5c_porosity",
+           "cl_nr_extract",
            "write_report", "write_volume", "run_pipeline", "discover_ipl_subject", "run_on_ipl_masks"]

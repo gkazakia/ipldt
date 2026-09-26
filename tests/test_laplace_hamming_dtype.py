@@ -10,7 +10,7 @@ WHAT IS PINNED HERE
     boundaries) and the float by a tiny fraction of the peak;
   * the padding rules (ceil / floor, power-of-two boxes) are the same under both dtypes;
   * validation/validate_dataset.py's harness copy passes dtype through to the engine;
-  * against IPL's own exports (probe 21, skipped when the folder is not mounted): float64 sits at the FFT noise floor
+  * against IPL's own exports (test run 21, skipped when the folder is not mounted): float64 sits at the FFT noise floor
     too (float within 1.0 of IPL's FLOAT export, short within +/- 1, SEG exact on the two sharpest phantoms).
 """
 import os
@@ -24,7 +24,7 @@ from ipldt import ormir
 from ipldt.io import read_aim
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROBE21 = os.environ.get("IPLDT_PROBE21_DIR", lab_path("Python/scripts/IPL/probes/p21_lh_padding"))
+RUN21 = os.environ.get("IPLDT_RUN21_DIR", lab_path("ipl_test_runs/run21"))
 THR = ormir.LH_THRESHOLD
 EL = (0.0607, 0.0607, 0.0607)
 SCALE = np.float32(ormir.INT16_MAX) / np.float32(ormir.NORM_MAX_VALUE)
@@ -94,24 +94,24 @@ def test_harness_copy_passes_dtype_through():
 
 
 @pytest.fixture(scope="module")
-def probe21():
-    up, ex = os.path.join(PROBE21, "upload"), os.path.join(PROBE21, "aims_and_logs")
+def run21():
+    up, ex = os.path.join(RUN21, "upload"), os.path.join(RUN21, "aims_and_logs")
     if not (os.path.isdir(up) and os.path.isdir(ex)):
-        pytest.skip(f"probe-21 folder not mounted: {PROBE21} (set IPLDT_PROBE21_DIR)")
+        pytest.skip(f"test-run-21 folder not mounted: {RUN21} (set IPLDT_RUN21_DIR)")
 
     def load(tag):
-        paths = dict(inp=os.path.join(up, f"x2420448_p21_{tag}.aim"),
-                     **{k: os.path.join(ex, f"X2420448_P21_{tag.upper()}_{k}.AIM") for k in ("LH", "NM", "SG")})
+        paths = dict(inp=os.path.join(up, f"x2420448_t21_{tag}.aim"),
+                     **{k: os.path.join(ex, f"X2420448_T21_{tag.upper()}_{k}.AIM") for k in ("LH", "NM", "SG")})
         missing = [p for p in paths.values() if not os.path.exists(p)]
         if missing:
-            pytest.skip(f"probe-21 files missing: {missing}")
+            pytest.skip(f"test-run-21 files missing: {missing}")
         return {k: read_aim(p) for k, p in paths.items()}
     return load
 
 
 @pytest.mark.parametrize("tag, ipl_sg_voxels", [("x63i61", 0), ("x63i01", 6)])
-def test_probe21_phantom_matches_ipl_under_float64_too(probe21, tag, ipl_sg_voxels):
-    X = probe21(tag)
+def test_run21_phantom_matches_ipl_under_float64_too(run21, tag, ipl_sg_voxels):
+    X = run21(tag)
     vol, el = np.asarray(X["inp"]["data"]), tuple(float(e) for e in X["inp"]["el_size_mm"])
     lh, sh = ormir.lh_filter_core(vol.astype(np.float32), el, "ceil", "float64")
     lh_ipl = np.asarray(X["LH"]["data"], np.float32)

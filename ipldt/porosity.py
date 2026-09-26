@@ -7,7 +7,7 @@ standard evaluation script (Script 32) and from IPL's exported products only (no
 disassembled), and each is a DISCRETE hypothesis accepted only on exact voxel identity with IPL's own
 exported PORE.AIM on scans of different sites, never fitted.  The operators the cascade is built from
 (/set_value, /subtract_aims, /add_aims, /cl_rank_extract, /cl_nr_extract, /cl_slicewise_extractow,
-/gobj_maskaimpeel_ow) are the probe-verified reimplementations in ipldt.ipl_ops; this module adds only the
+/gobj_maskaimpeel_ow) are the reimplementations in ipldt.ipl_ops, each verified against IPL's exports; this module adds only the
 hysteresis and the plumbing, and inherits ipl_ops' volume convention (dict(data=(z, y, x), dim=(x, y, z),
 pos=(x, y, z)), set voxels are non-zero, char arithmetic on the union bounding box).
 
@@ -17,7 +17,7 @@ in) pore_cascade reproduces IPL's exported PORE.AIM with 0 differing voxels on a
 71,277,708 IPL pore voxels, Dice 1 on every scan -- and on the excluded Diaphyseal/CKD/991161 as well
 (validation/porosity_AB_stats.py; manuscript/facts/FACTS_BMD_CTPO.md).  The candidate readings of the
 hysteresis were enumerated on five scans, the ones the refuted-reading table below is measured on
-(Diaphyseal/CKD/2422, 558517 and 341269, Distal/REPRO/2051, Distal/CKD/345857); every other scan was run after the
+(Diaphyseal/CKD/251016, 558517 and 341269, Distal/REPRO/444590, Distal/CKD/345857); every other scan was run after the
 reading had been fixed.
 
 A WARNING ABOUT THE PATELLA COHORT, stated because it is easy to over-read those 21 exact results: on a
@@ -26,8 +26,8 @@ and not small in its slice, the only thing the hysteresis can grow into -- is EM
 measured (PFJ-ab6af9_R: 0 voxels of value 2 against 215,060 of value 3), so pores_F comes out empty and the
 patella confirms the rest of the cascade only.  Measured: the accepted reading and both of its bound
 variants (seed strictly < low, weak strictly < high) all give 0 mismatching voxels on PFJ-ab6af9_R, so no
-patella separates them.  What separates the readings is the diaphyseal scans (2422 has 165,673 value-2
-voxels, 79,261 of them in IPL's PORE) and Distal/REPRO/2051 (the only scan that pins the low bound).
+patella separates them.  What separates the readings is the diaphyseal scans (251016 has 165,673 value-2
+voxels, 79,261 of them in IPL's PORE) and Distal/REPRO/444590 (the only scan that pins the low bound).
 
 The GRID the result is written on is IPL's own on 79 of the 137 scans; on the others the box of IPL's PORE.AIM
 differs slightly from the one built here, and the pore voxels are identical in GLOBAL coordinates all the same
@@ -70,7 +70,7 @@ see ipl_ops.subtract_aims -- over the unselected marrow, and those voxels surviv
 written PORE.AIM.  That prediction was written down before the runs and is what the mismatch counts show.
 
 REFUTED READINGS (mismatching voxels against IPL's PORE.AIM, in the order
-2422 / 2051 / 345857 / 558517 / 341269; a 0 means that scan does not separate that reading, never that it is right):
+251016 / 444590 / 345857 / 558517 / 341269; a 0 means that scan does not separate that reading, never that it is right):
 
     seed v >= high, weak v >= low (mode ignored)      12,316,298 / 8,034,272 / 2,224,802 / 6,046,520 / 3,835,827
     seed v > high,  weak v > low  (strict)            12,316,611 / 8,056,063 / 2,224,803 / 6,046,536 / 3,835,869
@@ -85,7 +85,7 @@ REFUTED READINGS (mismatching voxels against IPL's PORE.AIM, in the order
     BOTH bounds strict (seed v < low, weak v < high)       2,019 /     7,363 /         0 /         0 /       756
     seed v <  low (strict), weak v <= high                     0 /     7,363 /         0 /         0 /         0
     seed v <= low, weak v <  high (strict)                 2,019 /         0 /         0 /         0 /       756
-        -- so low_thresh is inclusive (2051 separates it) and high_thresh is inclusive (2422 and 341269 do)
+        -- so low_thresh is inclusive (444590 separates it) and high_thresh is inclusive (251016 and 341269 do)
     output = the grown set MINUS the seeds                     - /   892,874 /         - /         - /     9,280
     no seeding at all (output = the whole weak set)            - /         0 /         - /         - /    24,693
     grow_axes ignored, full 6-connectivity                83,281 /         0 /         - /         - /    24,693
@@ -110,11 +110,26 @@ fragments that each fall under the 5 % bound and are kept as "pores".
     the raw CORT_MASK raster used directly, without rendering it: 199 voxels on Diaphyseal/CKD/341269
         (7 ours-only, 192 IPL-only), 22 on Distal/CKD/345857, 0 on both patellae
 
-    OS_LH:   <base>_CORT_MASK_CT.AIM is IPL's rendering, on IPL's grid -- use it as it is.
+    radius / tibia: <base>_CORT_MASK_CT.AIM is IPL's rendering, on IPL's grid -- use it as it is.
     patella: no rendering is on disk; render_volume(<base>_CORT_MASK_decompressed.AIM != 0) pasted onto the
         UNION BOX of the CORT_MASK and TRAB_MASK file grids is exact on all 21 patellae (the patella
         TRAB_MASK.AIM is stored on the periosteal box -- its file grid is much larger than the tight box of
         its own set voxels -- which is where that grid comes from; it is not taken from PORE.AIM).
+
+THE GRID, FROM THE CONTOUR ALONE (2026-09-25).  The grid /gobj_to_aim renders the cortical contour on follows
+from the contour itself: the slice headers of the cortical GOBJ store, per slice, the box of that slice's
+chains as a size and a centre rounded up, and /gobj_to_aim renders onto that box grown by 2 voxels (the high
+side by 3 where a slice of even extent reaches the top), clipped at 0 -- render_grid has the rule and its
+evidence.  Applied to IPL's rendered cortical contour it gives IPL's own rendering grid on all 137 validation
+scans that have one on disk, and united with the CORT_SEG grid it gives the grid of IPL's PORE.AIM on 138 of
+138.  The boxes the files above provide differ from that grid by one voxel at one or two faces on 38 of the
+117 radius / tibia scans (the staged <base>_CORT_MASK_CT.AIM) and on all 21 patellae (the union box), and reproduce
+PORE.AIM there all the same.  pore_cascade_ipl_grid runs the cascade on that grid from inputs held on any
+grid, which is how the workflows call it (ipldt.ormir.step5c_porosity): with IPL's own contour and CORT_SEG
+pasted onto each scan's greyscale-AIM grid it reproduces IPL's PORE.AIM on 137 of 137 scans, where the same
+inputs run on the greyscale-AIM grid itself differ on 4 (1,595,061 voxels, all extra pore voxels: the edge
+fragments above on the distal scans Distal/REPRO/444590, 612066 and 346361, whose bone reaches the AIM's faces,
+and the slice-wise denominator on the patella PFJ-6f5538_R).
 
 Ct.Po.  Script 32 does not compute it; the result sheet does, and the sheet generator runs on the
 scanner, so the definition was read off the printed values.  The reading that
@@ -131,7 +146,7 @@ than the scan (6), so those are not compared (manuscript/facts/FACTS_BMD_CTPO.md
 alternatives, and the sheets that refute them:
 
     Ct.Po.V / (Ct.Po.V + Ct.BV), Ct.BV = |CORT_SEG|        reproduces none of the 30
-        PFJ-ab6af9_R printed 0.096: 0.0961 against 0.1100.  2422 printed 0.080: 0.0804 against 0.0822.
+        PFJ-ab6af9_R printed 0.096: 0.0961 against 0.1100.  251016 printed 0.080: 0.0804 against 0.0822.
     the same ratio over the RAW CORT_MASK.AIM instead of its rendering
         on the patellae the rendering and the raw raster differ enough to move the third decimal:
         PFJ-351dc7_R printed 0.155, 0.1547 rendered against 0.1564 raw, and PFJ-6f5538_R printed 0.228, 0.2278
@@ -199,7 +214,7 @@ def hysteresis_threshold(v, low_thresh, high_thresh, unit=5, mode=0, grow_axes=(
     Verified on Script 32's own call (low 1, high 3, unit 5, mode 0, grow_axes 0 0 1, value_in_range 127)
     as part of pore_cascade: 0 differing voxels against IPL's exported PORE.AIM on every validation scan
     (see the module docstring).  Both bounds are pinned: the strict seed bound leaves 7,363 ours-only
-    voxels on Distal/REPRO/2051, the strict weak bound 2,019 IPL-only voxels on Diaphyseal/CKD/2422 and 756
+    voxels on Distal/REPRO/444590, the strict weak bound 2,019 IPL-only voxels on Diaphyseal/CKD/251016 and 756
     on Diaphyseal/CKD/341269.  The competing polarities of `mode`, the band reading of the two thresholds,
     "output the grown set minus the seeds", "no seeding at all", and reading grow_axes as full
     6-connectivity or as the axes NOT to grow along are all refuted, by 756 to 12,316,611 voxels.
@@ -328,6 +343,141 @@ def pore_cascade(cort_render, cort_seg, slice_fraction=SLICE_FRACTION, min_pore_
                    pores_M=pores_M, cortring_C3=cortring_C3, cortseg_DE=cortseg_DE,
                    cortseg_CDE=cortseg_CDE, pores_F0=pores_F0, pores_F=pores_F, pores_DF=pores_DF,
                    pores_G=pores_G, pores_H=pores_H)
+    return out
+
+
+# ============================================================================================ IPL's grids
+#: /gobj_to_aim renders a contour on the box of its GOBJ slice headers grown by this many voxels per in-plane side
+RENDER_GRID_MARGIN = 2
+
+
+def _grid_of(dim, pos):
+    return tuple(int(v) for v in dim), tuple(int(v) for v in pos)
+
+
+def _union(*grids):
+    """The union bounding box of (dim, pos) grids (None entries ignored)."""
+    grids = [g for g in grids if g is not None]
+    lo = [min(g[1][i] for g in grids) for i in range(3)]
+    hi = [max(g[1][i] + g[0][i] for g in grids) for i in range(3)]
+    return tuple(hi[i] - lo[i] for i in range(3)), tuple(lo)
+
+
+def tight_grid(v):
+    """(dim, pos) of the tight box of a volume's set voxels -- /bounding_box_cut -border 0 --, None when empty."""
+    d = np.asarray(v["data"]) != 0
+    zs = np.flatnonzero(d.any(axis=(1, 2)))
+    if zs.size == 0:
+        return None
+    ys = np.flatnonzero(d.any(axis=(0, 2)))
+    xs = np.flatnonzero(d.any(axis=(0, 1)))
+    lo = (int(xs[0]), int(ys[0]), int(zs[0]))
+    hi = (int(xs[-1]) + 1, int(ys[-1]) + 1, int(zs[-1]) + 1)
+    return tuple(hi[i] - lo[i] for i in range(3)), tuple(int(v["pos"][i]) + lo[i] for i in range(3))
+
+
+def render_grid(cort_render, margin=RENDER_GRID_MARGIN, clip_low=0):
+    """(dim, pos) of the grid IPL's /gobj_to_aim renders a contour on, computed from the RENDERED contour alone
+    (a volume dict on any grid); None when the contour is empty.  In Script 32's pore block this is the grid of
+    cortring_C, the /gobj_to_aim of CORT_MASK.GOBJ.
+
+    THE RULE.  /togobj_from_aim writes, for every slice with a contour, a slice header that stores the
+    in-plane box of that slice's stored chains per axis as a size S = hi - lo + 1 and an integer centre
+    C = ceil((lo + hi) / 2).  /gobj_to_aim renders onto [ceil(min C - S/2) - 2, floor(max C + S/2) + 2] per
+    in-plane axis, the minimum and maximum taken over the slices, with the low end clipped at global position
+    0, and onto the slices that carry a contour in z.  With the header's rounding this is
+
+        low  = (min over the slices of lo) - 2, clipped at 0
+        high = (max over the slices of hi + [S even]) + 2
+
+    i.e. the contour's tight box grown by 2 on the low side and by 2 or 3 on the high side: 3 exactly when a
+    slice of even extent reaches (or a slice of even extent ends one voxel short of) the highest coordinate.
+    The chains of a slice span exactly the slice's rendering (the chain pixels plus the polygon interior,
+    ipldt.contour.render), so lo and hi are read off the rendered raster.  The clip never cuts the contour:
+    the low end is max(lo - margin, min(lo, clip_low)).
+
+    EVIDENCE.  The slice headers: in the 186 CORT_MASK.GOBJ files of the 117 radius / tibia measurements of
+    the validation (every version the scanner kept; not distributed), S equals the extent of the slice's own
+    stored chains and C = ceil((lo + hi) / 2) on 62,486 of 62,496 slice-axes, every slice of 184 files;
+    ipldt.contour reproduces the chains of 175 of them vertex for vertex from a CORT_MASK.AIM version on disk.
+    (The contour headers inside a slice round the centre down instead, and are not what the grid follows; the
+    periosteal, trabecular and operator-corrected GOBJs on disk round either way, so the rule is stated for
+    the cortical GOBJ of the pore block.)  The other 10 slice-axes, in 2 files, store a box 1 to 6 voxels
+    wider than their chains -- in one of the stored versions of the cortical GOBJ of Distal/CKD/487451, slices
+    whose raw mask carries 1- to 7-voxel pieces that store no chain -- and none reaches its file's extreme,
+    so no grid moves; a rule read off the rendering cannot see such pieces.  The grid: the rule applied to
+    IPL's rendered cortical contour reproduces IPL's own /gobj_to_aim grid on every scan of the validation set
+    that has one on disk (137 of 137: a stored version of IPL's rendering <base>_CORT_MASK_CT.AIM for 116 of
+    the 117 radius / tibia scans, and IPL's /gobj_to_aim export of the cortical GOBJ from a dedicated scanner
+    run for the 21 patellae; neither is distributed), and its union with IPL's CORT_SEG grid is the grid of
+    IPL's PORE.AIM on 138 of 138.
+    The clip is seen on PFJ-351dc7_R and PFJ-6f5538_R, whose contour touches y = 0: the unclipped rule gives y = -2,
+    IPL's rendering starts at y = 0."""
+    d = np.asarray(cort_render["data"]) != 0
+    zs = np.flatnonzero(d.any(axis=(1, 2)))
+    if zs.size == 0:
+        return None
+    pos = [int(p) for p in cort_render["pos"]]
+    lo, hi = [0, 0], [0, 0]
+    for a, prof in ((0, d.any(axis=1)), (1, d.any(axis=2))):         # (z, x) and (z, y) occupancy
+        p = prof[zs]
+        first = p.argmax(axis=1)
+        last = p.shape[1] - 1 - p[:, ::-1].argmax(axis=1)
+        even = (last - first + 1) % 2 == 0
+        l0 = int(first.min()) + pos[a]
+        lo[a] = max(l0 - int(margin), min(l0, int(clip_low))) if clip_low is not None else l0 - int(margin)
+        hi[a] = int((last + even).max()) + pos[a] + int(margin)
+    z0, z1 = int(zs[0]) + pos[2], int(zs[-1]) + pos[2]
+    return (hi[0] - lo[0] + 1, hi[1] - lo[1] + 1, z1 - z0 + 1), (lo[0], lo[1], z0)
+
+
+def cascade_grids(cort_render, cort_seg, seg_grid=None):
+    """The grids Script 32's pore block works on: (R, S, U) with R = render_grid(cort_render) (the cortical
+    contour's /gobj_to_aim grid), S = the grid of CORT_SEG.AIM and U = R united with S, the grid every stage
+    from cortseg_CD on -- and the written PORE.AIM -- lives on (pore_cascade works on the union bounding box of
+    its inputs, as IPL's /add_aims and /subtract_aims do).
+
+    IPL's CORT_SEG.AIM is written on /bounding_box_cut -border 0 of the periosteally masked segmentation
+    (Script 32 STEP 2, seg_box), which lies inside the cortical contour's extent, so S lies inside R and U is
+    R: S reaches outside R only on PFJ-351dc7_R and PFJ-6f5538_R, whose IPL CORT_SEG grid starts one row outside the
+    image (y = -1; that row holds no set voxel).  Pass that grid as seg_grid where it is known (the
+    validation, fed IPL's own CORT_SEG); without it S is the tight box of cort_seg's set voxels, which is what
+    a workflow has, and lies inside R whenever cort_seg lies inside the contour.  S affects only pores_E,
+    which is inert (it turns 0 into 1 and 2 into 3, both on the same side of the hysteresis), so the pore map
+    depends on U alone."""
+    R = render_grid(cort_render)
+    if R is None:
+        raise ValueError("cascade_grids: the cortical contour is empty")
+    S = _grid_of(*seg_grid) if seg_grid is not None else tight_grid(cort_seg)
+    S = S if S is not None else R
+    return R, S, _union(R, S)
+
+
+def pore_cascade_ipl_grid(cort_render, cort_seg, seg_grid=None, **kwargs):
+    """pore_cascade on the grids IPL runs it on, whatever grid the inputs are held on (the workflows hold both
+    on the whole input AIM): the rendered cortical contour is cut / zero-padded onto render_grid(cort_render)
+    and CORT_SEG onto its own grid (cascade_grids), pore_cascade runs there, and the result is returned on the
+    cascade grid U; paste it back with ipldt.io.align_to.  **kwargs go to pore_cascade.
+
+    Why: the cascade is sensitive to its working grid, not only to its inputs' content.  The two slice-wise
+    0..5 % passes measure every component against the non-bone voxels of its slice IN THE WORKING GRID, so a
+    larger grid lowers the bar (PFJ-6f5538_R on the whole greyscale AIM: 25,428 extra pore voxels in 14 slices),
+    and where the bone reaches the faces of a tight grid the background outside the contour is cut into
+    pieces that each pass as a pore (Distal/REPRO/444590 on the greyscale AIM: 1,024,487 extra voxels).  IPL's
+    render grid always extends at least 2 voxels past the contour, and the zero padding beyond the image is
+    where it does.  With IPL's own contour and CORT_SEG this reproduces IPL's PORE.AIM on all 137 validation
+    scans from their greyscale-AIM grid (module docstring, THE GRID; ormir_bqrl/README.md, "The pore map's grid").
+
+    Returns pore_cascade's dict plus render_grid (R), seg_grid (S), grid (U) and cort_render (the contour on
+    R, the compartment Ct.Po counts)."""
+    R, S, U = cascade_grids(cort_render, cort_seg, seg_grid)
+    cr = ops.vol(ops.on_grid(cort_render, *R), *R)
+    cs = ops.vol(ops.on_grid(cort_seg, *S), *S)
+    lost = int(np.count_nonzero(cort_render["data"])) - int(np.count_nonzero(cr["data"]))
+    if lost:                                   # cannot happen: R contains the contour (the clip never cuts it)
+        raise AssertionError(f"pore_cascade_ipl_grid: {lost} contour voxels fall outside the render grid {R}")
+    out = pore_cascade(cr, cs, **kwargs)
+    out.update(render_grid=R, seg_grid=S, grid=U, cort_render=cr)
     return out
 
 

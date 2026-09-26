@@ -20,7 +20,7 @@ Parameters are IPL's standard values (ridge_epsilon 0.9, assign_epsilon 0.5, pee
 Run from the repository root in the `ormir` environment:
 
     python manuscript/figures/fig4_dt.py
-        [--data <IPLDT_LAB_ROOT>/PFJOA/XCT_masks_full_grab/PFJ-0be66a_R] [--base X2420448]
+        [--data <IPLDT_LAB_ROOT>/patellae/PFJ-0be66a_R] [--base X2420448]
         [--slice 84] [--object seg|trabseg] [--one-row] [--out manuscript/figures]
 
 Writes fig4_dt.png (300 dpi), fig4_dt.svg and fig4_dt_numbers.json (every number drawn, for the legend).
@@ -54,7 +54,7 @@ from ipldt.core import ridge, surface_distance, diameters, draw_spheres, peel_go
 from ipldt.field import sir_quad  # noqa: E402
 from ipldt.gpu import cupy_available  # noqa: E402
 
-DATA_DEFAULT = lab_path("PFJOA/XCT_masks_full_grab/PFJ-0be66a_R")
+DATA_DEFAULT = lab_path("patellae/PFJ-0be66a_R")
 BASE_DEFAULT = "X2420448"
 T0 = time.time()
 

@@ -94,7 +94,7 @@ def say(*a):
 def record_paths(tag):
     d = json.load(open(os.path.join(RECORDS, tag + ".json")))
     # the published records carry no local paths: the folder is rebuilt from the id under the non-public data root
-    folder, b = os.path.join(lab_path("Cross_validation_IPL/OS_LH_AUTO"), *d["id"].split("/")), d["base"]
+    folder, b = os.path.join(lab_path("radius_tibia/set1"), *d["id"].split("/")), d["base"]
     trab = next((os.path.join(folder, b + s) for s in ("_TRAB_MASK_CORR_CT.AIM", "_TRAB_MASK_CT.AIM")
                  if os.path.exists(os.path.join(folder, b + s))), os.path.join(folder, b + "_TRAB_MASK_CT.AIM"))
     return dict(grey=os.path.normpath(os.path.join(folder, b + ".AIM")), per=os.path.normpath(os.path.join(folder, b + "_CT.AIM")),

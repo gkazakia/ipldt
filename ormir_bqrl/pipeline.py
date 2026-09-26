@@ -95,10 +95,10 @@ def periosteal_raster(periosteal, loaded, log=None, file_source="file"):
 def run(aim_path, out_dir, site="tibia", periosteal=None, compute_bmd=True, backend="auto", map_units="voxels",
         dt_params=None, step1_params=None, preview=True, log=None, command=None, compute_porosity=True, map_format="nifti",
         _ctx=None):
-    """AIM -> everything.  Returns the report dict (section 8 of the design; also <base>_report.json).
+    """AIM -> everything.  Returns the report dict (ormir_bqrl/README.md, "Outputs"; also <base>_report.json).
 
     aim_path      Scanco AIM (greyscale, native int16)
-    out_dir       the output folder (section 7.1: <base>_HU.nii.gz, the mask / gobj / SEG / PORE / map volumes on the
+    out_dir       the output folder (ormir_bqrl/README.md, "Outputs": <base>_HU.nii.gz, the mask / gobj / SEG / PORE / map volumes on the
                   AIM grid, <base>_compartments.seg.nrrd + _labelmap.nii.gz for Slicer, report.json / .csv / .md, preview)
     site          'tibia' (Script 32 STEP 1 parameters) or 'radius' (Script 33); step1_params overrides ('custom')
     periosteal    None = ORMIR-XCT autocontour; a file path (binary mask, ORMIR-BQRL labelmap, .seg.nrrd, .AIM);

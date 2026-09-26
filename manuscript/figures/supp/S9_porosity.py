@@ -28,13 +28,16 @@ Panels
      prints, for every scan of the validation set that has a sheet carrying values, with the refuted reading
      Ct.Po.V / (Ct.Po.V + Ct.BV) shown for the same scans.
 
-The scan of A-H is Diaphyseal/CKD/2422 (X6435585, XtremeCT II diaphyseal tibia, 60.7 um): a diaphysis is
+The scan of A-H is Diaphyseal/CKD/251016 (X6435585, XtremeCT II diaphyseal tibia, 60.7 um): a diaphysis is
 chosen because the hysteresis does nothing on a patella (value 2, the only thing it can grow into, is empty
 on every patella of the cohort), so a patella would not exercise the panel that the figure is about.  That
 claim is measured, not assumed: the cascade is run on all 21 patellae (IPL's contour rendering and CORT_SEG
 in, 0 voxels differing from IPL's PORE.AIM asserted on each) and the value counts of cortseg_CDE are written
 to S9_porosity_numbers.json under "patella_labels" (cached in cache/S9_porosity_patella.json).
 Slice numbers in the figure are 1-based (slice 1 is z = 0), as in Figure 3; x, y are 0-based voxel indices.
+The figure prints no scan identifier: the two scans are named by their site only ('a diaphyseal tibia', 'an
+ultradistal tibia'; 'diaph. tibia / UD tibia' over the count column of I).  The record ids stay in the sidecar
+for provenance (figure.scan, I.scans), next to the printed labels (figure.label, I.labels).
 
 Run from the repository root in the `ormir` environment (numpy, scipy, matplotlib; no GPU needed):
 
@@ -46,7 +49,7 @@ S9_porosity_numbers.json (every number drawn).  The crops and counts are cached 
 manuscript/figures/cache/S9_porosity_cache.{npz,json} (about 2 min on the first run: 16 candidate readings of
 the cascade on each of two scans); --recompute redoes everything.
 
-Inputs (read only): the delivered IPL products of the two OS_LH measurements (CORT_MASK_CT.AIM, CORT_SEG.AIM,
+Inputs (read only): the delivered IPL products of the two radius / tibia measurements (CORT_MASK_CT.AIM, CORT_SEG.AIM,
 PORE.AIM); for panel J, the porosity records of the 137-scan validation set
 (validation/results/{oslh_auto_vN,porosity_AB_patella,oslh_noedit_vN}/records/*.json, Diaphyseal/CKD/991161
 excluded as everywhere else) and IPL's printed result-sheet values validation/results/ipl_printed_values_137.csv.
@@ -84,9 +87,9 @@ from ipldt import porosity  # noqa: E402
 from ipldt.io import read_aim  # noqa: E402
 
 # ------------------------------------------------------------------------------------------------ inputs
-OSLH = lab_path("Cross_validation_IPL/OS_LH_AUTO")
-MAIN = dict(id="Diaphyseal/CKD/2422", folder=f"{OSLH}/Diaphyseal/CKD/2422", base="X6435585", site="diaphyseal tibia")
-SECOND = dict(id="Distal/REPRO/2051", folder=f"{OSLH}/Distal/REPRO/2051", base="X4829835", site="ultradistal tibia")
+OSLH = lab_path("radius_tibia/set1")
+MAIN = dict(id="Diaphyseal/CKD/251016", folder=f"{OSLH}/Diaphyseal/CKD/251016", base="X6435585", site="diaphyseal tibia")
+SECOND = dict(id="Distal/REPRO/444590", folder=f"{OSLH}/Distal/REPRO/444590", base="X4829835", site="ultradistal tibia")
 REC_DIRS = [os.path.join(REPO, "validation", "results", d)
             for d in (OSLH_AUTO, "porosity_AB_patella", OSLH_NOEDIT)]
 PRINTED_CSV = os.path.join(REPO, "validation", "results", "ipl_printed_values_137.csv")
@@ -135,9 +138,20 @@ def fmt(n):
     return f"{int(n):,d}"
 
 
+def neutral_label(site):
+    """The printed name of a scan: its site with an indefinite article ('a diaphyseal tibia', 'an ultradistal
+    tibia') -- never a study, measurement number or file base."""
+    return f"{'an' if site[:1].lower() in 'aeiou' else 'a'} {site}"
+
+
+def short_site(site):
+    """The site in the abbreviations of panel J and its legend (UD, ultradistal; diaph., diaphyseal)."""
+    return site.replace("ultradistal", "UD").replace("diaphyseal", "diaph.")
+
+
 # ------------------------------------------------------------------------------------------------ helpers
 def load_scan(spec):
-    """(contour, cort_seg, ipl_pore, el_size_mm) of one OS_LH measurement, the way the validation harness reads
+    """(contour, cort_seg, ipl_pore, el_size_mm) of one radius / tibia measurement, the way the validation harness reads
     them: <base>_CORT_MASK_CT.AIM is IPL's own rendering on IPL's own grid and is used as it is."""
     cr = read_aim(os.path.join(spec["folder"], f"{spec['base']}_CORT_MASK_CT.AIM"))
     if "D3P_Concatenate" in (cr.get("proclog") or ""):
@@ -476,7 +490,7 @@ def load_cache():
 # ------------------------------------------------------------------------------------------------ drawing
 FIG_W = 180.0
 FIG_H = 240.0
-NOTE_DY = 2.9
+NOTE_DY = 2.75                       # 2.9 until 2026-09-26; the figure now fits the 228 mm page at 1:1
 DESC_FS = 7.0                        # the panel description, as in S1-S8
 NOTE_FS = 6.6                        # the note lines under a panel
 _MEAS = [None]
@@ -676,9 +690,8 @@ def draw(N, A, CT):
         "H": ("Against IPL's PORE.AIM", "IPL's export, ipldt's result as an outline"),
         "I": ("The reading of /hysteresis_threshold",
               "voxels differing from IPL's PORE.AIM when only the reading of this one command is varied; each "
-              f"pair of bars is the scan of A–H (upper, dark) and {S2nd['id']}, "
-              f"{'an' if S2nd['site'][0] in 'aeiou' else 'a'} {S2nd['site']} (lower, "
-              "light), which is the scan that pins the inclusive low bound"),
+              f"pair of bars is the scan of A–H, {neutral_label(M['site'])} (upper, dark), and "
+              f"{neutral_label(S2nd['site'])} (lower, light), which pins the inclusive low bound"),
         "J": ("Ct.Po over the cohort",
               f"ipldt's |PORE ∩ CORT_MASK| / |CORT_MASK| against the value IPL's single-measurement evaluation "
               f"sheet prints ({CT['sheets']} scans)"),
@@ -728,11 +741,11 @@ def draw(N, A, CT):
 
     # ------------------------------------------------------------------ the rows, in mm from the top
     hs, ws = A["comp"].shape
-    img1_h = min(w1 * hs / ws, 38.0)
+    img1_h = min(w1 * hs / ws, 29.5)                          # 38 until 2026-09-26 (see FIG_H below)
     img1_w = img1_h * ws / hs
-    img3 = 46.0
+    img3 = 33.5                                               # 46 until 2026-09-26
     axes4_h = 41.0
-    LEG1_H = 5.6
+    LEG1_H = 5.0
     h_head1 = desc_h(max(len(DESC[k]) for k in "ABCD"))
     h_head3 = desc_h(max(len(DESC[k]) for k in "FGH"))
     h_head4 = desc_h(max(len(DESC[k]) for k in "IJ"))
@@ -743,15 +756,17 @@ def draw(N, A, CT):
     yn1 = y1 + h_head1 + img1_h + 1.0
     y_leg1 = yn1 + n_notes1 * NOTE_DY + 0.3
     row1_end = y_leg1 + LEG1_H
-    y2 = row1_end + 2.0
-    tbl_h = 38.5
+    y2 = row1_end + 1.4
+    tbl_h = 37.5
     row2_end = y2 + desc_h(len(DESC["E"])) + tbl_h + 1.0
-    y3 = row2_end + 2.0
+    y3 = row2_end + 1.4
     yn3 = y3 + h_head3 + img3 + 1.0
     y_leg3 = yn3 + n_notes3 * NOTE_DY + 0.3
     row3_end = y_leg3 + 4.6
-    y4 = row3_end + 2.4
-    FIG_H = y4 + h_head4 + 1.0 + axes4_h + 6.0
+    y4 = row3_end + 1.6
+    # the lowest text (I's x label) ends ~5 mm above the old 6 mm bottom margin; 1 mm is kept.  Every text is
+    # drawn at >= 6.0 pt and the figure is <= 228 mm tall, so the manuscript build embeds it at 1:1 and it prints at >= 6 pt
+    FIG_H = y4 + h_head4 + 1.0 + axes4_h + 1.0
     say(f"layout: rows at {y1:.1f} / {y2:.1f} / {y3:.1f} / {y4:.1f} mm, figure {FIG_W:.0f} x {FIG_H:.1f} mm")
 
     fig = plt.figure(figsize=(FIG_W / 25.4, FIG_H / 25.4))
@@ -859,7 +874,7 @@ def draw(N, A, CT):
                 ha="right" if k == "count" else "left", color=C_INK)
     ax.plot([0.2, wt - 0.2], [3.0, 3.0], color=C_AXIS, lw=0.5)
     ROLE = {"seed": (C_BLUE, "seed  (v ≤ 1)"), "weak": (C_GREEN, "weak  (v ≤ 3)"), "neither": (C_MUTED, "neither")}
-    pitch, y_first = 5.3, 6.0
+    pitch, y_first = 4.9, 6.0
     for i, (v, lab, mean, arise, cnt, role) in enumerate(rows_tbl):
         yy = y_first + i * pitch
         ax.add_patch(patches.Rectangle((CX["swatch"], yy - 1.1), 2.6, 2.2, fc=VALUE_COLOUR[v], ec=C_AXIS, lw=0.4))
@@ -898,7 +913,7 @@ def draw(N, A, CT):
         sel = A["col_ok_sel" if key == "accepted" else "col_no_sel"]
         inn = A["col_ok_in" if key == "accepted" else "col_no_in"]
         z0 = int(np.clip(c["z"] - nz_show // 2, 0, col.size - nz_show))
-        yb = 0.9 + k * 3.9
+        yb = 0.9 + k * 3.7
         axc.text(-0.5, yb - 1.15, strip(f"column ({c['x']}, {c['y']}): {c['run']} weak voxels "
                  f"(slices {c['z_run'][0] + 1}–{c['z_run'][1] + 1}), {c['seeds']} seeds"),
                  fontsize=SFS, ha="left", va="center", color=C_INK2)
@@ -916,7 +931,7 @@ def draw(N, A, CT):
         axc.text(-0.5, yb + 1.15, title, fontsize=SFS, ha="left", va="center", color=colr)
     # wrapped 6 mm narrower than the other strip texts: at wc_ - 3 its first line ran past the page edge
     # (the "/gobj_maskaimpeel_ow" token was clipped at 180 mm in an earlier render as well)
-    axc.text(-0.5, 6.7, "\n".join(wrap_mm("solid outline: written at 127 and kept by the /gobj_maskaimpeel_ow "
+    axc.text(-0.5, 6.45, "\n".join(wrap_mm("solid outline: written at 127 and kept by the /gobj_maskaimpeel_ow "
                                           "that follows; dashed: written, then cleared for lying outside the "
                                           "compartment", wc_ - 9.0, SFS)),
              fontsize=SFS, ha="left", va="top", color=C_INK2, linespacing=1.3)
@@ -1015,14 +1030,18 @@ def draw(N, A, CT):
     ax.set_xlabel("voxels differing from IPL's PORE.AIM (log scale)", fontsize=6.5, labelpad=1.5)
     # the two counts as their own right-aligned column, so nothing collides with a bar
     pitch_I = ax_hI / len(labs)
-    ftext(fig, ax_x + ax_w + 1.5, ax_yI - 3.2, "2422 / 2051", fontsize=6.0, fontweight="bold", ha="left",
-          color=C_INK2)
+    # the column header names the two scans by their site only (no scan identifier is printed), right-aligned
+    # over the counts
+    head_I = f"{short_site(M['site'])} / {short_site(S2nd['site'])}"
+    t = ftext(fig, xI + wI, ax_yI - 3.2, head_I, fontsize=6.0, fontweight="bold", ha="right", color=C_INK2)
+    checks.append((t, ax_x + ax_w - 12.0, xI + wI, head_I))
     for i, (a, b) in enumerate(zip(vm, vs)):
         t = ftext(fig, xI + wI, ax_yI + (i + 0.5) * pitch_I, "0 / 0 (identical)" if a == b == 0 else
                   f"{fmt(a)} / {fmt(b)}", fontsize=6.0, ha="right", va="center",
                   fontweight="bold" if a == b == 0 else "normal", color=C_INK if a == b == 0 else C_INK2)
         checks.append((t, ax_x + ax_w + 1.0, xI + wI, f"{a} / {b}"))
     P["I"] = dict(scans=[M["id"], S2nd["id"]],
+                  labels=[neutral_label(M["site"]), neutral_label(S2nd["site"])], column_header=head_I,
                   rows=[dict(label=l, short=short[l], main=m_rows[l]["mismatch"],
                              second=s_rows[l]["mismatch"]) for l in labs])
 
@@ -1113,6 +1132,7 @@ def main():
     plt.close(fig)
     P["figure"] = dict(width_mm=FIG_W, height_mm=round(FIG_H, 1), dpi=300, voxel_mm=N["main"]["voxel_mm"],
                        scan=N["main"]["id"], base=N["main"]["base"], site=N["main"]["site"],
+                       label=neutral_label(N["main"]["site"]),
                        slice_index=Z_SLICE, slice_number_1based=Z_SLICE + 1, window=[WIN_Y0, WIN_X0, WIN],
                        text_overflows=bad,
                        generated=time.strftime("%Y-%m-%d %H:%M"))

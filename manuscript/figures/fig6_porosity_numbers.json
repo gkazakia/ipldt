@@ -1,6 +1,6 @@
 {
  "A": {
-  "id": "Diaphyseal/CKD/2422",
+  "id": "Diaphyseal/CKD/251016",
   "base": "X6435585",
   "cohort": "diaphyseal",
   "site_phrase": "diaphyseal tibia",
@@ -67,7 +67,7 @@
   "cort_seg_mismatches": 0
  },
  "B": {
-  "id": "Distal/REPRO/2095",
+  "id": "Distal/REPRO/322919",
   "base": "X2957394",
   "cohort": "ultradistal tibia",
   "site_phrase": "ultradistal tibia",
@@ -161,6 +161,12 @@
    7
   ],
   "note": "1-based, as printed; 'slice', 'z' and '*_z_range' under A and B are 0-based indices"
+ },
+ "printed_labels": {
+  "A": "a diaphyseal tibia",
+  "B": "an ultradistal tibia",
+  "F_ctpo_ipl_min": "a diaphyseal radius",
+  "note": "the figure and its legend name a scan by its site only; A.id and B.id are the record ids, kept for provenance and never printed"
  },
  "C": {
   "configuration_A": {
@@ -322,7 +328,7 @@
      "mismatch": 0
     },
     {
-     "id": "Diaphyseal/CKD/2422",
+     "id": "Diaphyseal/CKD/251016",
      "mismatch": 0
     },
     {
@@ -335,7 +341,8 @@
    "bias_pct_of_mean": 0.0,
    "ctpo_ipl_min_all": 0.003834933598729293,
    "ctpo_ipl_max_all": 0.22782787311174554,
-   "ctpo_ipl_min_id": "Diaphyseal/REPRO/5876",
+   "ctpo_ipl_min_id": "Diaphyseal/REPRO/353308",
+   "ctpo_ipl_min_site": "diaphyseal radius",
    "ctpo_ipl_fold_range": 59.40855747469432
   },
   "configuration_B": {
@@ -494,7 +501,7 @@
    "dice_ge_0_999": 134,
    "top3": [
     {
-     "id": "Distal/REPRO/2095",
+     "id": "Distal/REPRO/322919",
      "mismatch": 5922
     },
     {
@@ -511,7 +518,8 @@
    "bias_pct_of_mean": 0.004719147945140354,
    "ctpo_ipl_min_all": 0.003834933598729293,
    "ctpo_ipl_max_all": 0.22782787311174554,
-   "ctpo_ipl_min_id": "Diaphyseal/REPRO/5876",
+   "ctpo_ipl_min_id": "Diaphyseal/REPRO/353308",
+   "ctpo_ipl_min_site": "diaphyseal radius",
    "ctpo_ipl_fold_range": 59.40855747469432
   },
   "config_A_scans_with_a_difference": 0,
@@ -1126,7 +1134,7 @@
     "cort_seg_mismatch": 88
    },
    {
-    "id": "Distal/REPRO/2095",
+    "id": "Distal/REPRO/322919",
     "cohort": "ultradistal tibia",
     "site": "ultradistal tibia",
     "A": 0,
@@ -1162,7 +1170,7 @@
     "cort_seg_mismatch": 13583
    },
    {
-    "id": "Distal/REPRO/2051",
+    "id": "Distal/REPRO/444590",
     "cohort": "ultradistal tibia",
     "site": "ultradistal tibia",
     "A": 0,
@@ -1666,7 +1674,7 @@
     "cort_seg_mismatch": 0
    },
    {
-    "id": "Diaphyseal/REPRO/5876",
+    "id": "Diaphyseal/REPRO/353308",
     "cohort": "diaphyseal",
     "site": "diaphyseal radius",
     "A": 0,
@@ -1954,7 +1962,7 @@
     "cort_seg_mismatch": 0
    },
    {
-    "id": "Diaphyseal/CKD/2422",
+    "id": "Diaphyseal/CKD/251016",
     "cohort": "diaphyseal",
     "site": "diaphyseal tibia",
     "A": 0,
@@ -2369,6 +2377,6 @@
    "validation/results/porosity_AB_patella",
    "validation/results/oslh_noedit_v3"
   ],
-  "generated": "2026-09-25 16:46"
+  "generated": "2026-09-26 10:04"
  }
 }

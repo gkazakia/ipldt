@@ -29,8 +29,8 @@ Run from the repository root in the `ormir` environment:
 
     set PYTHONUTF8=1
     python manuscript/figures/supp/S6_dt_params.py
-        [--data <IPLDT_LAB_ROOT>/PFJOA/XCT_masks_full_grab/PFJ-0be66a_R] [--base X2420448]
-        [--ipl-exports <IPLDT_LAB_ROOT>/Python/scripts/IPL/decompressed] [--slice 84] [--window 38 430]
+        [--data <IPLDT_LAB_ROOT>/patellae/PFJ-0be66a_R] [--base X2420448]
+        [--ipl-exports <IPLDT_LAB_ROOT>/ipl_exports/decompressed] [--slice 84] [--window 38 430]
         [--recompute] [--out manuscript/figures/supp]
 
 Writes S6_dt_params.png (300 dpi, 180 mm wide), S6_dt_params.svg and S6_dt_params_numbers.json (every number
@@ -66,9 +66,9 @@ from ipldt.core import ridge, surface_distance, surface_vector, diameters, draw_
 from ipldt.field import sir_quad, SNAKE_SUBS, SNAKE_SUBS2  # noqa: E402
 from ipldt.gpu import cupy_available  # noqa: E402
 
-DATA_DEFAULT = lab_path("PFJOA/XCT_masks_full_grab/PFJ-0be66a_R")
+DATA_DEFAULT = lab_path("patellae/PFJ-0be66a_R")
 BASE_DEFAULT = "X2420448"
-IPL_EXPORTS_DEFAULT = lab_path("Python/scripts/IPL/decompressed")
+IPL_EXPORTS_DEFAULT = lab_path("ipl_exports/decompressed")
 CACHE = os.path.join(REPO, "manuscript", "figures", "cache", "S6_dt_params_cache.npz")
 T0 = time.time()
 
@@ -81,10 +81,10 @@ PEEL_SWEEP = (0, 1, 3)
 # outputs are the metric-31 / metric-32 distance maps.
 IPL_RIDGE = {0.0: "RGE00", 0.25: "RGE25", 0.5: "RIDGE05", 0.9: "RGV3"}
 IPL_VERSION = {1: "RGV1", 2: "RGV2", 3: "RGV3"}
-IPL_PEEL = {0: "P12PI0", 1: "P12PI1", 3: "P12PI3"}
-IPL_ASSIGN = {0.0: "P12AE00", 0.25: "P12AE25", 0.5: "P12CTRL", 1.0: "P12AE10"}
-IPL_SUPPRESS_RIDGE = {0: "P12SB0", 1: "P12SB1", 2: "P12PI0", 3: "P12SB3"}
-IPL_SUPPRESS_MAP = {0: "P12TH0", 2: "P12CTRL"}
+IPL_PEEL = {0: "T12PI0", 1: "T12PI1", 3: "T12PI3"}
+IPL_ASSIGN = {0.0: "T12AE00", 0.25: "T12AE25", 0.5: "T12CTRL", 1.0: "T12AE10"}
+IPL_SUPPRESS_RIDGE = {0: "T12SB0", 1: "T12SB1", 2: "T12PI0", 3: "T12SB3"}
+IPL_SUPPRESS_MAP = {0: "T12TH0", 2: "T12CTRL"}
 IPL_DM = {31: "DM31", 32: "DM32"}
 
 
@@ -428,7 +428,7 @@ def contour_line(ax, mask2d, ext, color=CONTOUR, lw=0.6, ls="-"):
     ax.contour(xs, ys, mask2d.astype(float), levels=[0.5], colors=[color], linewidths=lw, linestyles=ls)
 
 
-CAP_PT = 6.2
+CAP_PT = 6.1                                  # >= 6 pt printed (the figure prints 1:1)
 
 
 def caption(sh, x, y_top, w, lines, color="#222222"):
@@ -460,7 +460,7 @@ def sweep_grid(ax, yd, xd, n=5):
     for i, yy in enumerate(rows):
         x0, x1 = (-0.35, n - 0.65) if xd > 0 else (n - 0.65, -0.35)
         ax.annotate("", xy=(x1, yy), xytext=(x0, yy), arrowprops=dict(arrowstyle="-|>", lw=0.7, color=OI["blue"], mutation_scale=5))
-        ax.text(-0.75 if xd > 0 else n - 0.25, yy, str(i + 1), fontsize=PT - 2, va="center", ha="center", color=OI["blue"])
+        ax.text(-0.75 if xd > 0 else n - 0.25, yy, str(i + 1), fontsize=PT - 1, va="center", ha="center", color=OI["blue"])
     ax.annotate("", xy=(n - 0.15, n - 0.75 if yd > 0 else -0.25), xytext=(n - 0.15, -0.25 if yd > 0 else n - 0.75),
                 arrowprops=dict(arrowstyle="-|>", lw=1.0, color=OI["verm"], mutation_scale=6))
 
@@ -483,11 +483,11 @@ def make_figure(num, arr, cases, out_png, out_svg):
     n_vox = num["voxels"]
 
     # ---- geometry (mm)
-    left, right, gap = 5.5, 1.5, 2.2
+    left, right, gap = 7.0, 4.0, 2.2              # panels 32 mm: the figure fits the 228-mm page, printed 1:1
     ncol = 5
     w = (W_MM - left - right - (ncol - 1) * gap) / ncol
     xs = [left + i * (w + gap) for i in range(ncol)]
-    hdr, cap, rgap = 3.4, 7.2, 1.2
+    hdr, cap, rgap = 3.4, 7.2, 1.0
     top = 1.5
     row1_h = 40.0
     rows_y = {1: top}
@@ -574,8 +574,8 @@ def make_figure(num, arr, cases, out_png, out_svg):
 
     # C: real vectors + s on a small window inside the crop
     xC = xs[4]
-    sh.letter(xC - 1.2, yA - 0.6, "C")
-    header(sh, xC, yA, w, "v and s on the scan", indent=2.5)
+    sh.letter(xC - 0.2, yA - 0.6, "C")
+    header(sh, xC, yA, w, "v and s on the scan", indent=3.5)
     nv = num["window"]["vector_window"]
     best = None
     for yy in range(0, n - nv + 1, 2):
@@ -636,14 +636,14 @@ def make_figure(num, arr, cases, out_png, out_svg):
     ax.text(X[0] - 0.15, X[1] - 0.15, "x", fontsize=PT, color=OI["blue"], fontweight="bold", ha="right", va="bottom")
     ax.text(Y[0], Y[1] - 0.3, "y", fontsize=PT, color=OI["orange"], fontweight="bold", ha="center", va="bottom")
     ax.annotate("", xy=(X[0], X[1] - sx), xytext=(X[0], X[1]), arrowprops=dict(arrowstyle="-", lw=0.7, color=OI["blue"]))
-    ax.text(X[0] + 0.12, X[1] - sx / 2 - 0.15, "$s_x$", fontsize=PT - 0.5, color=OI["blue"], va="center", ha="left")
+    ax.text(X[0] - 0.12, X[1] - sx / 2 - 0.4, "s_x", fontsize=PT - 0.5, color=OI["blue"], va="center", ha="right")
     ax.annotate("", xy=(Y[0] + sy_, Y[1]), xytext=(Y[0], Y[1]), arrowprops=dict(arrowstyle="-", lw=0.7, color=OI["orange"]))
-    ax.text(Y[0] + sy_ / 2, Y[1] + 0.35, "$s_y$", fontsize=PT - 0.5, color=OI["orange"], ha="center", va="top")
+    ax.text(Y[0] + sy_ / 2, Y[1] + 0.35, "s_y", fontsize=PT - 0.5, color=OI["orange"], ha="center", va="top")
     ax.annotate("", xy=(Y[0] + sy_ + eps, Y[1]), xytext=(Y[0] + sy_, Y[1]), arrowprops=dict(arrowstyle="-", lw=0.7, color=OI["orange"], ls=":"))
     ax.text(Y[0] + sy_ + eps / 2, Y[1] - 0.25, "ε", fontsize=PT - 0.5, color=OI["orange"], ha="center", va="bottom")
     ax.text(X[0] + sep / 2, X[1] + 0.35, "|x − y|", fontsize=PT - 1.0, color=INK2, ha="center", va="top")
     crop_caption(xs[0], yD, ["x discarded when a neighbor y",
-                             "has |x − y| + $s_x$ − $s_y$ ≤ ε",
+                             "has |x − y| + s_x − s_y ≤ ε",
                              "(1 + 1.5 − 2.5 = 0 ≤ 0.9 here)"])
     for k, eps in enumerate((0.0, 0.5, 0.9)):
         x = xs[k + 1]
@@ -789,7 +789,7 @@ def make_figure(num, arr, cases, out_png, out_svg):
         ax.text(Xp[0] + 0.12, Xp[1] - 0.45, "x", fontsize=PT, fontweight="bold")
         ax.annotate("", xy=Xp + P1X, xytext=Xp, arrowprops=dict(arrowstyle="-|>", lw=1.0, color=OI["verm"], mutation_scale=6))
         ax.plot(*(Xp + P1X), "o", color=OI["verm"], ms=3.5, mec="black", mew=0.3)
-        ax.text(*(Xp + P1X + [0.1, 0.6]), "$P_1$", fontsize=PT - 0.5, color=OI["verm"], va="top")
+        ax.text(*(Xp + P1X + [0.1, 0.6]), "P1", fontsize=PT - 0.5, color=OI["verm"], va="top")
         ax.add_patch(patches.Circle(Xp, s, fc="none", ec=OI["orange"], lw=1.0, ls="--"))
         if mode != "v1":
             ax.add_patch(patches.Rectangle((Yp[0] - 0.5, Yp[1] - 0.5), 1, 1, fc="#cfe8ff", ec="black", lw=0.7))
@@ -797,7 +797,7 @@ def make_figure(num, arr, cases, out_png, out_svg):
             ax.text(Yp[0] + 0.12, Yp[1] - 0.45, "y", fontsize=PT, fontweight="bold")
             ax.annotate("", xy=Xp + P2X, xytext=Yp, arrowprops=dict(arrowstyle="-|>", lw=1.0, color=OI["blue"], mutation_scale=6))
             ax.plot(*(Xp + P2X), "o", color=OI["blue"], ms=3.5, mec="black", mew=0.3)
-            ax.text(*(Xp + P2X + [0.1, -0.35]), "$P_2$", fontsize=PT - 0.5, color=OI["blue"], va="bottom")
+            ax.text(*(Xp + P2X + [0.1, -0.35]), "P2", fontsize=PT - 0.5, color=OI["blue"], va="bottom")
             ax.add_patch(patches.Circle(Xp + MX, D / 2, fc="none", ec=OI["purple"], lw=1.3))
             ax.plot(*(Xp + MX), "x", color=OI["purple"], ms=5, mew=1.2)
             ax.add_patch(patches.Circle(Xp, 1.0, fc="none", ec=OI["purple"], lw=0.6, ls=":"))
@@ -822,7 +822,7 @@ def make_figure(num, arr, cases, out_png, out_svg):
             lines = [f"s = {Q['s'][i]:.2f}; V1 = round(2s) = {Q['V1'][i]}", "sphere centered on x, touching",
                      "its nearest surface point"]
         elif mode == "accept":
-            lines = [f"D = |$P_1$ − $P_2$| = {Q['D'][i]:.2f}, |M| = {Mn[i]:.2f}",
+            lines = [f"D = |P1 − P2| = {Q['D'][i]:.2f}, |M| = {Mn[i]:.2f}",
                      f"|M| < 1: V3 = round(D) = {Q['V3'][i]}", f"(V1 = {Q['V1'][i]}); sphere pinned at M"]
         else:
             lines = [f"|M| = {Mn[i]:.2f} ≥ 1: V3 = V1 = {Q['V3'][i]}", f"(round(D) = {Q['R'][i]} is not used)",
@@ -853,7 +853,7 @@ def make_figure(num, arr, cases, out_png, out_svg):
     handles = [patches.Patch(fc="#4d4d4d", label=f"V3 = V1 ({100 * n_zero / n_cen:.0f}%)"),
                patches.Patch(fc=OI["verm"], label=f"V3 > V1 ({100 * n_plus / n_cen:.0f}%)"),
                patches.Patch(fc=OI["blue"], label=f"V3 < V1 ({100 * n_minus / n_cen:.1f}%)")]
-    ax.legend(handles=handles, loc="upper left", fontsize=PT - 1.2, frameon=True, framealpha=0.9, edgecolor="none",
+    ax.legend(handles=handles, loc="upper left", fontsize=PT - 1.0, frameon=True, framealpha=0.9, edgecolor="none",
               handlelength=0.9, handleheight=0.9, borderpad=0.3, labelspacing=0.25, handletextpad=0.4)
     crop_caption(xH, yG, [f"{fmt(n_cen)} centers", f"V3 − V1 from {min(d31):+d} to {max(d31):+d} voxels".replace("-", "−"),
                           f"at ridge_epsilon 0.9, peel 0"])
@@ -907,7 +907,7 @@ def make_figure(num, arr, cases, out_png, out_svg):
     ax.plot(0, 0, "o", color="white", ms=3, mec="black", mew=0.5)
     handles = [patches.Patch(fc=fills[0.0], label="ε = 0"), patches.Patch(fc=fills[0.5], label="ε = 0.5"),
                patches.Patch(fc=fills[1.0], label="ε = 1.0")]
-    ax.legend(handles=handles, loc="lower right", fontsize=PT - 1.2, frameon=True, framealpha=0.9, edgecolor="none",
+    ax.legend(handles=handles, loc="lower right", fontsize=PT - 1.0, frameon=True, framealpha=0.9, edgecolor="none",
               handlelength=0.9, handleheight=0.9, borderpad=0.3, labelspacing=0.25, handletextpad=0.4)
     ax.text(0.03, 0.97, f"one sphere, D = {Dd}", transform=ax.transAxes, fontsize=PT - 1.0, color=INK2, va="top",
             bbox=dict(boxstyle="square,pad=0.15", fc="white", ec="none", alpha=0.9))

@@ -32,7 +32,7 @@ standard values, Script 32).
 Run from the repository root in the `ormir` environment:
 
     python manuscript/figures/supp/S7_spacing_number.py
-        [--data <IPLDT_LAB_ROOT>/PFJOA/XCT_masks_full_grab/PFJ-0be66a_R] [--base X2420448]
+        [--data <IPLDT_LAB_ROOT>/patellae/PFJ-0be66a_R] [--base X2420448]
         [--slice 84] [--window 30 422] [--size 64] [--recompute] [--out manuscript/figures/supp]
 
 Writes S7_spacing_number.png (300 dpi, 180 mm wide), S7_spacing_number.svg and S7_spacing_number_numbers.json (every
@@ -68,7 +68,7 @@ from ipldt.core import ridge, surface_distance, diameters, draw_spheres, peel_go
 from ipldt.field import sir_quad  # noqa: E402
 from ipldt.gpu import cupy_available  # noqa: E402
 
-DATA_DEFAULT = lab_path("PFJOA/XCT_masks_full_grab/PFJ-0be66a_R")
+DATA_DEFAULT = lab_path("patellae/PFJ-0be66a_R")
 BASE_DEFAULT = "X2420448"
 CACHE_DEFAULT = os.path.join(REPO, "manuscript", "figures", "cache", "S7_spacing_number.npz")
 T0 = time.time()

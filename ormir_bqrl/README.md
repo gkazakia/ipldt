@@ -16,13 +16,10 @@ command line. Its one numerical difference from `ipldt-pipeline`: the Laplace-Ha
 rendered periosteal contour, as in IPL's evaluation, rather than with the autocontour's raw raster, so the two SEGs
 can differ by a few voxels (they agree exactly when rendering leaves the periosteal raster unchanged).
 
-The cortical pore map and Ct.Po come from `ipldt.porosity` (`pore_cascade`, `ct_po`), called exactly as
-`ipldt-pipeline` calls it: the cascade receives the rendered cortical contour and the cortical segmentation on the
-input AIM's grid. The paper's validation placed the cortical contour on IPL's own box (the box of the periosteal
-contour, where IPL renders it). The cascade's slice-wise steps depend on the grid they run on, so the pore map could
-differ between the two grids; on the one scan of the validation set run both ways (a patella, from IPL's periosteal
-contour) they gave the same pore map, identical to IPL's voxel for voxel, and the other validation scans, the radius
-and tibia scans among them, have not been run on the workflow's grid.
+The cortical pore map and Ct.Po come from `ipldt.porosity`, called exactly as `ipldt-pipeline` calls it
+(`ipldt.ormir.step5c_porosity`): the cascade runs on the rendered cortical contour and the cortical segmentation on
+IPL's render grid of the cortical contour, predicted from the rendered contour alone, and the pore map is pasted back
+onto the input AIM's grid (see "The pore map's grid").
 
 ## Install
 
@@ -66,6 +63,7 @@ from ormir_bqrl import run, run_from_masks
 report = run("scan/SCAN.AIM", "out/SCAN", site="tibia")
 report["summary"]          # BV_TV, Tb_Th_mm, Tb_Sp_mm, Tb_N_per_mm, Ct_Th_mm (+ SDs), Ct_Po, Tb_BMD_mgHA_cm3, Ct_BMD_mgHA_cm3
 report["porosity"]         # Ct_Po, Ct_Po_pore_voxels, Ct_Po_compartment_voxels ({} with compute_porosity=False)
+report["parameters"]["porosity"]["grids"]   # the grids the cascade ran on: render, cort_seg, cascade (dim_xyz, pos_xyz)
 redo = run_from_masks("scan/SCAN.AIM", "out/SCAN", trab="out/SCAN/SCAN_compartments.seg.nrrd")
 ```
 
@@ -89,11 +87,38 @@ Tb.N in particular comes out slightly different.
 | `<base>_PRX_MASK.nii.gz`, `<base>_PRX_GOBJ.nii.gz` | the periosteal mask and its rendered contour |
 | `<base>_CORT_MASK.nii.gz`, `<base>_TRAB_MASK.nii.gz`, `_CORT_GOBJ`, `_TRAB_GOBJ` | the compartment masks and their rendered contours |
 | `<base>_SEG.nii.gz`, `_CORT_SEG`, `_TRAB_SEG` | the segmentation (127 cortical / 126 trabecular) and its two compartments |
-| `<base>_PORE.nii.gz` | the cortical pore map (IPL's PORE.AIM), from the rendered cortical contour and CORT_SEG; absent with `--no-porosity` |
+| `<base>_PORE.nii.gz` | the cortical pore map (IPL's PORE.AIM), from the rendered cortical contour and CORT_SEG on IPL's render grid, pasted back onto the AIM grid; absent with `--no-porosity` |
 | `<base>_TRAB_TH.nii.gz`, `_TRAB_SP`, `_TRAB_1N`, `_CORT_TH` | the distance-transform maps (sphere diameters in voxels, or mm with `--map-units mm`) |
 | `<base>_compartments.seg.nrrd`, `<base>_compartments_labelmap.nii.gz` | the 3D Slicer segmentation (1 cortical, 2 trabecular) |
 | `<base>_report.json`, `.csv`, `.md` | metrics (Ct.Po in `summary` and in the `porosity` block), parameters, provenance of every mask, timings |
 | `<base>_preview.png`, `<base>_pipeline.log` | a preview figure and the log |
+
+## The pore map's grid
+
+The cortical pore cascade depends on the grid it runs on, not only on its inputs: its two slice-wise steps (the 0-5 %
+passes) measure every component against the non-bone voxels of its slice in the working grid, so a larger grid lowers
+the bar and turns a small marrow cavity into a "pore", and where the bone reaches the faces of a tight grid the
+background outside the contour is cut into pieces that each pass as a pore. The workflow therefore runs the cascade
+on the grid IPL runs it on, IPL's render grid of the cortical contour (the grid IPL's `/gobj_to_aim` renders the
+contour onto), which `ipldt.porosity.render_grid` predicts from the rendered contour alone:
+
+- in-plane, per axis: low = the contour's lowest coordinate - 2 (`RENDER_GRID_MARGIN`), clipped at 0; high = the
+  largest, over the contour's slices, of (the slice's highest coordinate + 1 where the slice's extent is even) + 2;
+- in z: the slices that carry the contour;
+- where the grid reaches past the input AIM it is zero-padded; the cortical segmentation sits on the tight box of
+  its voxels.
+
+`ipldt.porosity.pore_cascade_ipl_grid` moves the inputs onto these grids, runs the cascade there, and the pore map is
+pasted back onto the AIM grid by global position; Ct.Po (`ipldt.porosity.ct_po`, the pore voxels over the rendered
+cortical contour) is unchanged. The report records the rule (`parameters.porosity.grid_rule`) and the grids the
+cascade ran on (`parameters.porosity.grids`: `render`, `cort_seg`, `cascade`, each `dim_xyz` / `pos_xyz`; null when
+it did not run); `ipldt-pipeline` writes the same grids under `porosity_grids`.
+
+Validation: on the 137 scans of the paper the predicted grid is IPL's own render grid on 137 of 137. With IPL's
+configuration-A inputs (IPL's rendered cortical contour and cortical segmentation) held on each scan's greyscale-AIM
+grid, as the workflow holds its arrays, and run through the workflow's code, the pore map is identical to IPL's on all
+116 radius and tibia scans and all 21 patellae; run on the plain grid of the input AIM instead, as the code did before
+this rule, it differed from IPL's on 4 of the 137.
 
 ## Correcting masks in 3D Slicer
 
@@ -122,4 +147,7 @@ interchangeable: state which one you report. The paper's comparison with IPL use
 ## Tests
 
 `pytest tests/test_ormir_bqrl_cli.py tests/test_ormir_bqrl_pipeline.py tests/test_ormir_bqrl_porosity.py
-tests/test_ormir_bqrl_slicer.py` (synthetic AIMs; the slow test needs non-public data and skips without it).
+tests/test_ormir_bqrl_slicer.py tests/test_porosity_grid.py` (synthetic AIMs and phantoms; the slow tests need
+non-public data and skip without it). `tests/test_porosity_grid.py` covers the pore cascade's grid: the rule on
+synthetic boxes and random rendered contours, and two phantoms on which the working grid changes the pore map while
+`pore_cascade_ipl_grid` gives the same map whatever grid the inputs are held on.
