@@ -32,6 +32,18 @@ Every redo recomputes everything downstream of the compartments from its own mas
 maps, BMD and the cortical pore cascade (stages.porosity: Ct.Po and <base>_PORE from the redo's G_cort and
 CORT_SEG), so an edited compartment always gets its own pore map.  The run folder may hold NIfTI or AIM volumes
 (map_format of the run); the redo writes in the run's format unless map_format is given.
+
+PARAMETERS.  A redo keeps the run's parameters: the complete set recorded in the run report (report['parameter_set'],
+also <base>_parameters.json) is the redo's starting point, and `site`, `parameters` (a mapping of overrides, a JSON
+file or a complete ipldt.params.Parameters) and `dt_params` override it in that order.  So a redo with no override
+evaluates exactly as its run did, including under non-default parameters (the `_from_run_masks` invariant holds for
+any parameter set).  A report that predates the parameter model (no parameter_set) gives the defaults with its
+recorded site, Step1Params and DTParams, which is what those runs used.  seg.periosteal_mask is workflow-specific:
+a redo of an ipldt-pipeline folder whose run used that workflow's own default ('raw') takes ORMIR-BQRL's
+('rendered'), as it always has; with 'raw', a compartment-only redo masks the SEG with the run folder's
+<base>_PRX_MASK.  An override of a step that does not run in the redo is not applied: a compartment redo runs neither
+STEP 1 nor the autocontour, so step1.* (and `site`) and autocontour.* given to it keep the run's values; a periosteal
+redo does not run the autocontour.  Such values are warned about and listed in report['parameter_set']['not_applied'].
 """
 from __future__ import annotations
 
@@ -39,11 +51,13 @@ import json
 import os
 import time
 from dataclasses import dataclass, field
+from dataclasses import replace as _dc_replace
 from datetime import datetime
 
 import numpy as np
 
 from ipldt import ormir as engine
+from ipldt import params as _pm
 from ipldt.io import write_nifti
 from ipldt.step1 import Step1Params
 
@@ -103,7 +117,7 @@ class EditSpec:
 
 
 # ============================================================================================ the rule
-def derive_compartments(ALL, grid, trab=None, cort=None):
+def derive_compartments(ALL, grid, trab=None, cort=None, min_vertices=None):
     """Script 34 STEP 1 on rasters: exactly one of trab / cort is the edited compartment X (bool on the grid).
     Refuses X outside ALL (EditOutsidePeriosteal, carrying the offending voxels); X_R = R(X) & ALL; the other
     compartment = ALL - X_R.  Returns dict(cort, trab, G_cort, G_trab (the edited one's rendering, the other None
@@ -118,7 +132,7 @@ def derive_compartments(ALL, grid, trab=None, cort=None):
         raise EditOutsidePeriosteal(name, outside)
     if not X.any():
         raise ValueError(f"the edited {name} mask is empty")
-    R = stages.render(X, grid)
+    R = stages.render(X, grid, min_vertices)
     clipped = int((R & ~ALL).sum())
     X_R = R & ALL
     if not X_R.any():
@@ -170,6 +184,41 @@ def run_defaults(run_report):
         dt = engine.DTParams(**{k: P[k] for k in dt_names if k in P})
         units = P.get("map_units", "voxels")
     return site, s1, dt, units
+
+
+def run_parameters(run_report):
+    """(Parameters, preset) a run report records: its parameter_set (reports since 2026-09-26, both workflows), read as
+    its preset plus the values that differ from that preset's and workflow's defaults (ipldt.params.read_params), or,
+    for an older report, the defaults with the recorded site, Step1Params and DTParams (what those runs used).  So a
+    set recorded by ipldt-pipeline whose seg.periosteal_mask is that workflow's own default comes back with None there,
+    and the redo uses ORMIR-BQRL's default (the rendered contour), as a redo of such a folder always did."""
+    site, s1, dt, _ = run_defaults(run_report)
+    ps = run_report.get("parameter_set")
+    if isinstance(ps, dict) and isinstance(ps.get("values"), dict):
+        pf = _pm.read_params(ps)
+        return _pm.Parameters.defaults(pf.preset).override(pf.overrides), pf.preset
+    preset = site if site in _pm.SITES else "tibia"
+    return _pm.Parameters.defaults(preset).replace(step1=s1, dt=dt), preset
+
+
+def _apply_parameters(P, parameters, sources):
+    """P with a redo's `parameters` (None, a mapping, a JSON file path or a complete Parameters) applied.  A complete
+    set (file or mapping) contributes the values that differ from its own preset's defaults (ipldt.params.read_params);
+    its preset does not replace the run's site (a redo takes `site` for that)."""
+    if parameters is None:
+        return P
+    if isinstance(parameters, _pm.Parameters):
+        sources[:] = ["a complete Parameters object"]
+        return parameters
+    if isinstance(parameters, (str, os.PathLike)):
+        pf = _pm.read_params_file(parameters)
+        sources.append(pf.describe())
+        return P.override(pf.overrides)
+    pf = _pm.read_params(parameters)
+    if pf.overrides or pf.complete:                  # a command line's overrides say where they came from
+        sources.append(getattr(parameters, "source", None)
+                       or (pf.describe() if pf.complete else f"{len(pf.overrides)} override(s)"))
+    return P.override(pf.overrides)
 
 
 def run_map_format(run_report):
@@ -227,7 +276,7 @@ def _read_edit(value, grid, select, name, log):
 # ============================================================================================ entry
 def run_from_masks(aim_path, run_dir, out_dir=None, periosteal=None, trab=None, cort=None, site=None, compute_bmd=True,
                    backend="auto", map_units=None, dt_params=None, preview=True, log=None, command=None,
-                   compute_porosity=True, map_format=None):
+                   compute_porosity=True, map_format=None, parameters=None):
     """Re-enter the workflow from corrected masks (the table in the module docstring).
 
     aim_path      the run's AIM
@@ -240,6 +289,8 @@ def run_from_masks(aim_path, run_dir, out_dir=None, periosteal=None, trab=None, 
                   named compartment is extracted -- or an .AIM) or a bool array on the AIM grid
     compute_porosity  rerun the cortical pore cascade on the redo's compartments (Ct.Po, <base>_PORE); default on
     map_format    'nifti' or 'aim' (default: the run's)
+    parameters    overrides of the run's parameter set (a mapping, a JSON file or a complete ipldt.params.Parameters);
+                  the redo starts from the run's recorded set (module docstring, PARAMETERS)
     Returns the report dict (kind 'redo', edits block, provenance with the manual masks marked)."""
     log = log if log is not None else engine.Logger()
     aim_path = os.path.abspath(aim_path)
@@ -251,9 +302,26 @@ def run_from_masks(aim_path, run_dir, out_dir=None, periosteal=None, trab=None, 
         raise ValueError("the periosteal minus one compartment defines the other (Script 34); pass only the compartment you edited")
     run_report, run_report_path = read_run_report(run_dir, base)
     site_run, s1_run, dt_run, units_run = run_defaults(run_report)
+    P_run, preset_run = run_parameters(run_report)
+    P_run = P_run.for_workflow("ormir_bqrl")
     site_name = str(site).lower() if site is not None else site_run
-    step1_params = engine.step1_params_for(site_name) if site is not None else s1_run
-    dt_params = dt_params or dt_run
+    preset = preset_run
+    sources = [f"the run's parameter set ({run_report_path})"]
+    P = P_run
+    if site is not None:
+        P = P.replace(step1=engine.step1_params_for(site_name))
+        preset = site_name
+        sources.append(f"site preset {site_name!r}")
+    P = _apply_parameters(P, parameters, sources)
+    if dt_params is not None:
+        P = P.replace(dt=dt_params)
+        sources.append("dt_params")
+    P = P.for_workflow("ormir_bqrl")
+    if P.step1 != (engine.step1_params_for(site_name) if site_name in _pm.SITES else P_run.step1):
+        site_name = _pm.site_of(P.step1)
+    step1_params, dt_params = P.step1, P.dt
+    R = _pm.Resolved(params=P, site=site_name, preset=site_name if site_name in _pm.SITES else preset,
+                     workflow="ormir_bqrl", sources=tuple(sources))
     map_units = map_units or units_run
     map_format = map_format or run_map_format(run_report)
     stages.check_output_format(map_format, map_units)
@@ -291,39 +359,87 @@ def run_from_masks(aim_path, run_dir, out_dir=None, periosteal=None, trab=None, 
             raise ValueError("the edited periosteal mask is empty")
         prov = edit.prov("periosteal", edit.periosteal.sum())
         ctx = RunContext(kind="redo", periosteal_prov=prov, derived_from=run_report_path, edits=edits, run_masks=run_masks,
-                         log_name="redo")
+                         log_name="redo", param_sources=tuple(sources), param_baseline=P_run)
         return _run_with_params(aim_path, out_dir, site_name, step1_params, edit.periosteal, compute_bmd, backend, map_units,
-                                dt_params, preview, log, command, ctx, compute_porosity=compute_porosity, map_format=map_format)
+                                dt_params, preview, log, command, ctx, compute_porosity=compute_porosity, map_format=map_format,
+                                parameters=P, preset=R.preset)
 
-    # ---- compartment edit (Script 34 STEP 1), with or without a corrected periosteal
+    # ---- compartment edit (Script 34 STEP 1), with or without a corrected periosteal: STEP 1 and the autocontour do
+    # not run, so their values stay the run's (an override of them is not applied; `site` is one)
+    R = _redo_context(R, P_run, site_run, preset_run, grid, compute_bmd, compute_porosity)
     os.makedirs(out_dir, exist_ok=True)
-    return _evaluate(loaded, run_masks, edit, edits, out_dir, site_name, step1_params, dt_params, map_units, compute_bmd,
+    return _evaluate(loaded, run_masks, edit, edits, out_dir, R.site, R.params.step1, R.params.dt, map_units, compute_bmd,
                      backend, preview, log, command, run_report_path, started, t_start, timing,
-                     compute_porosity=compute_porosity, map_format=map_format)
+                     compute_porosity=compute_porosity, map_format=map_format, resolved=R,
+                     seg_periosteal=_seg_periosteal(R.params, edit, run_dir, base, grid, log))
+
+
+def _redo_context(R, P_run, site_run, preset_run, grid, compute_bmd, compute_porosity):
+    """R in the context of a redo that does not run STEP 1 (a compartment redo, _from_run_masks): the steps that run
+    and, for a value of a step that does not run, the run's value (Resolved.in_context with the run's set as the
+    baseline); when that resets the step1 block, the site and preset are the run's again."""
+    steps = {"masks", "hu_volume"} | ({"bmd"} if compute_bmd else set()) | ({"porosity"} if compute_porosity else set())
+    out = R.in_context(steps, baseline=P_run, header_el=grid.el, baseline_label="the run's value")
+    if any(n.startswith("step1.") for n, *_ in out.not_applied):
+        out = _dc_replace(out, site=site_run, preset=site_run if site_run in _pm.SITES else preset_run)
+    return out
+
+
+def _seg_periosteal(P, edit, run_dir, base, grid, log):
+    """The raster seg.periosteal_mask 'raw' masks the SEG with in a compartment redo: the edited periosteal, else the run
+    folder's <base>_PRX_MASK (None when the parameter is 'rendered', or when the folder has none)."""
+    if P.seg.periosteal_mask != "raw":
+        return None
+    if edit.periosteal is not None:
+        return edit.periosteal
+    path = run_volume_path(run_dir, base, "PRX_MASK")
+    if path is None:
+        return None
+    m, _ = slicer.read_mask(path, grid, select=None)
+    log(f"  seg.periosteal_mask 'raw': the SEG assembly is masked with the run's {os.path.basename(path)}")
+    return stages.as_bool(m, grid, "PRX_MASK")
 
 
 def _run_with_params(aim_path, out_dir, site_name, step1_params, P, compute_bmd, backend, map_units, dt_params, preview, log,
-                     command, ctx, compute_porosity=True, map_format="nifti"):
+                     command, ctx, compute_porosity=True, map_format="nifti", parameters=None, preset=None):
     """run() with the Step 1 parameters of the redo: the site's preset when they are one (site name kept), else the
-    run's recorded custom Step1Params (reported as site 'custom')."""
-    preset = engine.SITE_PARAMS.get(site_name)
+    run's recorded custom Step1Params (reported as site 'custom'); `parameters` is the redo's complete parameter set
+    and `preset` the preset its non-default list is taken against (the run's, or the redo's explicit site)."""
+    site_preset = engine.SITE_PARAMS.get(site_name)
     common = dict(periosteal=P, compute_bmd=compute_bmd, backend=backend, map_units=map_units, dt_params=dt_params, preview=preview,
-                  log=log, command=command, compute_porosity=compute_porosity, map_format=map_format, _ctx=ctx)
-    if preset is not None and step1_params == preset:
+                  log=log, command=command, compute_porosity=compute_porosity, map_format=map_format, _ctx=ctx,
+                  parameters=parameters)
+    if site_preset is not None and step1_params == site_preset:
         return run(aim_path, out_dir, site=site_name, **common)
-    return run(aim_path, out_dir, site="tibia", step1_params=step1_params, **common)
+    return run(aim_path, out_dir, site=preset if preset in _pm.SITES else "tibia", step1_params=step1_params, **common)
 
 
 def _evaluate(loaded, run_masks, edit, edits, out_dir, site_name, step1_params, dt_params, map_units, compute_bmd, backend,
               preview, log, command, derived_from, started, t_start, timing, kind="redo", log_name="redo",
-              compute_porosity=True, map_format="nifti"):
-    """The compartment path shared by every redo that does not rerun step 1 (and by _from_run_masks)."""
+              compute_porosity=True, map_format="nifti", resolved=None, seg_periosteal=None):
+    """The compartment path shared by every redo that does not rerun step 1 (and by _from_run_masks).  resolved: the
+    redo's ipldt.params.Resolved (None = the defaults with step1_params / dt_params); seg_periosteal: the raster of
+    seg.periosteal_mask 'raw'."""
     grid, base = loaded.grid, loaded.base
+    R = resolved or _pm.resolve(site_name if site_name in _pm.SITES else "tibia", None, dt_params=dt_params,
+                                step1_params=None if site_name in _pm.SITES else step1_params, workflow="ormir_bqrl")
+    if R.steps is None:                                           # not yet in context: STEP 1 and the autocontour do not run
+        R = R.in_context({"masks", "hu_volume"} | ({"bmd"} if compute_bmd else set())
+                         | ({"porosity"} if compute_porosity else set()), header_el=grid.el)
+    P = R.params
+    mv = P.render.min_vertices
+    if not R.is_default:
+        log(f"PARAMETERS: {R.statement}")
+    for note in P.unverified():
+        log(f"  WARNING: {note}")
+    for note in R.not_applied_notes():
+        log(f"  WARNING: {note}")
+    R.warn_not_applied()
     t = time.time()
     if edit.periosteal is not None:
         if not edit.periosteal.any():
             raise ValueError("the edited periosteal mask is empty")
-        ALL = stages.render(edit.periosteal, grid)                # R(P): exactly what step 3 would have done
+        ALL = stages.render(edit.periosteal, grid, mv)            # R(P): exactly what step 3 would have done
         prx_raw = edit.periosteal
         prov_p = edit.prov("periosteal", prx_raw.sum(), ALL.sum())
         log(f"  periosteal edited: raw {int(prx_raw.sum()):,d} -> rendered contour ALL {int(ALL.sum()):,d} voxels")
@@ -337,10 +453,10 @@ def _evaluate(loaded, run_masks, edit, edits, out_dir, site_name, step1_params, 
         prov_t = Prov("run", path=run_masks.provenance["trabecular"].path, voxels=int(trab.sum()))
     else:
         try:
-            d = derive_compartments(ALL, grid, trab=edit.trab, cort=edit.cort)
+            d = derive_compartments(ALL, grid, trab=edit.trab, cort=edit.cort, min_vertices=mv)
         except EditOutsidePeriosteal as exc:
             p = os.path.join(out_dir, f"{base}_redo_outside.nii.gz")
-            write_nifti(p, exc.outside.astype(np.uint8) * stages.MASK_VALUE, grid.el, grid.pos)
+            write_nifti(p, exc.outside.astype(np.uint8) * int(P.output.mask_value), grid.el, grid.pos)
             log(f"  REFUSED: {exc}; the offending voxels are in {p}")
             edits["outside_periosteal_raw"] = exc.count
             raise
@@ -362,28 +478,33 @@ def _evaluate(loaded, run_masks, edit, edits, out_dir, site_name, step1_params, 
     timing["3_compartments"] = time.time() - t
 
     t = time.time()
-    segmentation, masks.G_cort, masks.G_trab = stages.segment(loaded, ALL, cort, trab, G_cort=G_cort, G_trab=G_trab, log=log)
+    segmentation, masks.G_cort, masks.G_trab = stages.segment(loaded, ALL, cort, trab, G_cort=G_cort, G_trab=G_trab, log=log,
+                                                              parameters=P,
+                                                              prx_raw=seg_periosteal if seg_periosteal is not None else prx_raw)
     timing["4_render_segment"] = time.time() - t
     prov_c.rendered_voxels = int(masks.G_cort.sum())
     prov_t.rendered_voxels = int(masks.G_trab.sum())
 
     t = time.time()
-    morph = stages.morphometry(loaded, segmentation.seg, masks.G_trab, cort, masks.G_cort, dt_params, backend, log)
+    morph = stages.morphometry(loaded, segmentation.seg, masks.G_trab, cort, masks.G_cort, P.dt, backend, log,
+                               parameters=P, trab_seg=segmentation.trab_seg, ALL=ALL)
     timing["5_dt"] = time.time() - t
     bmd = {}
     if compute_bmd:
         t = time.time()
-        bmd = stages.bmd(loaded, masks.G_trab, masks.G_cort, log)
+        bmd = stages.bmd(loaded, masks.G_trab, masks.G_cort, log, parameters=P, trab=trab, cort=cort)
         timing["5b_bmd"] = time.time() - t
     poro = stages.Porosity(pore=None, metrics={})
     if compute_porosity:                                          # the pore cascade reruns on this redo's compartments
         t = time.time()
-        poro = stages.porosity(loaded, masks.G_cort, segmentation.cort_seg, log)
+        poro = stages.porosity(loaded, masks.G_cort, segmentation.cort_seg, log, parameters=P)
         timing["5c_porosity"] = time.time() - t
 
     t = time.time()
     outputs = stages.write_volumes(out_dir, loaded, masks, segmentation, morph, map_units, log, pore=poro.pore,
-                                   map_format=map_format)
+                                   map_format=map_format, mask_value=P.output.mask_value,
+                                   voxel_size_mm=P.morphometry.voxel_size_mm, calibration=P.calibration)
+    outputs["parameters"] = _pm.write_params_file(os.path.join(out_dir, f"{base}_parameters.json"), R, sample=base)
     outputs["log"] = os.path.join(out_dir, f"{base}_{log_name}.log")
     outputs["preview"] = None
     outputs["edit_preview"] = None
@@ -392,12 +513,12 @@ def _evaluate(loaded, run_masks, edit, edits, out_dir, site_name, step1_params, 
         edits["vs_run"] = mask_changes(run_masks, masks)
     timing["total"] = time.time() - t_start
     report = report_mod.build_report(kind=kind, loaded=loaded, masks=masks, segmentation=segmentation, morph=morph, bmd=bmd,
-                                     site=site_name, step1_params=step1_params, step1_info=None, dt_params=dt_params,
+                                     site=site_name, step1_params=P.step1, step1_info=None, dt_params=P.dt,
                                      map_units=map_units, compute_bmd=compute_bmd, outputs=outputs, timing=timing,
                                      started=started, duration_s=timing["total"], command=command, out_dir=out_dir,
                                      derived_from=derived_from, edits=edits,
-                                     calibration_source=engine.step1_calibration(loaded.native, loaded.calib)[1],
-                                     porosity=poro, map_format=map_format)
+                                     calibration_source=engine.step1_calibration(loaded.native, loaded.calib, P.calibration)[1],
+                                     porosity=poro, map_format=map_format, resolved=R)
     if preview:
         try:
             from .preview import write_edit_preview, write_preview
@@ -419,16 +540,26 @@ def _evaluate(loaded, run_masks, edit, edits, out_dir, site_name, step1_params, 
 
 
 def _from_run_masks(aim_path, run_dir, out_dir=None, compute_bmd=True, backend="auto", map_units=None, dt_params=None,
-                    preview=True, log=None, compute_porosity=True, map_format=None):
+                    preview=True, log=None, compute_porosity=True, map_format=None, parameters=None):
     """Internal: the run's own masks, no edits -- reproduces the run bit for bit (SEG, the four maps, the pore
-    map, every metric); the `unchanged redo == run` invariant the tests assert.  Not reachable from
-    run_from_masks, which refuses a call without edits."""
+    map, every metric), under whatever parameter set the run recorded; the `unchanged redo == run` invariant the
+    tests assert.  Not reachable from run_from_masks, which refuses a call without edits."""
     log = log if log is not None else engine.Logger()
     aim_path = os.path.abspath(aim_path)
     run_dir = os.path.abspath(run_dir)
     base = os.path.splitext(os.path.basename(aim_path))[0]
     run_report, run_report_path = read_run_report(run_dir, base)
     site_name, step1_params, dt_run, units_run = run_defaults(run_report)
+    P_run, preset = run_parameters(run_report)
+    P_run = P_run.for_workflow("ormir_bqrl")
+    sources = [f"the run's parameter set ({run_report_path})"]
+    P = _apply_parameters(P_run, parameters, sources)
+    if dt_params is not None:
+        P = P.replace(dt=dt_params)
+        sources.append("dt_params")
+    P = P.for_workflow("ormir_bqrl")
+    R = _pm.Resolved(params=P, site=site_name, preset=site_name if site_name in _pm.SITES else preset, workflow="ormir_bqrl",
+                     sources=tuple(sources))
     map_units = map_units or units_run
     map_format = map_format or run_map_format(run_report)
     stages.check_output_format(map_format, map_units)
@@ -443,10 +574,12 @@ def _from_run_masks(aim_path, run_dir, out_dir=None, compute_bmd=True, backend="
     t = time.time()
     run_masks, _ = read_run_masks(run_dir, base, loaded.grid, log)
     timing["2_read_masks"] = time.time() - t
-    return _evaluate(loaded, run_masks, EditSpec(), None, out_dir, site_name, step1_params, dt_params or dt_run,
+    R = _redo_context(R, P_run, site_name, preset, loaded.grid, compute_bmd, compute_porosity)
+    return _evaluate(loaded, run_masks, EditSpec(), None, out_dir, R.site, R.params.step1, R.params.dt,
                      map_units, compute_bmd, backend, preview, log, None, run_report_path, started, t_start, timing,
-                     compute_porosity=compute_porosity, map_format=map_format)
+                     compute_porosity=compute_porosity, map_format=map_format, resolved=R,
+                     seg_periosteal=_seg_periosteal(R.params, EditSpec(), run_dir, base, loaded.grid, log))
 
 
 __all__ = ["run_from_masks", "derive_compartments", "EditSpec", "EditOutsidePeriosteal", "RULES", "next_redo_dir",
-           "read_run_report", "run_defaults", "run_map_format", "run_volume_path", "read_run_masks"]
+           "read_run_report", "run_defaults", "run_parameters", "run_map_format", "run_volume_path", "read_run_masks"]

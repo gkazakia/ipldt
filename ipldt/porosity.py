@@ -264,9 +264,17 @@ def contour_render(raw_mask, dim=None, pos=None):
 
 
 def pore_cascade(cort_render, cort_seg, slice_fraction=SLICE_FRACTION, min_pore_voxels=MIN_PORE_VOXELS,
-                 hysteresis=None, keep_stages=False):
+                 hysteresis=None, keep_stages=False, max_pore_voxels=0, marrow_rank=(1, 1), marrow_connect_boundary=False,
+                 gobj_peel=0):
     """The Burghardt cortical-pore cascade (Burghardt et al., Bone 2010, Fig. 2) as the standard evaluation
     (Script 32, STEP 2) runs it, command for command.
+
+    Every argument of the script's commands is a parameter, with the script's value as its default (the workflows
+    take them from ipldt.params 'porosity'): slice_fraction (the two /cl_slicewise_extractow passes, %),
+    min_pore_voxels / max_pore_voxels (the final /cl_nr_extract, 0 = no upper bound), hysteresis (the
+    /hysteresis_threshold arguments, merged into SCRIPT32_HYSTERESIS), marrow_rank / marrow_connect_boundary (the
+    /cl_rank_extract of the marrow blob) and gobj_peel (-peel_iter of the two /gobj_maskaimpeel_ow with the cortical
+    contour).
 
     cort_render is /gobj_to_aim of CORT_MASK.GOBJ (IPL_FNAME0) -- IPL's own <base>_CORT_MASK_CT.AIM where
     there is one, otherwise contour_render(raw mask, *IPL's gobj grid); cort_seg is <base>_CORT_SEG.AIM
@@ -319,15 +327,17 @@ def pore_cascade(cort_render, cort_seg, slice_fraction=SLICE_FRACTION, min_pore_
     bckgrnd_C = ops.set_value(cort_render, 0, 125)
     pores_M0 = ops.add_aims(cortseg_CD, bckgrnd_C)
     del cortseg_CD, bckgrnd_C
-    pores_M = ops.cl_ow_rank_extract(pores_M0, 1, 1, connect_boundary=False, value_in_range=2)
-    pores_M = ops.gobj_maskaimpeel_ow(pores_M, cort_render, 0)
+    rank_first, rank_last = (int(r) for r in marrow_rank)
+    connect_boundary = bool(marrow_connect_boundary)
+    pores_M = ops.cl_ow_rank_extract(pores_M0, rank_first, rank_last, connect_boundary=connect_boundary, value_in_range=2)
+    pores_M = ops.gobj_maskaimpeel_ow(pores_M, cort_render, int(gobj_peel))
     cortring_C3 = ops.subtract_aims(cortring_C, pores_M)
 
     # ---- 2nd pore estimate: the label image, then the hysteresis along z
     cortseg_DE = ops.add_aims(pores_E, cortseg_D2)
     cortseg_CDE = ops.add_aims(cortring_C3, cortseg_DE)
     pores_F0 = hysteresis_threshold(cortseg_CDE, **hys)
-    pores_F0 = ops.gobj_maskaimpeel_ow(pores_F0, cort_render, 0)
+    pores_F0 = ops.gobj_maskaimpeel_ow(pores_F0, cort_render, int(gobj_peel))
     pores_F = ops.subtract_aims(pores_F0, ops.set_value(pores_M, 127, 0))
 
     # ---- final estimate: refill the voids the new pores opened up, then drop the tiny components
@@ -335,7 +345,7 @@ def pore_cascade(cort_render, cort_seg, slice_fraction=SLICE_FRACTION, min_pore_
     pores_DF = ops.set_value(pores_DF, 0, 127)                              # invert
     pores_DF = ops.cl_slicewise_extractow(pores_DF, lo_frac, up_frac, value_in_range=SET)
     pores_G = ops.add_aims(pores_F, pores_DF)
-    pores_H = ops.cl_nr_extract(pores_G, int(min_pore_voxels), 0, value_in_range=SET)
+    pores_H = ops.cl_nr_extract(pores_G, int(min_pore_voxels), int(max_pore_voxels), value_in_range=SET)
 
     out = dict(pore=pores_H)
     if keep_stages:
@@ -431,7 +441,7 @@ def render_grid(cort_render, margin=RENDER_GRID_MARGIN, clip_low=0):
     return (hi[0] - lo[0] + 1, hi[1] - lo[1] + 1, z1 - z0 + 1), (lo[0], lo[1], z0)
 
 
-def cascade_grids(cort_render, cort_seg, seg_grid=None):
+def cascade_grids(cort_render, cort_seg, seg_grid=None, margin=RENDER_GRID_MARGIN, clip_low=0):
     """The grids Script 32's pore block works on: (R, S, U) with R = render_grid(cort_render) (the cortical
     contour's /gobj_to_aim grid), S = the grid of CORT_SEG.AIM and U = R united with S, the grid every stage
     from cortseg_CD on -- and the written PORE.AIM -- lives on (pore_cascade works on the union bounding box of
@@ -444,8 +454,8 @@ def cascade_grids(cort_render, cort_seg, seg_grid=None):
     validation, fed IPL's own CORT_SEG); without it S is the tight box of cort_seg's set voxels, which is what
     a workflow has, and lies inside R whenever cort_seg lies inside the contour.  S affects only pores_E,
     which is inert (it turns 0 into 1 and 2 into 3, both on the same side of the hysteresis), so the pore map
-    depends on U alone."""
-    R = render_grid(cort_render)
+    depends on U alone.  margin / clip_low go to render_grid (the defaults are IPL's rule)."""
+    R = render_grid(cort_render, margin, clip_low)
     if R is None:
         raise ValueError("cascade_grids: the cortical contour is empty")
     S = _grid_of(*seg_grid) if seg_grid is not None else tight_grid(cort_seg)
@@ -453,11 +463,12 @@ def cascade_grids(cort_render, cort_seg, seg_grid=None):
     return R, S, _union(R, S)
 
 
-def pore_cascade_ipl_grid(cort_render, cort_seg, seg_grid=None, **kwargs):
+def pore_cascade_ipl_grid(cort_render, cort_seg, seg_grid=None, margin=RENDER_GRID_MARGIN, clip_low=0, **kwargs):
     """pore_cascade on the grids IPL runs it on, whatever grid the inputs are held on (the workflows hold both
     on the whole input AIM): the rendered cortical contour is cut / zero-padded onto render_grid(cort_render)
     and CORT_SEG onto its own grid (cascade_grids), pore_cascade runs there, and the result is returned on the
-    cascade grid U; paste it back with ipldt.io.align_to.  **kwargs go to pore_cascade.
+    cascade grid U; paste it back with ipldt.io.align_to.  margin / clip_low are render_grid's (IPL's
+    rule by default); **kwargs go to pore_cascade.
 
     Why: the cascade is sensitive to its working grid, not only to its inputs' content.  The two slice-wise
     0..5 % passes measure every component against the non-bone voxels of its slice IN THE WORKING GRID, so a
@@ -470,7 +481,7 @@ def pore_cascade_ipl_grid(cort_render, cort_seg, seg_grid=None, **kwargs):
 
     Returns pore_cascade's dict plus render_grid (R), seg_grid (S), grid (U) and cort_render (the contour on
     R, the compartment Ct.Po counts)."""
-    R, S, U = cascade_grids(cort_render, cort_seg, seg_grid)
+    R, S, U = cascade_grids(cort_render, cort_seg, seg_grid, margin, clip_low)
     cr = ops.vol(ops.on_grid(cort_render, *R), *R)
     cs = ops.vol(ops.on_grid(cort_seg, *S), *S)
     lost = int(np.count_nonzero(cort_render["data"])) - int(np.count_nonzero(cr["data"]))
@@ -481,9 +492,11 @@ def pore_cascade_ipl_grid(cort_render, cort_seg, seg_grid=None, **kwargs):
     return out
 
 
-def ct_po(pore, cort_render):
+def ct_po(pore, cort_render, definition="contour", cort_seg=None):
     """Ct.Po as IPL's result sheet prints it: |PORE and CORT_MASK| / |CORT_MASK|, the pore voxels over the
     CORTICAL COMPARTMENT.  Returns dict(ct_po, pore_voxels, pore_in_mask, mask_voxels).
+    definition 'pore_plus_bone' (an opt-in, refuted as the sheet's reading) is |PORE| / (|PORE| + |CORT_SEG|) =
+    Ct.Po.V / (Ct.Po.V + Ct.BV); mask_voxels is then that denominator and cort_seg is required.
 
     This is the reading that reproduces the printed value, not Ct.Po.V / (Ct.Po.V + Ct.BV): it reproduces the
     printed three decimals on all 30 validation scans whose single-measurement result sheet prints Ct.Po (21
@@ -494,6 +507,14 @@ def ct_po(pore, cort_render):
     p = ops.on_grid(pore, dim, pos) != 0
     m = ops.on_grid(cort_render, dim, pos) != 0
     pm, mv = int((p & m).sum()), int(m.sum())
+    if definition == "pore_plus_bone":
+        if cort_seg is None:
+            raise ValueError("ct_po(definition='pore_plus_bone') needs cort_seg")
+        pv, bv = int(p.sum()), int(np.count_nonzero(cort_seg["data"]))
+        return dict(ct_po=(pv / (pv + bv) if pv + bv else float("nan")), pore_voxels=pv, pore_in_mask=pm,
+                    mask_voxels=pv + bv)
+    if definition != "contour":
+        raise ValueError(f"ct_po: definition must be 'contour' or 'pore_plus_bone', not {definition!r}")
     return dict(ct_po=(pm / mv if mv else float("nan")), pore_voxels=int(p.sum()), pore_in_mask=pm,
                 mask_voxels=mv)
 

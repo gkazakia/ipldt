@@ -19,17 +19,18 @@ a report, with manual correction of the masks in 3D Slicer and re-entry from the
 
 Two command-line entry points run the whole chain on a scan. They differ in what else they offer, and in one detail
 of the segmentation: `ormir-bqrl` masks the Laplace-Hamming segmentation with the rendered periosteal contour, as IPL's
-evaluation does, and `ipldt-pipeline` with the autocontour's raw raster, so their SEG and cortical segmentation (and
-what is computed from them) can differ by a few voxels; they agree exactly when rendering leaves the periosteal raster
-unchanged.
+evaluation does, and `ipldt-pipeline` with the autocontour's raw raster (the parameter `seg.periosteal_mask`, see
+"Parameters"), so their SEG and cortical segmentation (and what is computed from them) can differ by a few voxels;
+they agree exactly when rendering leaves the periosteal raster unchanged.
 
 | | `ormir-bqrl run` (the workflow) | `ipldt-pipeline` |
 |---|---|---|
-| Periosteal contour | ORMIR-XCT autocontour, or a mask given with `--periosteal` | ORMIR-XCT autocontour |
+| Periosteal contour | ORMIR-XCT autocontour, or a mask given with `--periosteal` | ORMIR-XCT autocontour, or a mask given with `--periosteal` |
 | Compartments, SEG, Tb.Th / Tb.Sp / Tb.N / Ct.Th maps, BV/TV, BMD | yes | yes |
-| Cortical pore map and Ct.Po | yes (`--no-porosity` skips them) | yes |
+| Cortical pore map and Ct.Po | yes (`--no-porosity` skips them) | yes (`--no-porosity` skips them) |
 | Masks, SEG, pore map and maps written as | NIfTI, or AIM with `--map-format aim` | NIfTI, or AIM with `--map-format aim` |
-| Also written | report (JSON, CSV, Markdown), the greyscale in HU, the 3D Slicer segmentation, a preview | report (JSON, CSV) |
+| Also written | report (JSON, CSV, Markdown), the parameter set, the greyscale in HU, the 3D Slicer segmentation, a preview | report (JSON, CSV), the parameter set |
+| Parameters (`--params FILE`, `--set STAGE.NAME=VALUE`) | every stage | every stage |
 | Correction in 3D Slicer and re-entry (`ormir-bqrl redo`) | yes | no |
 
 Both run the cortical pore cascade on the grid IPL runs it on: IPL's render grid of the cortical contour (the grid
@@ -91,6 +92,7 @@ ormir-bqrl run SCAN.AIM out/ --site tibia          # masks, SEG, pore map, Tb.Th
                                                    # report, Slicer files (NIfTI; --map-format aim for AIMs)
 ormir-bqrl redo SCAN.AIM out/ --trab out/SCAN_compartments.seg.nrrd   # re-enter after correcting the trabecular mask in 3D Slicer
 ormir-bqrl batch results/ a.AIM b.AIM c.AIM        # several scans, with batch_summary.csv
+ormir-bqrl params --describe                       # every parameter, its default and the IPL option it corresponds to
 ormir-bqrl --help
 ipldt-pipeline SCAN.AIM out/ --site tibia --map-format aim   # the same chain, without the Slicer files and re-entry, as AIMs
 ```
@@ -133,16 +135,89 @@ r = cort_trab_separation(grey, per, TIBIA)                       # r["cort"], r[
 with IPL uses that definition. ORMIR-BQRL and `ipldt-pipeline` report Tb.Th on the whole SEG inside the trabecular
 contour, which measures a trabecula cut by the endocortical boundary at its full width; the scripts' definition is
 computed by `ipldt-dt-thickness` on TRAB_SEG, `ipldt-ipl-morphometry --trab-seg` or
-`ipldt.ormir.ipl_morphometry(..., trab_seg=...)` (`dt_thickness` itself takes either object). The two are not
-interchangeable, so state which one you report (`ormir_bqrl/README.md`, "Tb.Th").
-
-Parameters keep IPL's names and defaults (ridge_epsilon 0.9, assign_epsilon 0.5, peel_iter -1, version 3; the
-tibia and radius parameter sets of the evaluation script); see the docstrings of `ipldt.core`, `ipldt.step1` and
-`ipldt.ormir`.
+`ipldt.ormir.ipl_morphometry(..., trab_seg=...)` (`dt_thickness` itself takes either object), and the two workflows
+report it with `--set morphometry.tbth_object=trab_seg`. The two are not interchangeable, so state which one you
+report (`ormir_bqrl/README.md`, "Tb.Th").
 
 **Privacy note.** An AIM written by `ipldt.write_aim`, and so every AIM that `ormir-bqrl` and `ipldt-pipeline` write
 with `--map-format aim`, carries the input AIM's header and processing log, which name the patient and the scan
 dates. Write NIfTI (the default of the command-line tools) or remove the header before sharing outputs.
+
+## Parameters
+
+Every tunable value of every stage is a parameter that you can change, and **the defaults are the configuration that
+was validated against IPL**. The parameters keep IPL's names and values: the tibia (Script 32) and radius (Script 33)
+presets of STEP 1, the contour rendering, the Laplace-Hamming filter and threshold, the SEG assembly, the
+distance-transform parameters (ridge_epsilon 0.9, assign_epsilon 0.5, peel_iter -1, version 3), the objects and grids
+of the dt stage, and the pore cascade. Two defaults depart from IPL's evaluation on purpose, and for each the value
+compared with IPL is IPL's own: both workflows report Tb.Th on the whole SEG (`morphometry.tbth_object=seg`; the
+paper compares IPL's definition, `trab_seg`, see "Tb.Th has two definitions" above), and `ipldt-pipeline` masks the
+segmentation with the periosteal raster (`seg.periosteal_mask=raw`; IPL's evaluation, `ormir-bqrl` and the paper
+use the rendered contour, `rendered`). The parameters are held by `ipldt.params.Parameters`, one checked block per
+stage, 104 in all, each named `STAGE.NAME`:
+
+| Stage | What it holds |
+|---|---|
+| `autocontour` | ORMIR-XCT's periosteal autocontour (`AutocontourKnee`'s periosteal settings and the component) |
+| `calibration` | density slope, intercept, mu scaling and mu of water (default: the AIM's own) |
+| `step1` | Script 32 / 33 STEP 1: the preset values and the script's other literals |
+| `render` | the contour rendering (`min_vertices`) |
+| `lh` | `/fft_laplace_hamming`, `/norm_max` and `/threshold` (in permille), the element sizes, the padding, the border |
+| `seg` | the SEG assembly: component sizes, masks and their peel, order, labels |
+| `dt` | `/dt_thickness`, `/dt_spacing`, `/dt_number` |
+| `morphometry` | the objects of Tb.Th, Ct.Th and BV/TV, the maps computed, the grids, the voxel size of the statistics |
+| `porosity` | the pore cascade (slice fractions, component bounds, hysteresis, grid) and the Ct.Po definition |
+| `bmd` | the masks BMD is averaged in |
+| `output` | the value written into the masks |
+
+```bash
+ormir-bqrl params                          # the complete default set as JSON (--site radius for the radius preset)
+ormir-bqrl params --describe               # a table: name, value, default, IPL option, what it does
+ormir-bqrl run SCAN.AIM out/eps05 --set lh.laplace_eps=0.5 --set seg.cc_min_trab=100
+ormir-bqrl params --set lh.laplace_eps=0.5 --out my_params.json
+ormir-bqrl batch results/ a.AIM b.AIM --params my_params.json
+ormir-bqrl run SCAN.AIM out/again --params out/eps05/SCAN_parameters.json    # repeats that run exactly
+ipldt-pipeline SCAN.AIM out/ --site radius --set porosity.slice_fraction=0,10
+ipldt-pipeline --print-params --describe
+ipldt-dt-thickness TRAB_SEG.AIM TRAB_TH.nii.gz --gobj TRAB_MASK.AIM --set dt.ridge_epsilon=0.8   # the dt stage only
+```
+
+```python
+from ormir_bqrl import run
+from ipldt.params import Parameters
+from ipldt.ormir import run_pipeline
+
+run("SCAN.AIM", "out/eps05", parameters={"lh.laplace_eps": 0.5, "step1": {"close2": 40}})   # overrides
+run("SCAN.AIM", "out/p10", parameters=Parameters.defaults("radius").override({"porosity.min_pore_voxels": 10}))
+report = run_pipeline("SCAN.AIM", "out/x", parameters="my_params.json")                    # a JSON file
+report["parameter_set"]["non_default"]    # [] for the validated defaults; the complete set is in ["values"]
+```
+
+- **Precedence**: the site preset (`--site tibia|radius`) < a parameter file (`--params FILE`, JSON) < the dedicated
+  flags (such as `--ridge-epsilon` or `--lh-voxel-size`) < `--set STAGE.NAME=VALUE` (repeatable). A file may hold only
+  the values to change, nested (`{"lh": {"laplace_eps": 0.5}}`) or dotted (`{"lh.laplace_eps": 0.5}`), or a complete
+  set as `ormir-bqrl params` prints it (a run's `<base>_parameters.json` or its report works too); a complete set is
+  its preset plus its changes, so it repeats its run. The single dt commands take the `dt` stage only. An unknown
+  name or a value of the wrong type, out of range or not among a parameter's choices is a usage error (exit 2) that
+  lists the valid names; in Python every block is checked where a set is built.
+- **Provenance**: every report records the complete effective parameter set, the names that differ from the
+  validated defaults, where the values came from (`sources`: the site preset, the `--params` file, the dedicated
+  flags and the `--set` names) and a one-line statement (`report["parameter_set"]`; the Markdown report of
+  `ormir-bqrl` opens with it), and every run writes `<base>_parameters.json`. A value whose step did not run (for example an
+  `autocontour` value when the periosteal contour is given) is not applied: it is warned about and listed as
+  `not_applied`. A redo starts from the run's recorded parameters.
+- **What was validated**: the defaults of the IPL-derived stages (STEP 1, the contour rendering, the Laplace-Hamming
+  segmentation, the SEG assembly, the dt stage, the pore cascade) are the configuration compared with IPL in the
+  paper, except for the two deliberate departures above, where the paper compared IPL's own value (Tb.Th on
+  TRAB_SEG, `morphometry.tbth_object=trab_seg`; the rendered periosteal contour, `seg.periosteal_mask=rendered`).
+  A report's statement names the departures in effect, and a run that sets either parameter to IPL's value is
+  reported as using IPL's own choice. Any other **non-default value is not validated against IPL**: a run with one
+  says so in its report, and values that no IPL export confirms (such as a `/seg_gauss` sigma other than 2) are also warned about as unverified.
+  The periosteal autocontour and BMD come from ORMIR-XCT at ORMIR-XCT's defaults, which were not compared with IPL.
+- With no override every output is identical to what it was before the parameters could be changed (checked on
+  eleven real scans through both workflows). Fixed rules of IPL's commands that have no setting in IPL either, and
+  IPL options of which only the observed setting is implemented, are not parameters; Supplementary Table S1 gives
+  the defaults and says which of its values can be changed.
 
 ## Tests
 
@@ -200,7 +275,8 @@ the record. `manuscript/README.md` maps every figure, table and fact to its scri
 ## Repository layout
 
 ```
-ipldt/          the package (core distance transforms, IPL commands, STEP 1, contours, Laplace-Hamming, pores, I/O)
+ipldt/          the package (core distance transforms, IPL commands, STEP 1, contours, Laplace-Hamming, pores, I/O,
+                the parameter model ipldt.params)
 ormir_bqrl/     the workflow (pipeline, report, Slicer interchange, redo, preview) and the ormir-bqrl command
 tests/          pytest suite (synthetic phantoms; real-data tests skip without the non-public data)
 validation/     the validation harness and the de-identified per-scan records (validation/results/)

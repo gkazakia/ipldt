@@ -208,7 +208,7 @@ def test_numpy_scalar_params_give_json_native_info(phantom):
     assert np.array_equal(res["cort"]["data"], ref["cort"]["data"])
     assert np.array_equal(res["trab"]["data"], ref["trab"]["data"])
     text = json.dumps(res["info"])
-    assert json.loads(text)["params"] == asdict(TIBIA)
+    assert json.loads(text)["params"] == TIBIA.record() and Step1Params(**json.loads(text)["params"]) == TIBIA
     assert list(res["info"]["counts"]["peel"]) == [0, 6] and type(list(res["info"]["counts"]["peel"])[1]) is int
     assert Step1Params(close2=30.0) == Step1Params(close2=30) and type(Step1Params(close2=30.0).close2) is int
     for bad in (dict(close2=2.5), dict(peel0=float("nan")), dict(sigma=float("inf"))):

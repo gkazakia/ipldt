@@ -57,7 +57,7 @@ ipldt-dt-thickness = "ipldt.workflows.dt_thickness_workflow:main"
 ipldt-dt-spacing = "ipldt.workflows.dt_spacing_workflow:main"
 ipldt-dt-number = "ipldt.workflows.dt_number_workflow:main"
 ipldt-ipl-morphometry = "ipldt.workflows.ipl_morphometry_workflow:main"
-# ORMIR-BQRL, the workflow: run | redo | slicer-export | batch | version (needs the [bqrl] extra).
+# ORMIR-BQRL, the workflow: run | redo | slicer-export | batch | params | version (needs the [bqrl] extra).
 ormir-bqrl = "ormir_bqrl.cli:main"
 
 [tool.setuptools.packages.find]

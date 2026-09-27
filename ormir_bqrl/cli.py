@@ -2,12 +2,26 @@
 
     ormir-bqrl run   <aim> <out_dir> [--site tibia|radius] [--periosteal FILE] [--no-bmd] [--no-porosity]
                      [--backend auto|gpu|cpu] [--map-units voxels|mm] [--map-format nifti|aim] [--subfolder] [--no-preview]
+                     [--params FILE] [--set STAGE.NAME=VALUE ...]
     ormir-bqrl redo  <aim> <run_dir> [--periosteal FILE] [--trab FILE] [--cort FILE] [--site tibia|radius]
                      [--out DIR] [--no-bmd] [--no-porosity] [--backend ...] [--map-units ...] [--map-format ...]
+                     [--params FILE] [--set STAGE.NAME=VALUE ...]
     ormir-bqrl slicer-export <run_dir> [--base BASE] [--out DIR]
     ormir-bqrl batch <out_root> <aim>... [--site] [--no-bmd] [--no-porosity] [--backend] [--map-units] [--map-format]
-                     [--periosteal-dir DIR]
+                     [--periosteal-dir DIR] [--params FILE] [--set STAGE.NAME=VALUE ...]
+    ormir-bqrl params [--site tibia|radius] [--params FILE] [--set STAGE.NAME=VALUE ...] [--describe] [--out FILE]
     ormir-bqrl version
+
+PARAMETERS.  Every tunable value of every stage is a parameter STAGE.NAME (ipldt.params; `ormir-bqrl params
+--describe` lists all of them with the IPL option each one is), and the defaults are the validated IPL configuration
+apart from the deliberate Tb.Th object (the whole SEG; IPL's evaluation script, and the comparison with IPL, use TRAB_SEG).
+`--params FILE` reads a JSON file (the values to change, or a complete set as `ormir-bqrl params` prints it, a run's
+<base>_parameters.json or a run report); `--set lh.laplace_eps=0.5` (repeatable) changes one value.  Precedence: the
+--site preset < --params < --set.  A complete set is its preset plus its changes: without --site its preset is used
+(so `--params <run>/<base>_parameters.json` repeats that run), with --site its changes apply to that site's preset.
+A redo starts from the run's recorded set.  An unknown name or a value of the wrong type is a usage error (exit 2)
+that lists the valid names; a non-default run says so in its report, and a value of a step that does not run (e.g.
+autocontour.* with --periosteal) is warned about and listed as not applied.
 
 Every run writes the masks, SEG, the cortical pore map (PORE) and the dt maps as NIfTI (default) or, with
 --map-format aim, as char AIMs on the input AIM's header (maps as integer diameters in voxels, so not with
@@ -15,18 +29,20 @@ Every run writes the masks, SEG, the cortical pore map (PORE) and the dt maps as
 unless --no-porosity.  <base>_HU.nii.gz, the Slicer files and the report are the same in both formats.
 
 Exit codes: 0; 1 with `Error: <message>` on stderr (as the ipldt workflows do); 2 for argparse usage errors.
-main(argv=None) -> int for in-process use; `python -m ormir_bqrl.cli ...` works too.  The dt parameters are
-Script 32's and have no flags (the Python API takes dt_params=; the report records the values).
+main(argv=None) -> int for in-process use; `python -m ormir_bqrl.cli ...` works too.
 """
 from __future__ import annotations
 
 import argparse
 import csv
+import json
 import os
 import platform
 import sys
 import time
 import traceback
+
+from ipldt import params as _pm
 
 from . import PRODUCT, __version__
 
@@ -38,9 +54,10 @@ PERIOSTEAL_CANDIDATES = ("{base}_PRX_MASK.nii.gz", "{base}_compartments.seg.nrrd
 
 # ------------------------------------------------------------------------------------------ parser
 def _add_common(p, redo=False):
-    p.add_argument("--site", choices=("tibia", "radius"), default=None if redo else "tibia",
-                   help="Script 32 STEP 1 preset: tibia (Script 32, default) or radius (Script 33)"
-                        + ("; a redo needs it only when the periosteal is edited, else the run report's site is used" if redo else ""))
+    p.add_argument("--site", choices=("tibia", "radius"), default=None,
+                   help="Script 32 STEP 1 preset: tibia (Script 32) or radius (Script 33)"
+                        + ("; a redo needs it only when the periosteal is edited (STEP 1 reruns), else the run report's "
+                           "site is used" if redo else "; default tibia, or the preset of a complete --params set"))
     p.add_argument("--no-bmd", action="store_true", help="skip the ORMIR-XCT bmd_masked step")
     p.add_argument("--no-porosity", action="store_true",
                    help="skip the cortical pore cascade (no <base>_PORE, no Ct.Po); by default it runs inside the rendered cortical contour")
@@ -52,6 +69,8 @@ def _add_common(p, redo=False):
                    help="masks, SEG, PORE and dt maps as NIfTI (default) or as char AIMs on the input AIM's header "
                         "(maps in voxels); <base>_HU.nii.gz and the Slicer files are written either way"
                         + ("; default: the run's" if redo else ""))
+    _pm.add_parameter_arguments(p, "; `ormir-bqrl params --describe` lists every name"
+                                + ("; a redo starts from the run's recorded parameters" if redo else ""))
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -110,6 +129,17 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--no-preview", action="store_true", help="skip the preview PNGs")
     _add_common(p)
     p.set_defaults(func=cmd_batch)
+
+    p = sub.add_parser("params", help="print the complete parameter set (the defaults, or with --params / --set applied)",
+                       description="Print the complete effective parameter set as JSON (loadable again with --params): the "
+                                   "--site preset < --params FILE < --set.  --describe prints a table instead: every "
+                                   "parameter with its value, the default where it differs, the IPL option and what it does.")
+    p.add_argument("--site", choices=("tibia", "radius"), default=None,
+                   help="the STEP 1 preset (default tibia, or the preset of a complete --params set)")
+    p.add_argument("--describe", action="store_true", help="a table with the IPL option and documentation of every parameter")
+    p.add_argument("--out", metavar="FILE", default=None, help="write the JSON to FILE instead of printing it")
+    _pm.add_parameter_arguments(p)
+    p.set_defaults(func=cmd_params)
 
     p = sub.add_parser("version", help="print the versions of ORMIR-BQRL, ipldt, ormir_xct, SimpleITK, itk and CuPy")
     p.set_defaults(func=cmd_version)
@@ -238,12 +268,24 @@ def cmd_run(args) -> int:
         raise FileNotFoundError(f"AIM not found: {args.aim}")
     if args.periosteal and not os.path.isfile(args.periosteal):
         raise FileNotFoundError(f"periosteal mask not found: {args.periosteal}")
-    report = run(args.aim, out_dir, site=args.site, periosteal=args.periosteal, compute_bmd=not args.no_bmd,
+    report = run(args.aim, out_dir, site=_site(args), periosteal=args.periosteal, compute_bmd=not args.no_bmd,
                  backend=args.backend, map_units=args.map_units, preview=not args.no_preview,
                  command=getattr(args, "command_line", None), compute_porosity=not args.no_porosity,
-                 map_format=args.map_format)
+                 map_format=args.map_format, **_parameters_kw(args))
     print_summary(report, out_dir)
     return 0
+
+
+def _site(args):
+    """The site to run: --site, else the preset of a complete --params set, else tibia."""
+    return args.site or getattr(args, "param_preset", None) or "tibia"
+
+
+def _parameters_kw(args):
+    """{'parameters': the --params / --set overrides} when any were given, else {} (the call is then exactly the one
+    made before the parameter model)."""
+    ov = getattr(args, "param_overrides", None)
+    return {"parameters": ov} if ov else {}
 
 
 def cmd_redo(args) -> int:
@@ -258,7 +300,7 @@ def cmd_redo(args) -> int:
             raise FileNotFoundError(f"--{name} file not found: {p}")
     kwargs = dict(out_dir=args.out, periosteal=args.periosteal, trab=args.trab, cort=args.cort, site=args.site,
                   compute_bmd=not args.no_bmd, backend=args.backend, command=getattr(args, "command_line", None),
-                  compute_porosity=not args.no_porosity)
+                  compute_porosity=not args.no_porosity, **_parameters_kw(args))
     if args.map_units is not None:
         kwargs["map_units"] = args.map_units
     if args.map_format is not None:
@@ -292,9 +334,12 @@ def cmd_batch(args) -> int:
         with open(log_path, "a", encoding="utf-8") as fh:
             fh.write(line + "\n")
 
-    log(f"{PRODUCT} {__version__} batch: {len(args.aims)} AIM(s) -> {out_root} (site {args.site}, bmd {'off' if args.no_bmd else 'on'}, "
+    ov = getattr(args, "param_overrides", None) or {}
+    site = _site(args)
+    log(f"{PRODUCT} {__version__} batch: {len(args.aims)} AIM(s) -> {out_root} (site {site}, bmd {'off' if args.no_bmd else 'on'}, "
         f"porosity {'off' if args.no_porosity else 'on'}, format {args.map_format}, backend {args.backend}, "
-        f"periosteal-dir {args.periosteal_dir or '-'})")
+        f"periosteal-dir {args.periosteal_dir or '-'}"
+        + (", parameters " + ", ".join(f"{k}={v}" for k, v in ov.items()) if ov else "") + ")")   # a default batch: as before
     for aim in args.aims:
         base = os.path.splitext(os.path.basename(aim))[0]
         out_dir = os.path.join(out_root, base)
@@ -304,16 +349,16 @@ def cmd_batch(args) -> int:
         try:
             if not os.path.isfile(aim):
                 raise FileNotFoundError(f"AIM not found: {aim}")
-            report = run(aim, out_dir, site=args.site, periosteal=periosteal, compute_bmd=not args.no_bmd,
+            report = run(aim, out_dir, site=site, periosteal=periosteal, compute_bmd=not args.no_bmd,
                          backend=args.backend, map_units=args.map_units, preview=not args.no_preview,
                          command=getattr(args, "command_line", None), compute_porosity=not args.no_porosity,
-                         map_format=args.map_format)
+                         map_format=args.map_format, **_parameters_kw(args))
             row = _summary_row(report)
             row.update(status="ok", error="", out_dir=row.get("out_dir") or out_dir)
             n_ok += 1
             log(f"{base}: done in {time.time() - t0:.0f} s")
         except Exception as exc:
-            row = dict(sample=base, site=args.site, kind="run", status="failed", error=f"{type(exc).__name__}: {exc}", out_dir=out_dir)
+            row = dict(sample=base, site=site, kind="run", status="failed", error=f"{type(exc).__name__}: {exc}", out_dir=out_dir)
             log(f"{base}: FAILED after {time.time() - t0:.0f} s -- {type(exc).__name__}: {exc}")
             with open(log_path, "a", encoding="utf-8") as fh:
                 fh.write(traceback.format_exc())
@@ -327,6 +372,9 @@ def cmd_batch(args) -> int:
         if k in columns:
             columns.remove(k)
             columns.insert(0 if k == "sample" else 1, k)
+    if "non_default_parameters" in columns:          # present only for a non-default batch; last, after every other column
+        columns.remove("non_default_parameters")
+        columns.append("non_default_parameters")
     summary_path = os.path.join(out_root, "batch_summary.csv")
     with open(summary_path, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=columns)
@@ -335,6 +383,23 @@ def cmd_batch(args) -> int:
             w.writerow({k: ("" if row.get(k) is None else row.get(k)) for k in columns})
     log(f"batch done: {n_ok}/{len(rows)} succeeded; summary {summary_path}")
     return 0 if n_ok or not rows else 1
+
+
+def cmd_params(args) -> int:
+    R = _pm.resolve(_site(args), args.param_overrides or None, workflow="ormir_bqrl")   # sources: the overrides' own
+    if args.describe:
+        text = R.params.describe(R.reference) + "\n\n" + ("* = differs from the default; this configuration " + R.statement
+                                                           if not R.is_default else "every value is the validated IPL default\n"
+                                                           + R.statement)
+    else:
+        text = json.dumps(_pm.printed_set(R), indent=1)
+    if args.out:
+        with open(args.out, "w", encoding="utf-8") as fh:
+            fh.write(text + "\n")
+        print(f"wrote {os.path.abspath(args.out)}")
+    else:
+        print(text)
+    return 0
 
 
 def cmd_version(args) -> int:
@@ -349,6 +414,12 @@ def main(argv=None) -> int:
     argv_list = list(sys.argv[1:] if argv is None else argv)
     args = parser.parse_args(argv_list)
     args.command_line = ["ormir-bqrl", *argv_list]          # recorded as report['run']['command']
+    if hasattr(args, "set_params"):                          # --params / --set: checked before anything runs
+        try:
+            ap = _pm.parameters_from_args(args)
+        except _pm.ParameterError as exc:
+            parser.error(str(exc))
+        args.param_overrides, args.param_preset = ap.overrides, ap.preset
     try:
         return int(args.func(args))
     except Exception as exc:

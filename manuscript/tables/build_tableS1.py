@@ -6,11 +6,13 @@ shows it.
 The table is the one printed in the Supplement, cell for cell (TABLE_S1 and its caption and note below; the
 Supplement's table was extended and edited by hand after this script first generated it, and since 2026-09-25 this
 script carries the printed version).  Its values are CHECKED against the package at run time, so the printed table
-cannot drift from the code unnoticed: code_rows() derives the value of every parameter from the package
-(ipldt.step1.Step1Params, ipldt.ormir.DTParams and the Laplace-Hamming constants, ipldt.contour, ipldt.core,
-ormir_bqrl), and every number of each derived value must appear in the value cell of the printed row with the same
-module and package name; the cortical-porosity rows are checked against ipldt.porosity (its constants and the calls
-of pore_cascade).  A value that no longer matches the code stops the script, and so does a derived row without a
+cannot drift from the code unnoticed: code_rows() derives the value of every parameter from the package's parameter
+defaults (ipldt.params.Parameters.defaults('tibia' / 'radius'), whose values are in turn checked to equal the module
+constants they are read from: ipldt.step1.Step1Params, ipldt.ormir.DTParams and the Laplace-Hamming / SEG constants,
+ipldt.contour, ipldt.core, ormir_bqrl), and every number of each derived value must appear in the value cell of the
+printed row with the same module and package name; the cortical-porosity rows are checked against the 'porosity'
+defaults and ipldt.porosity (its constants, the defaults of pore_cascade and the calls it makes).  Every parameter can
+be overridden (ipldt.params: the Python API and --params / --set on the command line); the table prints the defaults.  A value that no longer matches the code stops the script, and so does a derived row without a
 printed counterpart.  The panel column follows the supplementary atlas (S1 dense-bone estimate, S2 chamfer-metric
 morphology, S3 compartment chain and site presets, S4 contour rendering, S5 Laplace-Hamming, S6 distance-transform
 engine, S7 dt_spacing / dt_number and the objects of the maps, S8 the derivation method, S9 the cortical pore
@@ -46,6 +48,7 @@ from ipldt import core, ipl_ops, porosity  # noqa: E402
 from ipldt.contour import render as crender, smooth as csmooth  # noqa: E402
 from ipldt.step1 import RADIUS, TIBIA  # noqa: E402
 from ipldt import ormir as engine  # noqa: E402
+from ipldt.params import Parameters  # noqa: E402
 import ormir_bqrl  # noqa: E402
 from ormir_bqrl import stages  # noqa: E402
 
@@ -73,25 +76,50 @@ def num(v):
     return f"{v:g}"
 
 
+# the parameter defaults the table prints (ipldt.params); every one of them can be overridden
+DEFAULTS = {"tibia": Parameters.defaults("tibia"), "radius": Parameters.defaults("radius")}
+
+
 def preset(name):
     """The TIBIA value, or 'tibia / radius' when the two presets differ."""
-    a, b = getattr(TIBIA, name), getattr(RADIUS, name)
+    a, b = getattr(DEFAULTS["tibia"].step1, name), getattr(DEFAULTS["radius"].step1, name)
     return num(a) if a == b else f"{num(a)} / {num(b)}"
 
 
+def _defaults_are_the_constants(D):
+    """The parameter defaults are read from the module constants: check that they still are."""
+    assert D.step1 == TIBIA and DEFAULTS["radius"].step1 == RADIUS
+    assert D.dt == engine.IPL_SCRIPT32
+    assert (D.lh.laplace_eps, D.lh.lp_cut_off_freq, D.lh.hamming_amp, D.lh.norm_max, D.lh.pad_offset, D.lh.dtype) == \
+        (engine.LAPLACE_EPS, engine.LP_CUT_OFF_FREQ, engine.HAMMING_AMP, engine.NORM_MAX_VALUE, engine.LH_PAD_OFFSET, engine.LH_DTYPE)
+    assert D.lh.threshold == engine.LH_THRESHOLD and D.lh.upper_threshold == engine.INT16_MAX
+    assert (D.seg.cc_min_cort, D.seg.cc_min_trab, D.seg.value_cort, D.seg.value_trab) == \
+        (engine.CC_MIN_VOXELS_CORT, engine.CC_MIN_VOXELS_TRAB, engine.SEG_VALUE_CORT, engine.SEG_VALUE_TRAB)
+    assert D.render.min_vertices == crender.MIN_VERTICES and D.output.mask_value == stages.MASK_VALUE == ipl_ops.SET
+    po, hys = D.porosity, porosity.SCRIPT32_HYSTERESIS
+    assert ((po.slice_lo, po.slice_up), po.min_pore_voxels, po.render_grid_margin) == \
+        (tuple(porosity.SLICE_FRACTION), porosity.MIN_PORE_VOXELS, porosity.RENDER_GRID_MARGIN)
+    assert (po.low_thresh, po.high_thresh, po.mode, po.grow_axes) == \
+        (hys["low_thresh"], hys["high_thresh"], hys["mode"], tuple(hys["grow_axes"]))
+    assert D.non_default() == [] and DEFAULTS["radius"].non_default() == []
+
+
 def code_rows():
-    """The value of every parameter as the package derives it (the check of the printed table)."""
-    p1 = TIBIA
-    dt = engine.IPL_SCRIPT32
-    diff_fields = [f.name for f in fields(TIBIA) if getattr(TIBIA, f.name) != getattr(RADIUS, f.name)]
-    assert sorted(diff_fields) == ["close2", "corner_min"], diff_fields
+    """The value of every parameter as the package derives it (the check of the printed table): the parameter
+    defaults of ipldt.params, which _defaults_are_the_constants ties to the module constants."""
+    D = DEFAULTS["tibia"]
+    _defaults_are_the_constants(D)
+    p1 = D.step1
+    dt = D.dt
+    diff_fields = DEFAULTS["radius"].diff(D)
+    assert sorted(diff_fields) == ["step1.close2", "step1.corner_min"], diff_fields
     assert core.dt_thickness.__defaults__ is not None
     ormir_ver = fact("software.ormir_xct.version", "1.1.0")
     n_step1_cmds = 36
     thr_lo = ipl_ops.mgha_to_native(p1.lower_mgha, 1619.07703, -394.095001, 8192.0)
     thr_up = ipl_ops.mgha_to_native(p1.upper_mgha, 1619.07703, -394.095001, 8192.0)
-    lh_thr = engine.LH_THRESHOLD
-    assert lh_thr == int(475 / 1000 * engine.INT16_MAX), lh_thr
+    lh_thr = D.lh.threshold
+    assert lh_thr == int(D.lh.lower_permille / 1000 * engine.INT16_MAX) == int(475 / 1000 * engine.INT16_MAX), lh_thr
 
     rows = []
 
@@ -218,7 +246,7 @@ def code_rows():
         "counter-clockwise Moore trace from the raster-first pixel, entered from the west; one outer chain per "
         "8-connected component, one inner chain per 4-connected hole", "the polygon of each stored contour",
         "S4D")
-    row(M, "/togobj_from_aim -min_elements (0 = no user minimum)", "MIN_VERTICES", num(crender.MIN_VERTICES),
+    row(M, "/togobj_from_aim -min_elements (0 = no user minimum)", "MIN_VERTICES", num(D.render.min_vertices),
         "a chain left with fewer vertices after smoothing is not stored, so its component or hole disappears from "
         "the rendering", "S4J")
     row(M, "\u2014", "MAX_SWEEPS", f"{num(csmooth.MAX_SWEEPS)} (or the length of the chain if larger)",
@@ -235,26 +263,26 @@ def code_rows():
         "1 voxel, values copied from the face", "the border added around the volume before the transform",
         "S5D")
     row(M, "/fft_laplace_hamming -redim_pow2 (0 0 0 in the evaluation script: each axis to the next power of two)", "lh_pad_plan, LH_PAD_OFFSET",
-        f"'{engine.LH_PAD_OFFSET}': each axis padded to the next power of two with the mirror image of the data "
+        f"'{D.lh.pad_offset}': each axis padded to the next power of two with the mirror image of the data "
         "(face voxel not repeated); when the padding is odd, the extra voxel goes before the data",
         "where the volume sits inside the transform box and what fills the rest of it", "S5D")
-    row(M, "/fft_laplace_hamming -laplace_eps", "LAPLACE_EPS", num(engine.LAPLACE_EPS),
+    row(M, "/fft_laplace_hamming -laplace_eps", "LAPLACE_EPS", num(D.lh.laplace_eps),
         "weight of the Laplacian term of the transfer function H(k) = (2\u03c0)\u00b2 [(1 \u2212 \u03b5) + "
         "\u03b5 |k|\u00b2] \u00d7 window", "S5A")
-    row(M, "/fft_laplace_hamming -lp_cut_off_freq", "LP_CUT_OFF_FREQ", f"{num(engine.LP_CUT_OFF_FREQ)} (in units of "
+    row(M, "/fft_laplace_hamming -lp_cut_off_freq", "LP_CUT_OFF_FREQ", f"{num(D.lh.lp_cut_off_freq)} (in units of "
         "1 / el_z, i.e. a radial cut-off of 0.3 / el_z cycles per mm)",
         "the radial low-pass cut-off of the window", "S5B")
-    row(M, "/fft_laplace_hamming -hamming_amp", "HAMMING_AMP", f"{num(engine.HAMMING_AMP)} (a Hann window)",
+    row(M, "/fft_laplace_hamming -hamming_amp", "HAMMING_AMP", f"{num(D.lh.hamming_amp)} (a Hann window)",
         "the window: (1 \u2212 a/2) + (a/2) cos(\u03c0 |k| / k_c) inside the cut-off, 0 outside", "S5C")
     row(M, "/fft_laplace_hamming element sizes (from the AIM header)", "lh_voxel_size_mm = None",
         "the header's (x, y, z) element sizes", "the frequency grid per axis, k_i = fftfreq(n_i, el_i): the filter "
         "is anisotropic when the element sizes differ", "S5B")
-    row(M, "\u2014", "LH_DTYPE", f"{engine.LH_DTYPE} (float64 selectable)",
+    row(M, "\u2014", "LH_DTYPE", f"{D.lh.dtype} (float64 selectable)",
         "the precision of the padded volume, the transfer function and the forward and inverse transforms",
         "S5D, S5E")
     row(M, "/norm_max -max 200000 -type_out short", "NORM_MAX_VALUE, INT16_MAX",
-        f"{num(engine.NORM_MAX_VALUE)} \u2192 {num(engine.INT16_MAX)}; short = trunc(float32(lh) \u00d7 "
-        f"{num(engine.INT16_MAX)} / {num(engine.NORM_MAX_VALUE)}) after clipping",
+        f"{num(D.lh.norm_max)} \u2192 {num(engine.INT16_MAX)}; short = trunc(float32(lh) \u00d7 "
+        f"{num(engine.INT16_MAX)} / {num(D.lh.norm_max)}) after clipping",
         "scales the float filter output to the int16 range with truncation", "S5E")
     row(M, "/threshold -lower_in_perm 475 -upper_in_perm 1000", "LH_THRESHOLD",
         f"{num(lh_thr)} .. {num(engine.INT16_MAX)} (475 \u2030 of {num(engine.INT16_MAX)})",
@@ -262,15 +290,15 @@ def code_rows():
     row(M, "/gobj_maskaimpeel_ow with the periosteal contour, -peel_iter 0", "ipl_seg_assembly (periosteal argument)",
         "the rendered periosteal contour", "restricts the thresholded volume to the bone before the component "
         "filters", "S5F")
-    row(M, "/cl_nr_extract -min_number (cortical segmentation)", "CC_MIN_VOXELS_CORT", num(engine.CC_MIN_VOXELS_CORT),
+    row(M, "/cl_nr_extract -min_number (cortical segmentation)", "CC_MIN_VOXELS_CORT", num(D.seg.cc_min_cort),
         "6-connected components smaller than this are dropped before the cortical contour is applied", "S5F")
-    row(M, "/cl_nr_extract -min_number (trabecular segmentation)", "CC_MIN_VOXELS_TRAB", num(engine.CC_MIN_VOXELS_TRAB),
+    row(M, "/cl_nr_extract -min_number (trabecular segmentation)", "CC_MIN_VOXELS_TRAB", num(D.seg.cc_min_trab),
         "the same filter before the trabecular contour is applied", "S5F")
     row(M, "/gobj_maskaimpeel_ow with the cortical / trabecular contour, -peel_iter 0", "ipl_seg_assembly (G_cort, G_trab)",
         "the rendered compartment contours", "splits the filtered segmentation into its cortical and trabecular "
         "parts", "S5F")
     row(M, "/set_value and /add_aims (SEG assembly)", "SEG_VALUE_CORT, SEG_VALUE_TRAB",
-        f"{engine.SEG_VALUE_CORT} / {engine.SEG_VALUE_TRAB}", "the label values of cortical and trabecular bone in "
+        f"{D.seg.value_cort} / {D.seg.value_trab}", "the label values of cortical and trabecular bone in "
         "the assembled segmentation", "S5F")
 
     # ------------------------------------------------------------------------------------------ dt engine
@@ -353,7 +381,7 @@ def code_rows():
     row(M, "\u2014", "--no-bmd", "BMD computed by default", "skips the ORMIR-XCT BMD step", "\u2014")
     row(M, "\u2014", "--no-porosity", "pore cascade and Ct.Po computed by default", "skips the cortical pore cascade and Ct.Po", "\u2014")
     row(M, "\u2014", "--map-format", "nifti | aim (default nifti; AIM maps in voxels, on the input header)", "the file format of the written masks, pore map and maps", "\u2014")
-    row(M, "\u2014", "write_volumes / MASK_VALUE", f"NIfTI (or AIM, --map-format aim) on the AIM grid, masks written as 0 / {num(stages.MASK_VALUE)}; "
+    row(M, "\u2014", "write_volumes / MASK_VALUE", f"NIfTI (or AIM, --map-format aim) on the AIM grid, masks written as 0 / {num(D.output.mask_value)}; "
         "the pore map; 3D Slicer segmentation (.seg.nrrd) and labelmap; report as JSON, CSV and Markdown; preview PNG; run log",
         "the output set of a run", "Fig. 1, stage 8")
     row(M, "Script 34 re-entry", "run_from_masks (redo)",
@@ -368,7 +396,17 @@ def code_rows():
 CAPTION = ('**Supplementary Table S1.** Every parameter of ipldt and ORMIR-BQRL: the IPL option or command it '
            'corresponds to, its name in the package, its value (TIBIA / RADIUS where the two site presets '
            'differ), what it controls and the supplementary panel that shows it.')
-NOTE = ('Values are those of the package (ipldt 1.0.0, ORMIR-BQRL 0.1.0). TIBIA is the preset of the standard '
+NOTE = ('Values are those of the package (ipldt 1.0.0, ORMIR-BQRL 0.1.0) and are its defaults. A value that is a '
+        'parameter of the package can be changed by the user, through the Python API and on the command line '
+        '(--params / --set; ormir-bqrl params --describe lists every parameter with the IPL option it corresponds '
+        'to); a row that describes a fixed rule of a command, or an IPL option of which the package implements '
+        'only the setting shown (-topology 6, -metric 11, -curvature_smooth 1, -unit 5), cannot be changed. The '
+        "defaults of the IPL-derived stages are the values validated against IPL, except two deliberate choices that "
+        "every report names: the workflows take Tb.Th on the whole segmentation (the comparison with IPL used "
+        "TRAB_SEG, which morphometry.tbth_object restores), and ipldt-pipeline masks the segmentation with the "
+        "periosteal raster rather than its rendered contour (seg.periosteal_mask); the periosteal contour "
+        "(ORMIR-XCT) and BMD rows give ORMIR-XCT's defaults, which were not compared with IPL. TIBIA is the "
+        'preset of the standard '
         'tibia evaluation script (Script 32), RADIUS that of the radius script (Script 33); a single value '
         'applies to both. Rows whose IPL entry carries no option name describe a fixed rule of the command '
         'with no user setting; "—" marks a package setting with no IPL counterpart or a rule with no '
@@ -1033,24 +1071,37 @@ def check_against_code(printed):
         missing = [x for x in numbers(r[COLS[3]]) if x not in numbers(p[3])]
         if missing:
             problems.append(f"{k}: the code gives {missing}, the printed value is {p[3]!r}")
-    # the cortical pore cascade (Script 32 STEP 2): the constants and the calls pore_cascade makes
+    # the cortical pore cascade (Script 32 STEP 2): the parameter defaults, the defaults of pore_cascade (the same
+    # values) and the calls pore_cascade makes
     M = "Cortical porosity (Ct.Po)"
     hys, cascade = porosity.SCRIPT32_HYSTERESIS, inspect.getsource(porosity.pore_cascade)
+    po = DEFAULTS["tibia"].porosity
     expect = {
-        "SLICE_FRACTION[0]": num(porosity.SLICE_FRACTION[0]), "SLICE_FRACTION[1]": num(porosity.SLICE_FRACTION[1]),
-        "MIN_PORE_VOXELS": num(porosity.MIN_PORE_VOXELS), "low_thresh": num(hys["low_thresh"]),
-        "high_thresh": num(hys["high_thresh"]), "unit": num(hys["unit"]), "mode": num(hys["mode"]),
-        "grow_axes": " ".join(num(g) for g in hys["grow_axes"]),
-        "RENDER_GRID_MARGIN": num(porosity.RENDER_GRID_MARGIN),
+        "SLICE_FRACTION[0]": num(po.slice_lo), "SLICE_FRACTION[1]": num(po.slice_up),
+        "MIN_PORE_VOXELS": num(po.min_pore_voxels), "low_thresh": num(po.low_thresh),
+        "high_thresh": num(po.high_thresh), "unit": num(hys["unit"]), "mode": num(po.mode),
+        "grow_axes": " ".join(num(g) for g in po.grow_axes),
+        "RENDER_GRID_MARGIN": num(po.render_grid_margin),
     }
+    sig = inspect.signature(porosity.pore_cascade).parameters
+    for name, val in (("max_pore_voxels", po.max_pore_voxels), ("marrow_rank", (po.marrow_rank_first, po.marrow_rank_last)),
+                      ("marrow_connect_boundary", po.marrow_connect_boundary), ("gobj_peel", po.gobj_peel),
+                      ("slice_fraction", (po.slice_lo, po.slice_up)), ("min_pore_voxels", po.min_pore_voxels)):
+        got = tuple(sig[name].default) if isinstance(val, tuple) else sig[name].default
+        if got != val:
+            problems.append(f"{M}: pore_cascade's default {name}={sig[name].default!r} is not the parameter default {val!r}")
+    if (po.max_pore_voxels, po.marrow_rank_first, po.marrow_rank_last, po.marrow_connect_boundary, po.gobj_peel) != (0, 1, 1, False, 0):
+        problems.append(f"{M}: the printed script literals (max_number 0, rank 1..1, connect_boundary false, peel 0) "
+                        f"are not the parameter defaults")
     for name, val in expect.items():
         p = by_key.get((M, name))
         if p is None or not (p[3] == val or p[3].startswith(val + " ")):
             problems.append(f"{M} / {name}: the code gives {val!r}, the printed value is {p[3] if p else None!r}")
     calls = ["cl_slicewise_extractow(pores_E, lo_frac, up_frac, value_in_range=1)",
              "cl_slicewise_extractow(pores_DF, lo_frac, up_frac, value_in_range=SET)",
-             "cl_ow_rank_extract(pores_M0, 1, 1, connect_boundary=False, value_in_range=2)",
-             "cl_nr_extract(pores_G, int(min_pore_voxels), 0, value_in_range=SET)",
+             "cl_ow_rank_extract(pores_M0, rank_first, rank_last, connect_boundary=connect_boundary, value_in_range=2)",
+             "cl_nr_extract(pores_G, int(min_pore_voxels), int(max_pore_voxels), value_in_range=SET)",
+             "gobj_maskaimpeel_ow(pores_M, cort_render, int(gobj_peel))",
              "set_value(cort_render, 2, 0)", "set_value(cort_seg, 125, 0)"]
     problems += [f"{M}: pore_cascade no longer calls {c}" for c in calls if c not in cascade]
     if hys["value_in_range"] != porosity.SET or num(porosity.SET) != "127":

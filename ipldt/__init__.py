@@ -23,6 +23,13 @@ IPL commands in ipldt.ipl_ops).  Agreement with IPL V5.42 is reported voxel for 
 
 Parameters are IPL's: ridge_epsilon (0.9), assign_epsilon (0.5), peel_iter (-1),
 version (3); see ipldt.core for what each one does.
+
+Every tunable value of the whole workflow (STEP 1, rendering, Laplace-Hamming, SEG assembly, the dt stage, the pore
+cascade, ...) is one parameter of ipldt.params.Parameters, whose defaults are the validated IPL configuration apart from the deliberate departures that every report names
+(Tb.Th on the whole SEG among them):
+
+    from ipldt.params import Parameters
+    P = Parameters.defaults("tibia").override({"lh.laplace_eps": 0.5})     # ipldt.Parameters works too
 """
 from .core import DTResult, diameters, draw_spheres, dt_number, dt_spacing, dt_thickness, peel_gobj, ridge, statistics, surface_distance, surface_vector
 from .field import sir_quad
@@ -33,6 +40,16 @@ from . import ipl_ops
 from . import porosity
 
 __version__ = "1.0.0"
+
+
+def __getattr__(name):
+    """ipldt.params / ipldt.Parameters on first use (the module imports ipldt.ormir, which ipldt itself does not)."""
+    if name in ("params", "Parameters"):
+        import importlib
+        mod = importlib.import_module(".params", __name__)
+        return mod if name == "params" else mod.Parameters
+    raise AttributeError(f"module 'ipldt' has no attribute {name!r}")
+
 __all__ = ["dt_thickness", "dt_spacing", "dt_number", "DTResult", "sir_quad", "ridge", "diameters", "draw_spheres",
            "peel_gobj", "statistics", "surface_distance", "surface_vector", "render_volume", "read_gobj",
            "read_aim", "align_to", "write_aim", "write_map", "write_nifti", "porosity",

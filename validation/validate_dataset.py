@@ -50,8 +50,8 @@ WHAT THE RADIUS / TIBIA LAYOUT ENCODES (from the six IPL logs and the AIM proces
     1/Tb.N 176,890 -> 1,434 alongside -- and it is corroborated by IPL's own text three ways: the DT input-object
     count recovered from each delivered TRAB_TH's processing log matches the uncropped object to 0..8 voxels of
     2.8-15.1 M and never the cropped one (off by 12-94 %), 581203's two evaluation logs print 0.207404 mm / 99.1 % valid
-    for the run whose mask succeeded and 0.233023 mm / 88.5 % for the run where it did not take effect while the delivered map's
-    own proclog says 0.23302, and every delivered map's printed statistics follow suit.  The same model is WRONG on
+    for the run in which the mask took effect and 0.233023 mm / 88.5 % for the run in which it did not, while the
+    delivered map's own proclog says 0.23302, and every delivered map's printed statistics follow suit.  The same model is WRONG on
     the other 106 (950609: TRAB_SEG exact, unmasked 2,483 Tb.Th mismatches), so the detection is measurement-specific.
     The per-measurement --trab-th auto therefore no longer finds a second definition anywhere: with the missing crop
     modelled the two candidate objects COINCIDE on the eleven, and all 117 resolve to the scripts' TRAB_SEG.  The
@@ -716,7 +716,7 @@ def parse_eval_log(path):
                       610892's and 581203's SECOND runs the script starts at STEP 2 in a fresh IPL session, so its
                       '-input cort' names an object only STEP 1 creates and IPL's log reports it as undefined: the
                       Laplace-Hamming input has no border.
-      seg_variant     'periosteal_first' when the first /gobj_maskaimpeel_ow that succeeded precedes the first
+      seg_variant     'periosteal_first' when the first /gobj_maskaimpeel_ow that took effect precedes the first
                       /cl_nr_extract, 'gobj_first' when the labelling comes first; None when the log cannot say.
       trab_seg_mask   'gobj' when the /gobj_maskaimpeel_ow with the trabecular contour that follows the labelling
                       took effect, 'none' when it did not (610892 / 581203 run 2: the log reports '-input_output trab_gauss' as
@@ -1327,7 +1327,7 @@ def process_measurement(meas, args, cache_dir, inventory=None):
                                                           "name_notes") if k in idn},
                                 calibration=inv_entry.get("calibration"), plan=dict(status=(inv_entry.get("plan") or {}).get("status")))
     preset = meas.preset_name(args.site_override)
-    rec["preset"] = dict(name=preset, params=dict(SITE_PARAMS[preset].__dict__), source=("override" if args.site_override not in (None, "auto") else "layout rule"))
+    rec["preset"] = dict(name=preset, params=SITE_PARAMS[preset].record(), source=("override" if args.site_override not in (None, "auto") else "layout rule"))
     seg_ipl = inp.vol("seg")
     rec["seg_missing"] = seg_ipl is None
     if seg_ipl is None:
@@ -1478,7 +1478,7 @@ def process_measurement(meas, args, cache_dir, inventory=None):
         if T2["score"] < 0.5 * T["score"]:
             preset, T = other, T2
             rec["B"]["step1"] = step1_info(T["info"], preset)
-            rec["preset"].update(name=preset, params=dict(SITE_PARAMS[preset].__dict__), source="fallback (better rendering match)")
+            rec["preset"].update(name=preset, params=SITE_PARAMS[preset].record(), source="fallback (better rendering match)")
             rec["notes"].append(f"preset fallback: {other} matches IPL's renderings better than the layout rule's choice")
         del T2
     rec["timings"]["render_B"] = T["render_s"]
@@ -2242,8 +2242,8 @@ def main(argv=None):
     ap.add_argument("--trab-th", default="auto", choices=["trab_seg", "seg", "auto"],
                     help="which object the REPORTED Tb.Th is computed on for the comparison against IPL. 'auto' (the default) "
                          "decides per measurement, from configuration A, which of the two definitions reproduces the Tb.Th map "
-                         "IPL actually exported for that measurement, and compares like with like against it. With the failed "
-                         "trabecular crop modelled (trab_seg_mask 'none') the two definitions coincide on the measurements that "
+                         "IPL actually exported for that measurement, and compares like with like against it. With the uncropped "
+                         "TRAB_SEG modelled (trab_seg_mask 'none') the two definitions coincide on the measurements that "
                          "had selected the whole SEG, so this is no longer a live per-measurement choice; it is kept for provenance. "
                          "'trab_seg' forces the definition Scripts 32, 33 and 34 use: /dt_thickness reads IPL_FNAME5 = "
                          "TRAB_SEG, cropped to the trabecular gobj. 'seg' forces the whole SEG cropped to the trabecular gobj, "

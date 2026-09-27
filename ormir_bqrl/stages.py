@@ -11,6 +11,12 @@ stage functions themselves.  Every numeric step is an ipldt.ormir public functio
     write_volumes write_volume (NIfTI via ipldt.io.write_nifti, or AIM via ipldt.io.write_aim with the input
                   AIM's header) + the Slicer files (ormir_bqrl.slicer)
 
+Every stage takes the run's parameter set (ipldt.params.Parameters, `parameters=`; None = the validated IPL defaults)
+and reads its values from it, never from the engine's module constants: the autocontour, STEP 1 (with the renderer's
+minimum chain length and the calibration overrides), the Laplace-Hamming / SEG blocks (ipldt.ormir.lh_segment), the dt
+stage (ipldt.ormir.dt_stage), BMD, the pore cascade and the written mask value.  With the defaults every stage makes
+exactly the calls it made before the parameter model.
+
 `segment` is step4_render_and_segment with one addition: a gobj that is passed in is not rendered again (the
 redo passes the rendering of an edited compartment as its own gobj).  The SEG assembly is masked with the
 RENDERED periosteal contour (ALL = CORT_MASK | TRAB_MASK = IPL's /gobj seg GOBJ0 peel 0), which is the one
@@ -40,6 +46,7 @@ from functools import cached_property
 import numpy as np
 
 from ipldt import ormir as engine
+from ipldt import params as _pm
 from ipldt.io import align_to, to_sitk, write_nifti
 from ipldt.step1 import Step1Params
 
@@ -213,10 +220,16 @@ def mask_image(mask, grid):
     return engine.array_to_sitk(np.asarray(mask, bool).astype(np.uint8), grid.ref_image)
 
 
-def render(mask, grid):
+def render(mask, grid, min_vertices=None):
     """IPL's /togobj_from_aim -curvature_smooth 1 followed by /gobj_to_aim of a raster: what IPL sees of any
-    contour (ipldt.ormir.render_on_own_box, on the raster's bounding box)."""
-    return engine.render_on_own_box(np.asarray(mask, bool), grid.pos)
+    contour (ipldt.ormir.render_on_own_box, on the raster's bounding box; min_vertices = parameters
+    'render.min_vertices', None = IPL's rule)."""
+    return engine.render_on_own_box(np.asarray(mask, bool), grid.pos, min_vertices)
+
+
+def _params(parameters):
+    """The run's parameter set: a Parameters as given, else the validated defaults (ORMIR-BQRL's workflow defaults)."""
+    return (parameters if parameters is not None else _pm.Parameters()).for_workflow("ormir_bqrl")
 
 
 def check_output_format(map_format, map_units, native=None):
@@ -247,14 +260,23 @@ def load(aim_path, log=None):
     return Loaded(aim_path=aim_path, base=base, grid=grid, native=native, img_hu=img_hu, hu_int16=hu_int16, calib=calib)
 
 
-def autocontour(loaded, log=None):
-    """(2) ORMIR-XCT's autocontour -> the periosteal raster (bool on the grid)."""
-    prx = engine.step2_autocontour(loaded.img_hu, loaded.calib, _log(log))
+def autocontour(loaded, log=None, parameters=None):
+    """(2) ORMIR-XCT's autocontour -> the periosteal raster (bool on the grid).  parameters: the 'autocontour' block and
+    the calibration overrides of the run's Parameters (ipldt.ormir.calibrated_hu: the HU image and the calibration
+    the conversion uses); the defaults make the call made before the parameter model."""
+    P = _params(parameters)
+    hu, calib = engine.calibrated_hu(loaded.img_hu, loaded.native, loaded.calib, P.calibration)
+    if P.autocontour == _pm.AutocontourParams():
+        prx = engine.step2_autocontour(hu, calib, _log(log))
+    else:
+        prx = engine.step2_autocontour(hu, calib, _log(log), params=P.autocontour)
     return as_bool(prx, loaded.grid, "periosteal mask")
 
 
-def compartments(loaded, prx_raw, params, log=None):
+def compartments(loaded, prx_raw, params, log=None, parameters=None):
     """(3) Script 32 / 33 STEP 1 from the periosteal raster (rendered on its box inside step 3 = stage 00).
+    params is the Step1Params; parameters (the run's Parameters) supplies the calibration overrides and the
+    renderer's minimum chain length.
     Returns (cort, trab, ALL, info): bool rasters on the grid, ALL = cort | trab = the rendered periosteal."""
     log = _log(log)
     grid = loaded.grid
@@ -263,7 +285,9 @@ def compartments(loaded, prx_raw, params, log=None):
         raise ValueError("the periosteal mask is empty: nothing to separate")
     if not isinstance(params, Step1Params):
         raise TypeError(f"params must be an ipldt.step1.Step1Params, not {type(params).__name__}")
-    cort_img, trab_img, info = engine.step3_trab_cort_seg(loaded.native, mask_image(prx_raw, grid), params, loaded.calib, log)
+    P = _params(parameters)
+    cort_img, trab_img, info = engine.step3_trab_cort_seg(loaded.native, mask_image(prx_raw, grid), params, loaded.calib, log,
+                                                          calibration=P.calibration, min_vertices=P.render.min_vertices)
     cort = engine.sitk_to_bool(cort_img)
     trab = engine.sitk_to_bool(trab_img)
     ALL = cort | trab
@@ -275,11 +299,15 @@ def compartments(loaded, prx_raw, params, log=None):
     return cort, trab, ALL, info
 
 
-def segment(loaded, ALL, cort, trab, G_cort=None, G_trab=None, log=None):
+def segment(loaded, ALL, cort, trab, G_cort=None, G_trab=None, log=None, parameters=None, prx_raw=None):
     """(4) render the compartment contours that are not given (IPL's togobj_from_aim on each mask's own box),
     Laplace-Hamming threshold of the native int16 volume with the header's per-axis element sizes (IPL's rule),
-    IPL's SEG assembly masked with the rendered periosteal ALL.  Returns (Segmentation, G_cort, G_trab)."""
+    IPL's SEG assembly masked with the rendered periosteal ALL.  Returns (Segmentation, G_cort, G_trab).
+    parameters: the run's Parameters ('render', 'lh', 'seg'); seg.periosteal_mask 'raw' masks the assembly with
+    prx_raw (the periosteal raster) instead of ALL."""
     log = _log(log)
+    P = _params(parameters)
+    mv = P.render.min_vertices
     grid = loaded.grid
     ALL = as_bool(ALL, grid, "periosteal contour")
     cort = as_bool(cort, grid, "cortical mask")
@@ -287,13 +315,13 @@ def segment(loaded, ALL, cort, trab, G_cort=None, G_trab=None, log=None):
     log("STEP 4 - rendering contours (IPL togobj_from_aim -curvature_smooth 1 + gobj rasterisation) ...")
     t = time.time()
     if G_cort is None:
-        G_cort = render(cort, grid)
+        G_cort = render(cort, grid, mv)
         log(f"  cort: raw raster {int(cort.sum()):,d} -> rendered gobj {int(G_cort.sum()):,d} voxels")
     else:
         G_cort = as_bool(G_cort, grid, "cortical gobj")
         log(f"  cort: gobj given ({int(G_cort.sum()):,d} voxels), not re-rendered")
     if G_trab is None:
-        G_trab = render(trab, grid)
+        G_trab = render(trab, grid, mv)
         log(f"  trab: raw raster {int(trab.sum()):,d} -> rendered gobj {int(G_trab.sum()):,d} voxels")
     else:
         G_trab = as_bool(G_trab, grid, "trabecular gobj")
@@ -301,43 +329,51 @@ def segment(loaded, ALL, cort, trab, G_cort=None, G_trab=None, log=None):
     log(f"  periosteal: rendered contour ALL {int(ALL.sum()):,d} voxels (= CORT_MASK | TRAB_MASK); rendering took {time.time() - t:.1f}s")
     log("STEP 4 - Laplace-Hamming binarization (native int16) + IPL SEG assembly ...")
     t = time.time()
-    lh_el = tuple(float(e) for e in loaded.native["el_size_mm"])
-    log(f"  Laplace-Hamming element sizes (x, y, z) = {lh_el[0]:.7f} / {lh_el[1]:.7f} / {lh_el[2]:.7f} mm (AIM header, per axis, IPL's rule); "
-        f"power-of-two padding offset '{engine.LH_PAD_OFFSET}' (IPL's rule)")
-    lh = engine.laplace_hamming_threshold(loaded.native["data"], lh_el, pad_offset=engine.LH_PAD_OFFSET)
-    cort_seg, trab_seg = engine.ipl_seg_assembly(lh, ALL, G_cort, G_trab)
-    seg = np.zeros(lh.shape, np.uint8)
-    seg[cort_seg] = engine.SEG_VALUE_CORT
-    seg[trab_seg] = engine.SEG_VALUE_TRAB
+    lh_el, src = engine.lh_el_size(loaded.native, P.lh.el_size_mm)
+    if P.lh.el_size_mm is None:
+        src = "AIM header, per axis, IPL's rule"                   # this workflow's wording of the header case
+    log(f"  Laplace-Hamming element sizes (x, y, z) = {lh_el[0]:.7f} / {lh_el[1]:.7f} / {lh_el[2]:.7f} mm ({src}); "
+        f"power-of-two padding offset '{P.lh.pad_offset}' (IPL's rule: 'ceil')")
+    if P.seg.periosteal_mask == "raw":
+        if prx_raw is None:
+            raise ValueError("seg.periosteal_mask 'raw' needs the periosteal raster, and this evaluation has only the "
+                             "rendered contour (a compartment-only redo of a folder without <base>_PRX_MASK)")
+        per = as_bool(prx_raw, grid, "periosteal mask")
+    else:
+        per = engine.periosteal_for_seg(P.seg.periosteal_mask, raw=None, rendered=ALL)
+    r = engine.lh_segment(loaded.native["data"], lh_el, per, G_cort, G_trab, P.lh, P.seg, log)
+    lh, cort_seg, trab_seg, seg = r["lh"], r["cort_seg"], r["trab_seg"], r["seg"]
     log(f"  LH threshold {int(lh.sum()):,d}; CORT_SEG {int(cort_seg.sum()):,d}, TRAB_SEG {int(trab_seg.sum()):,d}, "
         f"SEG {int((seg > 0).sum()):,d} voxels [{time.time() - t:.1f}s]")
     return Segmentation(lh=lh, cort_seg=cort_seg, trab_seg=trab_seg, seg=seg, lh_el_size_mm=lh_el,
-                        lh_pad_offset=engine.LH_PAD_OFFSET), G_cort, G_trab
+                        lh_pad_offset=P.lh.pad_offset), G_cort, G_trab
 
 
-def morphometry(loaded, seg, G_trab, cort, G_cort, dt_params=None, backend="auto", log=None):
+def morphometry(loaded, seg, G_trab, cort, G_cort, dt_params=None, backend="auto", log=None, parameters=None,
+                trab_seg=None, ALL=None):
     """(5) Script 32's dt stage on IPL's grids: Tb.Th / Tb.Sp / Tb.N on /bounding_box_cut -border 0 of SEG with
     the trabecular gobj, Ct.Th of the cortical compartment raster on its own box with the cortical gobj; the maps
-    are pasted back onto the AIM grid by global position (ipldt.io.align_to)."""
+    are pasted back onto the AIM grid by global position (ipldt.io.align_to).  parameters: the run's Parameters
+    ('morphometry': the objects, grids, maps and voxel size; dt_params, when given, is its 'dt' block); trab_seg is
+    needed for the 'trab_seg' objects, ALL for ctth_object 'periosteal_minus_trab' (ipldt.ormir.dt_stage)."""
     from ipldt.gpu import resolve_backend
     log = _log(log)
+    P = _params(parameters)
     grid = loaded.grid
     dim, pos, el = grid.dim, grid.pos, grid.el
-    params = dt_params or engine.IPL_SCRIPT32
+    params = dt_params or P.dt
     seg = grid.check(seg, "SEG")
     cort = as_bool(cort, grid, "cortical mask")
     G_trab = as_bool(G_trab, grid, "trabecular gobj")
     G_cort = as_bool(G_cort, grid, "cortical gobj")
+    vs = float(P.morphometry.voxel_size_mm) if P.morphometry.voxel_size_mm is not None else float(el[0])
     log("STEP 5 - IPL dt_thickness / dt_spacing / dt_number ...")
     t = time.time()
-    seg_box = engine.bbox_cut(seg, pos)                                                    # SEG.AIM's grid
-    G_trab_box = align_to(grid.volume(G_trab.astype(np.uint8)), seg_box["dim"], seg_box["pos"]) > 0
-    cort_box = engine.bbox_cut(cort, pos)                                                  # CORT_MASK.AIM's grid
-    G_cort_box = align_to(grid.volume(G_cort.astype(np.uint8)), cort_box["dim"], cort_box["pos"]) > 0
-    log(f"  SEG grid dim {seg_box['dim']} pos {seg_box['pos']}; CORT_MASK grid dim {cort_box['dim']} pos {cort_box['pos']}")
-    m = engine.ipl_morphometry(seg_box["data"] > 0, G_trab_box, cort_mask=cort_box["data"], cort_gobj=G_cort_box,
-                               voxel_size_mm=float(el[0]), params=params, backend=backend, log=log)
-    boxes = {"TRAB_TH": seg_box, "TRAB_SP": seg_box, "TRAB_1N": seg_box, "CORT_TH": cort_box}
+    m, boxes, _ = engine.dt_stage(seg, G_trab, cort, G_cort, dim, pos, vs, params, backend, log, morph=P.morphometry,
+                                  trab_seg=None if trab_seg is None else as_bool(trab_seg, grid, "TRAB_SEG"),
+                                  G_prx=None if ALL is None else as_bool(ALL, grid, "periosteal contour"),
+                                  min_vertices=P.render.min_vertices)
+    seg_box, cort_box = boxes["TRAB_SP"], boxes["CORT_TH"]
     maps = {}
     for name, res in m["results"].items():
         g = boxes[name]
@@ -350,19 +386,28 @@ def morphometry(loaded, seg, G_trab, cort, G_cort, dt_params=None, backend="auto
                        backend=resolve_backend(backend), backend_requested=str(backend))
 
 
-def bmd(loaded, G_trab, G_cort, log=None):
+def bmd(loaded, G_trab, G_cort, log=None, parameters=None, trab=None, cort=None):
     """(5b) ORMIR-XCT bmd_masked inside the rendered contours; a failure is logged and returns {} (BMD is a
-    courtesy: it never fails the morphometry, as in ipldt.ormir.run_pipeline)."""
+    courtesy: it never fails the morphometry, as in ipldt.ormir.run_pipeline).  parameters: 'bmd.masks' ('raw' uses
+    the trab / cort rasters) and the calibration overrides."""
     log = _log(log)
+    P = _params(parameters)
     log("STEP 5b - BMD (ORMIR bmd_masked) ...")
+    hu, calib = engine.calibrated_hu(loaded.img_hu, loaded.native, loaded.calib, P.calibration)
+    if P.bmd.masks == "raw":
+        if trab is None or cort is None:
+            raise ValueError("bmd.masks 'raw' needs the trabecular and cortical rasters")
+        G_trab, G_cort = trab, cort
+    elif P.bmd.masks != "rendered":
+        raise ValueError(f"bmd.masks must be 'rendered' or 'raw', not {P.bmd.masks!r}")
     try:
-        return engine.step5_bmd(loaded.img_hu, np.asarray(G_trab, bool), np.asarray(G_cort, bool), loaded.calib, log)
+        return engine.step5_bmd(hu, np.asarray(G_trab, bool), np.asarray(G_cort, bool), calib, log)
     except Exception as exc:
         log(f"  BMD skipped: {type(exc).__name__}: {exc}")
         return {}
 
 
-def porosity(loaded, G_cort, cort_seg, log=None):
+def porosity(loaded, G_cort, cort_seg, log=None, parameters=None):
     """(5c) the cortical pore cascade and Ct.Po, exactly ipldt.ormir.run_pipeline's STEP 5c
     (ipldt.ormir.step5c_porosity): the rendered cortical contour and CORT_SEG (bool on the AIM grid) are moved
     onto the grids IPL runs the cascade on -- the contour's /gobj_to_aim grid, ipldt.porosity.render_grid, and
@@ -370,10 +415,12 @@ def porosity(loaded, G_cort, cort_seg, log=None):
     grid; ipldt.porosity.ct_po(pore, contour) = |PORE & contour| / |contour|.  As in run_pipeline a failure is
     logged and never fails the morphometry (Porosity.computed False, the message in Porosity.error)."""
     log = _log(log)
+    P = _params(parameters)
     grid = loaded.grid
     try:
         pore, metrics, grids = engine.step5c_porosity(as_bool(G_cort, grid, "cortical gobj"),
-                                                      as_bool(cort_seg, grid, "CORT_SEG"), grid.dim, grid.pos, log)
+                                                      as_bool(cort_seg, grid, "CORT_SEG"), grid.dim, grid.pos, log,
+                                                      params=P.porosity)
         return Porosity(pore=pore, metrics=metrics, computed=True, grids=grids)
     except Exception as exc:     # porosity is a courtesy: never fail the morphometry for it (run_pipeline's rule)
         log(f"  porosity skipped: {type(exc).__name__}: {exc}")
@@ -385,13 +432,18 @@ def _ext(map_format):
     return ".AIM" if map_format == "aim" else ".nii.gz"
 
 
-def write_volumes(out_dir, loaded, masks, segmentation, morph, map_units="voxels", log=None, pore=None, map_format="nifti"):
+def write_volumes(out_dir, loaded, masks, segmentation, morph, map_units="voxels", log=None, pore=None, map_format="nifti",
+                  mask_value=MASK_VALUE, voxel_size_mm=None, calibration=None):
     """The output set (ormir_bqrl/README.md, "Outputs"): every mask, SEG, the pore map and the dt maps on the AIM grid, as NIfTI
     (map_format 'nifti': origin = pos x el) or as char AIMs on the input AIM's header (map_format 'aim':
     ipldt.ormir.write_volume -> ipldt.io.write_aim, as run_pipeline writes them; maps as integer diameters in
     voxels, which must fit the char range 0..255 -- checked before anything is written); <base>_HU is always
     NIfTI (the greyscale for Slicer; the input AIM is the greyscale AIM); the two Slicer files
-    (ormir_bqrl.slicer).  `pore` is the bool pore map of stage 5c or None.  Returns {name: absolute path}."""
+    (ormir_bqrl.slicer).  `pore` is the bool pore map of stage 5c or None.  mask_value: the value of the set voxels of
+    every mask (parameters 'output.mask_value', 127); voxel_size_mm: the mm factor of map_units 'mm' (None = the
+    header's x element size); calibration: the run's CalibrationParams -- a mu_scaling / mu_water that differs from
+    the header's gives <base>_HU recomputed from the native data with them (ipldt.ormir.calibrated_hu's rule).
+    Returns {name: absolute path}."""
     from . import slicer
     check_output_format(map_format, map_units, loaded.native)
     log = _log(log)
@@ -416,26 +468,28 @@ def write_volumes(out_dir, loaded, masks, segmentation, morph, map_units="voxels
 
     t = time.time()
     p = os.path.abspath(os.path.join(out_dir, f"{base}_HU.nii.gz"))
-    write_nifti(p, sitk.GetArrayFromImage(loaded.hu_int16).astype(np.int16), grid.el, grid.pos)
+    hu, _ = engine.calibrated_hu(loaded.hu_int16, loaded.native, loaded.calib, calibration)
+    write_nifti(p, sitk.GetArrayFromImage(hu).astype(np.int16), grid.el, grid.pos)
     out["HU"] = p
+    mv = int(mask_value)
     if masks.prx_raw is not None:
-        save("PRX_MASK", masks.prx_raw.astype(np.uint8) * MASK_VALUE)
-    save("PRX_GOBJ", masks.ALL.astype(np.uint8) * MASK_VALUE)
-    save("CORT_MASK", masks.cort.astype(np.uint8) * MASK_VALUE)
-    save("TRAB_MASK", masks.trab.astype(np.uint8) * MASK_VALUE)
-    save("CORT_GOBJ", masks.G_cort.astype(np.uint8) * MASK_VALUE)
-    save("TRAB_GOBJ", masks.G_trab.astype(np.uint8) * MASK_VALUE)
+        save("PRX_MASK", masks.prx_raw.astype(np.uint8) * mv)
+    save("PRX_GOBJ", masks.ALL.astype(np.uint8) * mv)
+    save("CORT_MASK", masks.cort.astype(np.uint8) * mv)
+    save("TRAB_MASK", masks.trab.astype(np.uint8) * mv)
+    save("CORT_GOBJ", masks.G_cort.astype(np.uint8) * mv)
+    save("TRAB_GOBJ", masks.G_trab.astype(np.uint8) * mv)
     save("SEG", segmentation.seg)
-    save("CORT_SEG", segmentation.cort_seg.astype(np.uint8) * MASK_VALUE)
-    save("TRAB_SEG", segmentation.trab_seg.astype(np.uint8) * MASK_VALUE)
+    save("CORT_SEG", segmentation.cort_seg.astype(np.uint8) * mv)
+    save("TRAB_SEG", segmentation.trab_seg.astype(np.uint8) * mv)
     if pore is not None:
-        save("PORE", np.asarray(pore, bool).astype(np.uint8) * MASK_VALUE)
+        save("PORE", np.asarray(pore, bool).astype(np.uint8) * mv)
     for name in MAP_NAMES:
         if name not in morph.maps:
             continue
         data = morph.maps[name]
         if map_units == "mm":
-            data = data.astype(np.float32) * np.float32(grid.el[0])
+            data = data.astype(np.float32) * np.float32(grid.el[0] if voxel_size_mm is None else voxel_size_mm)
         save(name, data)
     labels = slicer.labels_from_masks(masks.cort, masks.trab)
     p = os.path.abspath(os.path.join(out_dir, f"{base}_compartments.seg.nrrd"))

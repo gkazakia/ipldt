@@ -81,6 +81,11 @@ def _text_lines(report):
         lines.append((f"edit: {', '.join(e['edited'])} ({e['rule']})", "darkred", "bold"))
     pr = report["product"]
     lines.append(("", "black", "normal"))
+    nd = (report.get("parameter_set") or {}).get("non_default")
+    if nd:
+        lines.append(("", "black", "normal"))
+        lines.append((f"NON-DEFAULT PARAMETERS ({len(nd)}): " + ", ".join(nd[:4]) + (" ..." if len(nd) > 4 else ""),
+                      "darkred", "bold"))
     lines.append((f"{pr['name']} {pr['version']}  ipldt {pr['ipldt_version']}  dt {report['parameters']['dt']['backend']}", "dimgray", "normal"))
     return lines
 
@@ -115,8 +120,9 @@ def write_preview(path, loaded, masks, segmentation, morph, report, dpi=150):
     ax = axes[0, 2]
     seg2 = segmentation.seg[z]
     img = np.zeros(hu.shape, np.float32)
-    img[seg2 == 126] = 0.55
-    img[seg2 == 127] = 1.0
+    sv = ((report.get("parameters") or {}).get("seg_assembly") or {}).get("seg_values") or {"cort": 127, "trab": 126}
+    img[seg2 == int(sv["trab"])] = 0.55
+    img[seg2 == int(sv["cort"])] = 1.0
     ax.imshow(img, cmap="gray", vmin=0, vmax=1, interpolation="nearest")
     ax.set_title("SEG (cortical white, trabecular grey)", fontsize=9)
 

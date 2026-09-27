@@ -315,7 +315,7 @@ Radius/tibia medians per site group (s; the pooled medians above move with the s
 | ultradistal | 45,211,320 | 1.1 | 18.1 | 6.5 | 4 | 3.9 | 39.1 | 19.5 | B.site.ultradistal.time_s.* |
 
 - Peak resident memory of the radius/tibia validation worker: 10.35 GB; per validation run oslh_auto_v4 10.35 GB, oslh_noedit_v3 4.69 GB (`B.oslh.peak_rss_gb.*`; validation process, not the pipeline alone; each record carries its worker's running peak).
-- GPU == CPU: tests/test_gpu_cpu.py (26 tests: maps, centres, reports identical for dt_thickness / dt_spacing / dt_number, versions 1-3, with and without gobj, assign_epsilon sweep; ridge_gpu == ridge, draw_spheres_gpu == CPU) and tests/test_ridge_precision.py (GPU bit identity of the ridge test) (`software.gpu_cpu_identity.evidence`). Test suite: 330 tests collected, measured 2026-09-26 (`software.tests.collected_total`).
+- GPU == CPU: tests/test_gpu_cpu.py (26 tests: maps, centres, reports identical for dt_thickness / dt_spacing / dt_number, versions 1-3, with and without gobj, assign_epsilon sweep; ridge_gpu == ridge, draw_spheres_gpu == CPU) and tests/test_ridge_precision.py (GPU bit identity of the ridge test) (`software.gpu_cpu_identity.evidence`). Test suite: 434 tests collected, measured 2026-09-27 (`software.tests.collected_total`).
 
 ## 5. IPL parameter values the package uses
 
@@ -387,7 +387,7 @@ Radius/tibia medians per site group (s; the pooled medians above move with the s
 | software.ipldt.version | 1.0.0 | ipldt/__init__.py (__version__); pyproject.toml |
 | software.ormir_bqrl.version | 0.1.0 | ormir_bqrl/__init__.py (__version__); README.md |
 | software.ormir_xct.version | 1.1.0 | installed package in the ormir env (ormir_xct.__version__) |
-| software.tests.collected_total | 330 | pytest --collect-only -q tests (2026-09-26) |
+| software.tests.collected_total | 434 | pytest --collect-only -q tests (2026-09-27) |
 | software.tests.gpu_cpu_identity | 26 | pytest --collect-only tests/test_gpu_cpu.py (26 of the 43 collected together with test_ridge_precision.py's 17; 2026-09-18) |
 | software.tests.ridge_precision | 17 | pytest --collect-only tests/test_ridge_precision.py (2026-09-18) |
 | software.gpu_cpu_identity.evidence | tests/test_gpu_cpu.py (26 tests: maps, centres, reports identical for dt_thickness / dt_spacing / dt_number, versions 1-3, with and without gobj, assign_epsilon sweep; ridge_gpu == ridge, draw_spheres_gpu == CPU) and tests/test_ridge_precision.py (GPU bit identity of the ridge test) | tests/ |

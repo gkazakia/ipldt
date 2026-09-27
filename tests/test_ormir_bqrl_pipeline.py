@@ -49,8 +49,8 @@ PROCLOG = ("! Processing Log\n"
            "Density: intercept                    -3.94095001e+02\n")
 MASKS = ("PRX_MASK", "PRX_GOBJ", "CORT_MASK", "TRAB_MASK", "CORT_GOBJ", "TRAB_GOBJ", "CORT_SEG", "TRAB_SEG")
 MAPS = ("TRAB_TH", "TRAB_SP", "TRAB_1N", "CORT_TH")
-REPORT_KEYS = ("schema", "product", "run", "sample", "input_aim", "site", "parameters", "masks", "edits", "grids", "step1",
-               "compartments", "morphometry", "bmd", "porosity", "summary", "outputs", "timing_s")
+REPORT_KEYS = ("schema", "product", "run", "sample", "input_aim", "site", "parameters", "parameter_set", "masks", "edits",
+               "grids", "step1", "compartments", "morphometry", "bmd", "porosity", "summary", "outputs", "timing_s")
 
 
 # ------------------------------------------------------------------------------------------- the phantom
@@ -244,7 +244,7 @@ def test_report_schema_and_files(run_out, aim_path):
     assert rep["input_aim"]["calibration_source"] == "proclog"
     assert rep["site"] == "tibia"
     P = rep["parameters"]
-    assert P["step1"] == dict(engine.TIBIA.__dict__)
+    assert P["step1"] == engine.TIBIA.record()          # the sixteen preset fields (+ literals only when not the script's)
     assert P["laplace_hamming"]["threshold"] == 15564 and len(P["laplace_hamming"]["el_size_mm"]) == 3
     assert P["seg_assembly"]["cl_nr_extract_min_cort"] == 35 and P["seg_assembly"]["cl_nr_extract_min_trab"] == 70
     assert P["seg_assembly"]["periosteal_mask"] == "rendered contour (ALL)"
@@ -544,10 +544,13 @@ def test_out_dir_policy_and_defaults(run_out, aim_path, tmp_path):
     assert r2["run"]["out_dir"] == os.path.abspath(os.path.join(src, "redo_2"))
     assert r1["morphometry"] == r2["morphometry"] and r1["site"] == rep["site"] == "tibia"
     assert r1["parameters"]["dt"] == rep["parameters"]["dt"] and r1["parameters"]["map_units"] == "voxels"
-    # an explicit site / map_units are honoured and recorded; a redo of a redo works (derived_from chains)
-    r3 = run_from_masks(aim_path, r1["run"]["out_dir"], str(tmp_path / "explicit"), trab=labels == 2, site="radius", map_units="mm",
-                        compute_bmd=False, preview=False, log=q)
-    assert r3["site"] == "radius" and r3["parameters"]["step1"]["close2"] == 30 and r3["parameters"]["map_units"] == "mm"
+    # an explicit map_units is honoured and recorded; an explicit site is not applied to a compartment redo (STEP 1
+    # does not run): warned about, the run's site kept, listed as not applied; a redo of a redo works (derived_from chains)
+    with pytest.warns(UserWarning, match="not applied: STEP 1 did not run"):
+        r3 = run_from_masks(aim_path, r1["run"]["out_dir"], str(tmp_path / "explicit"), trab=labels == 2, site="radius",
+                            map_units="mm", compute_bmd=False, preview=False, log=q)
+    assert r3["site"] == "tibia" and r3["parameters"]["step1"]["close2"] == 50 and r3["parameters"]["map_units"] == "mm"
+    assert r3["parameter_set"]["not_applied"] == ["step1.corner_min", "step1.close2"]
     assert r3["run"]["derived_from"] == r1["outputs"]["report_json"] and r3["run"]["out_dir"] == os.path.abspath(str(tmp_path / "explicit"))
     assert sitk.ReadImage(r3["outputs"]["TRAB_TH"]).GetPixelID() == sitk.sitkFloat32
     assert r3["morphometry"] == r1["morphometry"]          # the compartment path does not use Step 1's parameters

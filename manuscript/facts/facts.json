@@ -19250,8 +19250,8 @@
    "source": "installed package in the ormir env (ormir_xct.__version__)"
   },
   "software.tests.collected_total": {
-   "value": 330,
-   "source": "pytest --collect-only -q tests (2026-09-26)"
+   "value": 434,
+   "source": "pytest --collect-only -q tests (2026-09-27)"
   },
   "software.tests.gpu_cpu_identity": {
    "value": 26,

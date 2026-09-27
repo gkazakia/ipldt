@@ -20,7 +20,7 @@ from ipldt import ipl_ops as ops                                                
 from ipldt.io import align_to, read_aim                                             # noqa: E402
 from ipldt.ormir import (RADIUS, TIBIA, SITE_PARAMS, array_to_sitk, sitk_to_bool,   # noqa: E402
                          step1_calibration, step1_params_for, step3_trab_cort_seg)
-from ipldt.step1 import STAGES, Step1Params                                          # noqa: E402
+from ipldt.step1 import PRESET_FIELDS, STAGES, Step1Params                           # noqa: E402
 
 PROCLOG = ("Mu_Scaling                                       8192\n"
            "Density: slope                         1.61907703e+03\n"
@@ -80,7 +80,7 @@ def test_step3_images_and_info(phantom):
         assert img.GetSize() == prx.GetSize() and img.GetSpacing() == prx.GetSpacing() and img.GetOrigin() == prx.GetOrigin()
         assert set(np.unique(sitk.GetArrayFromImage(img))) == {0, 127}
     _ring_checks(cort, trab, prx)
-    assert info["params"] == dict(TIBIA.__dict__)
+    assert info["params"] == TIBIA.record() == dict(zip(PRESET_FIELDS, (getattr(TIBIA, f) for f in PRESET_FIELDS)))
     assert info["calibration_source"] == "proclog"
     assert info["calibration"] == dict(slope=1619.07703, intercept=-394.095001, mu_scaling=8192.0)
     assert info["thresholds"]["lower_native"] == 4524 and info["thresholds"]["upper_native"] == 17173

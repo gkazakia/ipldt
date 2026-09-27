@@ -863,7 +863,7 @@ def software_section():
     put("software.ipldt.version", "1.0.0", "ipldt/__init__.py (__version__); pyproject.toml")
     put("software.ormir_bqrl.version", "0.1.0", "ormir_bqrl/__init__.py (__version__); README.md")
     put("software.ormir_xct.version", "1.1.0", "installed package in the ormir env (ormir_xct.__version__)")
-    put("software.tests.collected_total", 330, "pytest --collect-only -q tests (2026-09-26)")
+    put("software.tests.collected_total", 434, "pytest --collect-only -q tests (2026-09-27)")
     put("software.tests.gpu_cpu_identity", 26, "pytest --collect-only tests/test_gpu_cpu.py (26 of the 43 collected together with test_ridge_precision.py's 17; 2026-09-18)",
         note="tests/test_gpu_cpu.py: 'GPU (CuPy) and CPU backends must be bit-identical: maps, centres and reports, for all three functions, all three diameter versions, with and without a gobj, and across assign_epsilon'; the GPU tests skip without CUDA")
     put("software.tests.ridge_precision", 17, "pytest --collect-only tests/test_ridge_precision.py (2026-09-18)", note="float64 ridge test against a 60-digit decimal reference, CPU and GPU bit identity")
@@ -1182,7 +1182,7 @@ def write_facts_md(gap_list):
     A(f"- Peak resident memory of the radius/tibia validation worker: {fv('B.oslh.peak_rss_gb.max', 2)} GB; per validation run "
       + ", ".join(f"{k} {v:.2f} GB" for k, v in F["B.oslh.peak_rss_gb.max_by_run"]["value"].items())
       + " (`B.oslh.peak_rss_gb.*`; validation process, not the pipeline alone; each record carries its worker's running peak).")
-    A(f"- GPU == CPU: {F['software.gpu_cpu_identity.evidence']['value']} (`software.gpu_cpu_identity.evidence`). Test suite: {fv('software.tests.collected_total')} tests collected, measured 2026-09-26 (`software.tests.collected_total`).")
+    A(f"- GPU == CPU: {F['software.gpu_cpu_identity.evidence']['value']} (`software.gpu_cpu_identity.evidence`). Test suite: {fv('software.tests.collected_total')} tests collected, measured {F['software.tests.collected_total']['source'].rsplit('(', 1)[-1].rstrip(')')} (`software.tests.collected_total`).")
     A("")
     # ---------------- parameters
     A("## 5. IPL parameter values the package uses")

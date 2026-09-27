@@ -2,7 +2,7 @@
 import argparse
 
 from ipldt import dt_spacing
-from ipldt.workflows.dt_thickness_workflow import _run_dt
+from ipldt.workflows.dt_thickness_workflow import _run_dt, check_parameters
 from ipldt.workflows._cli import add_dt_arguments
 
 
@@ -24,6 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+    check_parameters(parser, args)
     try:
         return _run_dt(dt_spacing, "dt_spacing", args)
     except Exception as exc:

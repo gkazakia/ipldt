@@ -40,7 +40,8 @@ COHORT = os.environ.get("OSLH_ROOT", os.path.join(os.environ.get("IPLDT_LAB_ROOT
 # ----------------------------------------------------------------------------- synthetic evaluation logs
 def _log(start, end, fill_input, fill_ok, trab_ok):
     """A minimal synthetic evaluation log: the STEP 2 commands whose outcome the variants depend on, each with the
-    options the parser reads (options follow their command line directly), and an error marker where one failed."""
+    options the parser reads (options follow their command line directly), and IPL's error marker where one did not
+    take effect."""
     fill_err = "" if fill_ok else f"!% Error reading file: {fill_input}\n"
     trab_obj = "trab_seg" if trab_ok else "trab_gauss"
     trab_body = "!% -> Set 1000000 of total 4000000\n" if trab_ok else "!% Error reading file: trab_gauss\n"
@@ -102,7 +103,7 @@ def two_run_folder(tmp_path):
 
 
 # ----------------------------------------------------------------------------- the log parser
-def test_parse_eval_log_reads_the_two_command_failures(two_run_folder):
+def test_parse_eval_log_reads_the_two_commands_without_effect(two_run_folder):
     pr = vd.parse_eval_log(str(two_run_folder / "EVAL_LH__1_610892.LOG"))
     assert pr["lh_border"] == "none"
     assert pr["trab_seg_mask"] == "none"
@@ -117,7 +118,7 @@ def test_parse_eval_log_reads_the_two_command_failures(two_run_folder):
     assert pr["evidence"]["fill_offset_duplicate"]["line"] < pr["evidence"]["fft_laplace_hamming"]["line"]
 
 
-def test_parse_eval_log_reads_a_run_where_both_commands_succeeded(two_run_folder):
+def test_parse_eval_log_reads_a_run_where_both_commands_took_effect(two_run_folder):
     pr = vd.parse_eval_log(str(two_run_folder / "EVAL_LH_1_610892.LOG"))
     assert (pr["lh_border"], pr["trab_seg_mask"], pr["seg_variant"]) == ("duplicate", "gobj", "periosteal_first")
     assert pr["evidence"]["trab_gobj_mask"]["set_line"].endswith("of total 4000000")
@@ -363,8 +364,8 @@ def test_real_cohort_trab_seg_mask_detection_is_the_eleven_and_nothing_else():
     """The detection over the whole cohort: 'gobj' for every measurement whose SEG log carries the masking entry and
     'none' for exactly the eleven measurements whose log does not (the ten plus 610892, which ships no SEG and is read
     from its evaluation log; rerun/581203 is the duplicate folder of Diaphyseal/CKD/581203 and is not in the validated
-    117).  The two halves of the same failure never disagree: D3P_FillOffsetDuplicate is present exactly where the
-    masking entry is."""
+    117).  The two signs of the same uncropped run never disagree: D3P_FillOffsetDuplicate is present exactly
+    where the masking entry is."""
     if not os.path.isdir(COHORT):
         pytest.skip(f"radius / tibia cohort not mounted: {COHORT}")
     import struct

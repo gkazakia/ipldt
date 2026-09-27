@@ -5,6 +5,7 @@ import json
 import numpy as np
 
 from ipldt import dt_thickness
+from ipldt.ormir import DTParams
 from ipldt.workflows._cli import add_dt_arguments, dt_params_from_args, print_report, read_binary_on_grid, read_image, voxel_size_from, write_image
 
 
@@ -31,7 +32,11 @@ def _run_dt(fn, name, args) -> int:
         G = read_binary_on_grid(args.gobj, ref)
         gobj = {"rendered": G} if args.gobj_rendered else G
     vs = voxel_size_from(ref, args.voxel_size)
-    res = fn(obj, gobj=gobj, voxel_size_mm=vs, backend=args.backend, **dt_params_from_args(args).kwargs())
+    notes = []
+    dtp = dt_params_from_args(args, notes=notes)
+    for note in notes:
+        print(f"note: {note}")
+    res = fn(obj, gobj=gobj, voxel_size_mm=vs, backend=args.backend, **dtp.kwargs())
     print_report(res.report)
     data = res.map.astype(np.float32) * np.float32(vs) if args.map_units == "mm" else res.map.astype(np.int16)
     print(f"Writing {name} map to {args.output_image}")
@@ -39,13 +44,24 @@ def _run_dt(fn, name, args) -> int:
     if args.report:
         with open(args.report, "w", encoding="utf-8") as fh:
             json.dump(dict(res.report, input=args.input_image, gobj=args.gobj, centres=int(res.centres.sum()), voxel_size_mm=vs,
-                           **dt_params_from_args(args).kwargs()), fh, indent=1)
+                           **dtp.kwargs(), non_default=[f"dt.{k}" for k, v in dtp.kwargs().items() if DTParams().kwargs()[k] != v]),
+                      fh, indent=1)
     return 0
+
+
+def check_parameters(parser, args):
+    """--params / --set / the dt flags checked before anything runs (a usage error, exit 2)."""
+    from ipldt.params import ParameterError
+    try:
+        dt_params_from_args(args)
+    except ParameterError as exc:
+        parser.error(str(exc))
 
 
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+    check_parameters(parser, args)
     try:
         return _run_dt(dt_thickness, "dt_thickness", args)
     except Exception as exc:

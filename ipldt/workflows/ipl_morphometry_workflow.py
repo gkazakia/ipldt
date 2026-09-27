@@ -32,7 +32,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def run(args) -> int:
-    params = dt_params_from_args(args)
+    notes = []
+    params = dt_params_from_args(args, notes=notes)
+    for note in notes:
+        print(f"note: {note}")
     os.makedirs(args.output_dir, exist_ok=True)
     aim_mode = args.subject_dir is not None or all(is_aim(p) for p in (args.seg, args.trab_mask, args.cort_mask, args.trab_seg) if p)
     if aim_mode:
@@ -51,7 +54,7 @@ def run(args) -> int:
         return 0
     # image mode
     import SimpleITK as sitk
-    from ipldt.ormir import ipl_cortical_thickness_sitk, ipl_trabecular_microarchitecture_sitk, write_report
+    from ipldt.ormir import DTParams, ipl_cortical_thickness_sitk, ipl_trabecular_microarchitecture_sitk, write_report
     if not (args.seg and args.trab_mask):
         raise ValueError("image mode needs --seg and --trab-mask")
     seg = sitk.ReadImage(args.seg, sitk.sitkUInt8)
@@ -72,7 +75,9 @@ def run(args) -> int:
         if not args.no_maps:
             sitk.WriteImage(ct, os.path.join(args.output_dir, f"{base}_CORT_TH_ipldt{ext}"))
     report = {"sample": base, "inputs": {"seg": args.seg, "trab_mask": args.trab_mask, "cort_mask": args.cort_mask},
-              "parameters": {**params.kwargs(), "backend": args.backend}, "morphometry": metrics}
+              "parameters": {**params.kwargs(), "backend": args.backend,
+                             "non_default": [f"dt.{k}" for k, v in params.kwargs().items() if DTParams().kwargs()[k] != v]},
+              "morphometry": metrics}
     write_report(report, os.path.join(args.output_dir, f"{base}_morphometry_report.json"), os.path.join(args.output_dir, f"{base}_morphometry_report.csv"))
     for k, v in metrics.items():
         print(f"{k}: {v:.6f}" if isinstance(v, float) else f"{k}: {v}")
@@ -82,6 +87,11 @@ def run(args) -> int:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+    from ipldt.params import ParameterError
+    try:
+        dt_params_from_args(args)
+    except ParameterError as exc:
+        parser.error(str(exc))
     try:
         return run(args)
     except Exception as exc:

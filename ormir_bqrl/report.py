@@ -7,6 +7,15 @@ batch_summary.csv.  Every value is JSON-native (numpy scalars converted) so the 
 The metrics sit in `morphometry` (ipldt.ormir.ipl_morphometry), `bmd` (ORMIR-XCT bmd_masked) and `porosity`
 (Ct_Po, Ct_Po_pore_voxels, Ct_Po_compartment_voxels: the keys of ipldt.ormir.run_pipeline's porosity block; {}
 when the pore cascade was not run), and the headline values of all three in `summary`.
+
+`parameters` lists the values the run actually used (read from its parameter set, never from the engine's
+constants; its `step1` block is Step1Params.record(), the sixteen preset fields plus any script literal that differs
+from the script's value, so a default report has the keys it always had), and `parameter_set`
+(ipldt.params.Resolved.block) records the COMPLETE effective parameter set, the names that differ from the validated
+IPL defaults (`non_default`, empty for a default run), a one-line `statement` that the Markdown report repeats at its
+top, the values that did not take effect because their step did not run (`not_applied`), the values IPL's exports
+never confirmed (`unverified`) and where the values came from (`sources`).  A calibration override adds
+input_aim.calibration_effective (the calibration actually used) next to the header's.
 """
 from __future__ import annotations
 
@@ -20,6 +29,7 @@ import numpy as np
 
 from ipldt import __version__ as ipldt_version
 from ipldt import ormir as engine
+from ipldt import params as _pm
 
 from . import PRODUCT, __version__
 
@@ -106,28 +116,45 @@ def summary_of(metrics, bmd, porosity=None):
     return s
 
 
-def porosity_parameters(poro):
-    """The parameters block of stage 5c: the ipldt calls, their fixed Script 32 arguments and the contour grid."""
+def porosity_parameters(poro, pp=None):
+    """The parameters block of stage 5c: the ipldt calls, the arguments the cascade ran with (pp, an
+    ipldt.params.PoreParams; None = Script 32's) and the contour grid."""
     from ipldt import porosity as _por
-    return {"method": "ipldt.porosity.pore_cascade", "ct_po": "ipldt.porosity.ct_po: |PORE & cortical contour| / |cortical contour|",
+    pp = pp or _pm.PoreParams()
+    m = int(pp.render_grid_margin)
+    clip = "clipped at 0" if pp.render_grid_clip_low == 0 else (
+        "unclipped" if pp.render_grid_clip_low is None else f"clipped at {pp.render_grid_clip_low}")
+    rule = (f"ipldt.porosity.pore_cascade_ipl_grid: the contour on IPL's /gobj_to_aim grid (its box grown by "
+            f"{m} low and {m} or {m + 1} high per in-plane axis, {clip}), CORT_SEG on its tight box; the map pasted back "
+            f"onto the AIM grid") if pp.grid == "ipl" else "ipldt.porosity.pore_cascade on the input AIM's grid (porosity.grid 'aim')"
+    ct = ("ipldt.porosity.ct_po: |PORE & cortical contour| / |cortical contour|" if pp.ct_po == "contour" else
+          "ipldt.porosity.ct_po(definition='pore_plus_bone'): |PORE| / (|PORE| + |CORT_SEG|)")
+    hys = dict(_por.SCRIPT32_HYSTERESIS)
+    hys.update(low_thresh=pp.low_thresh, high_thresh=pp.high_thresh, mode=pp.mode, grow_axes=tuple(pp.grow_axes))
+    return {"method": "ipldt.porosity.pore_cascade", "ct_po": ct,
             "contour": "rendered cortical contour (CORT_GOBJ) and CORT_SEG (ipldt.ormir.step5c_porosity = run_pipeline STEP 5c)",
-            "grid_rule": (f"ipldt.porosity.pore_cascade_ipl_grid: the contour on IPL's /gobj_to_aim grid (its box grown by "
-                          f"{_por.RENDER_GRID_MARGIN} low and {_por.RENDER_GRID_MARGIN} or {_por.RENDER_GRID_MARGIN + 1} high per "
-                          f"in-plane axis, clipped at 0), CORT_SEG on its tight box; the map pasted back onto the AIM grid"),
+            "grid_rule": rule,
             "grids": None if poro is None else poro.grids,
-            "hysteresis": dict(_por.SCRIPT32_HYSTERESIS), "slice_fraction_percent": list(_por.SLICE_FRACTION),
-            "min_pore_voxels": _por.MIN_PORE_VOXELS, "computed": bool(poro is not None and poro.computed),
+            "hysteresis": hys, "slice_fraction_percent": [pp.slice_lo, pp.slice_up],
+            "min_pore_voxels": pp.min_pore_voxels, "computed": bool(poro is not None and poro.computed),
             "error": None if poro is None else poro.error}
 
 
 # ============================================================================================ build
 def build_report(*, kind, loaded, masks, segmentation, morph, bmd, site, step1_params, step1_info, dt_params,
                  map_units, compute_bmd, outputs, timing, started, duration_s, command=None, out_dir=None,
-                 derived_from=None, edits=None, calibration_source=None, porosity=None, map_format="nifti"):
+                 derived_from=None, edits=None, calibration_source=None, porosity=None, map_format="nifti",
+                 resolved=None):
     """The report dict (schema ormir-bqrl/1; ormir_bqrl/README.md, "Outputs").  `masks.provenance` carries a Prov per mask;
     `edits` is None for a run and the edit block of a redo; `porosity` is stage 5c's stages.Porosity (None when
-    the pore cascade was not run)."""
+    the pore cascade was not run); `resolved` is the run's ipldt.params.Resolved (the complete parameter set; None =
+    the defaults of `site` with step1_params / dt_params)."""
     grid = loaded.grid
+    R = resolved or _pm.resolve(site if site in _pm.SITES else "tibia", None,
+                                step1_params=None if site in _pm.SITES and step1_params == _pm.SITES[site] else step1_params,
+                                dt_params=dt_params, workflow="ormir_bqrl")
+    P = R.params
+    vs = float(P.morphometry.voxel_size_mm) if P.morphometry.voxel_size_mm is not None else float(grid.el[0])
     metrics = dict(morph.metrics)
     poro_metrics = dict(porosity.metrics) if porosity is not None else {}
     prov = {name: masks.provenance[name].as_dict() for name in MASK_ORDER}
@@ -140,6 +167,7 @@ def build_report(*, kind, loaded, masks, segmentation, morph, bmd, site, step1_p
     prov["trabecular"]["voxels"] = int(masks.trab.sum())
     prov["trabecular"]["rendered_voxels"] = int(masks.G_trab.sum())
     cal_src = calibration_source or (step1_info["calibration_source"] if step1_info else None)
+    cal_eff = engine.calibration_with(loaded.calib, P.calibration)
     report = {
         "schema": SCHEMA,
         "product": product_info(),
@@ -153,21 +181,23 @@ def build_report(*, kind, loaded, masks, segmentation, morph, bmd, site, step1_p
                       "calibration": dict(loaded.calib), "calibration_source": cal_src},
         "site": site,
         "parameters": {
-            "step1": asdict(step1_params),
-            "laplace_hamming": {"laplace_eps": engine.LAPLACE_EPS, "lp_cut_off_freq": engine.LP_CUT_OFF_FREQ,
-                                "hamming_amp": engine.HAMMING_AMP, "norm_max": engine.NORM_MAX_VALUE,
-                                "threshold": engine.LH_THRESHOLD, "el_size_mm": list(segmentation.lh_el_size_mm),
-                                "pad_offset": getattr(segmentation, "lh_pad_offset", engine.LH_PAD_OFFSET)},
-            "seg_assembly": {"cl_nr_extract_min_cort": engine.CC_MIN_VOXELS_CORT,
-                             "cl_nr_extract_min_trab": engine.CC_MIN_VOXELS_TRAB,
-                             "seg_values": {"cort": engine.SEG_VALUE_CORT, "trab": engine.SEG_VALUE_TRAB},
-                             "periosteal_mask": "rendered contour (ALL)"},
+            "step1": step1_params.record(),
+            "laplace_hamming": {"laplace_eps": P.lh.laplace_eps, "lp_cut_off_freq": P.lh.lp_cut_off_freq,
+                                "hamming_amp": P.lh.hamming_amp, "norm_max": P.lh.norm_max,
+                                "threshold": P.lh.threshold, "el_size_mm": list(segmentation.lh_el_size_mm),
+                                "pad_offset": getattr(segmentation, "lh_pad_offset", P.lh.pad_offset)},
+            "seg_assembly": {"cl_nr_extract_min_cort": P.seg.cc_min_cort,
+                             "cl_nr_extract_min_trab": P.seg.cc_min_trab,
+                             "seg_values": {"cort": P.seg.value_cort, "trab": P.seg.value_trab},
+                             "periosteal_mask": ("rendered contour (ALL)" if P.seg.periosteal_mask == "rendered"
+                                                 else "raw periosteal raster")},
             "dt": {**dt_params.kwargs(), "backend": morph.backend, "backend_requested": morph.backend_requested,
-                   "voxel_size_mm": float(grid.el[0])},
+                   "voxel_size_mm": vs},
             "bmd": {"method": "ormir_xct.bmd_masked", "units": "mgHA/cm3", "computed": bool(bmd)},
-            "porosity": porosity_parameters(porosity),
+            "porosity": porosity_parameters(porosity, P.porosity),
             "map_units": map_units,
             "map_format": map_format},
+        "parameter_set": R.block(),
         "masks": prov,
         "edits": edits,
         "grids": {"AIM": {"dim_xyz": list(grid.dim), "pos_xyz": list(grid.pos)},
@@ -183,6 +213,8 @@ def build_report(*, kind, loaded, masks, segmentation, morph, bmd, site, step1_p
     }
     if not compute_bmd:
         report["parameters"]["bmd"]["computed"] = False
+    if cal_eff is not loaded.calib:                  # a calibration override: the calibration actually used
+        report["input_aim"]["calibration_effective"] = dict(cal_eff)
     return plain(report)
 
 
@@ -228,6 +260,18 @@ def render_markdown(report):
         L.append(f"- derived from: `{run['derived_from']}`")
     L.append(f"- {r['product']['name']} {r['product']['version']}, ipldt {r['product']['ipldt_version']}, "
              f"ORMIR-XCT {r['product']['ormir_xct_version']}, dt backend {r['parameters']['dt']['backend']}")
+    ps = r.get("parameter_set") or {}
+    if ps:
+        if ps.get("non_default"):
+            L.append(f"- **parameters: NOT the validated IPL defaults.** This configuration {ps['statement']} "
+                     "(the full set: 'Parameter set' below)")
+        else:
+            L.append(f"- parameters: {ps['statement']}")
+        for note in ps.get("unverified") or []:
+            L.append(f"- **unverified value:** {note}")
+        for name, d in (ps.get("not_applied_values") or {}).items():
+            L.append(f"- **not applied:** {name} = {_fmt_param(d.get('requested'))}: {d.get('reason')} "
+                     f"({_fmt_param(d.get('used'))})")
     L += ["", "## Summary", "", "| Metric | Value | SD |", "|---|---|---|"]
     rows = (("BV/TV", "BV_TV", None, ""), ("Tb.Th", "Tb_Th_mm", "Tb_Th_sd_mm", "mm"), ("Tb.Sp", "Tb_Sp_mm", "Tb_Sp_sd_mm", "mm"),
             ("Tb.N", "Tb_N_per_mm", None, "/mm"), ("Ct.Th", "Ct_Th_mm", "Ct_Th_sd_mm", "mm"), ("Ct.Po", "Ct_Po", None, ""),
@@ -281,6 +325,20 @@ def render_markdown(report):
         if pp.get("grid_rule"):
             L.append(f"- Ct.Po grid: {pp['grid_rule']} (the grids: 'porosity' rows below)")
     L.append(f"- output format: {P.get('map_format', 'nifti')}; map units: {P['map_units']}")
+    if ps.get("values"):
+        nd = set(ps.get("non_default") or [])
+        dv = ps.get("non_default_values") or {}
+        L += ["", "## Parameter set", "",
+              f"The complete effective parameter set (site {ps.get('site')}, compared with the {ps.get('preset')} preset; "
+              f"sources: {'; '.join(ps.get('sources') or [])}).  Non-default values are in bold with the default "
+              "after them.", "", "| Parameter | Value | Default |", "|---|---|---|"]
+        for stage, block in ps["values"].items():
+            for name, v in block.items():
+                key = f"{stage}.{name}"
+                if key in nd:
+                    L.append(f"| **{key}** | **{_fmt_param(v)}** | {_fmt_param((dv.get(key) or {}).get('default'))} |")
+                else:
+                    L.append(f"| {key} | {_fmt_param(v)} | |")
     L += ["", "## Grids (x, y, z)", "", "| Grid | dim | pos |", "|---|---|---|"]
     for k, g in r["grids"].items():
         L.append(f"| {k} | {g['dim_xyz']} | {g['pos_xyz']} |")
@@ -304,6 +362,16 @@ def render_markdown(report):
     return "\n".join(L)
 
 
+def _fmt_param(v):
+    if isinstance(v, (list, tuple)):
+        return " ".join(_fmt_param(x) for x in v)
+    if v is None:
+        return "None"
+    if isinstance(v, float):
+        return f"{v:g}"
+    return str(v)
+
+
 def summary_row(report):
     """The one-line dict of a sample for batch_summary.csv."""
     r = report
@@ -312,6 +380,9 @@ def summary_row(report):
     for name in MASK_ORDER:
         row[f"{name}_source"] = r["masks"][name]["source"]
     row["out_dir"] = r["run"].get("out_dir")
+    nd = (r.get("parameter_set") or {}).get("non_default")
+    if nd:                                           # only for a non-default run (`batch` writes it as the last column)
+        row["non_default_parameters"] = " ".join(nd)
     return row
 
 

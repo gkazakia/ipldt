@@ -216,15 +216,21 @@ def outer_components(sl):
     return out
 
 
-def outer_chain(comp, pre_activated=False):
+def _min_vertices(min_vertices):
+    """The minimum stored chain length: an explicit value, else the module's MIN_VERTICES read at call time."""
+    return MIN_VERTICES if min_vertices is None else int(min_vertices)
+
+
+def outer_chain(comp, pre_activated=False, min_vertices=None):
     """IPL's stored outer chain of one phase-1 component: CCW Moore trace from the raster-first pixel
-    (entered from the west) + the staged smoothing; None when it is not stored (< MIN_VERTICES = 4 vertices)."""
+    (entered from the west) + the staged smoothing; None when it is not stored (< MIN_VERTICES = 4 vertices;
+    min_vertices overrides it, ipldt.params 'render.min_vertices')."""
     raw = moore_trace(comp, raster_first(comp), backtrack=(-1, 0), ccw=True)
     pts = smooth_chain(raw, pre_activated)
-    return pts if len(pts) >= MIN_VERTICES else None
+    return pts if len(pts) >= _min_vertices(min_vertices) else None
 
 
-def inner_chain(hole):
+def inner_chain(hole, min_vertices=None):
     """IPL's stored inner (endosteal) chain of one hole (bool mask of the 4-connected background region):
     CCW Moore trace of the hole's complement from the object pixel right after the hole's first-row run,
     backtrack west, then the staged smoothing; None when it is not stored (< MIN_VERTICES = 4 vertices)."""
@@ -234,22 +240,22 @@ def inner_chain(hole):
         xe += 1
     raw = moore_trace(~hole, (xe + 1, hy), backtrack=(-1, 0), ccw=True)
     pts = smooth_chain(raw)
-    return pts if len(pts) >= MIN_VERTICES else None
+    return pts if len(pts) >= _min_vertices(min_vertices) else None
 
 
-def _contours(sl):
+def _contours(sl, min_vertices=None):
     """([(kind, vertices, region, hole id)] of one bool slice in stored order -- the outer chains with their
     component (hole id 0), then the inner chains with their hole and its label in `hole_labels` --,
     hole_labels): the 4-connected background labelling that holes() computed."""
     out = []
     for comp, pre in outer_components(sl):
-        pts = outer_chain(comp, pre)
+        pts = outer_chain(comp, pre, min_vertices)
         if pts is not None:
             out.append(("outer", pts, comp, 0))
     lab, ids = holes(sl)
     for h in ids:
         hole = lab == h
-        pts = inner_chain(hole)
+        pts = inner_chain(hole, min_vertices)
         if pts is not None:
             out.append(("inner", pts, hole, h))
     return out, lab
@@ -262,14 +268,14 @@ def _check_slice(sl):
     return sl
 
 
-def slice_chains(sl):
+def slice_chains(sl, min_vertices=None):
     """IPL's stored contours of one slice: [dict(kind='outer' | 'inner', vertices=[(x, y), ...])] in the
     stored order (outer chains first, then inner chains), vertices in slice pixel coordinates (add the
     volume's pos for scanner coordinates), each chain starting at IPL's stored start vertex."""
     sl = _check_slice(sl)
     if not sl.any():
         return []
-    contours, _ = _contours(sl)
+    contours, _ = _contours(sl, min_vertices)
     return [dict(kind=kind, vertices=pts) for kind, pts, _, _ in contours]
 
 
@@ -296,14 +302,15 @@ def polygon_fill(vertices, shape):
     return chain, inside & ~chain
 
 
-def render_slice(sl):
+def render_slice(sl, min_vertices=None):
     """The rendered gobj raster (bool) of one bool slice: the union of the outer fills, each with the strict
-    interior of every inner contour whose hole its polygon interior meets removed."""
+    interior of every inner contour whose hole its polygon interior meets removed.  min_vertices: the minimum
+    stored chain length (None = MIN_VERTICES, IPL's rule)."""
     sl = _check_slice(sl)
     G = np.zeros(sl.shape, bool)
     if not sl.any():
         return G
-    contours, hole_labels = _contours(sl)
+    contours, hole_labels = _contours(sl, min_vertices)
     inner = {h: polygon_fill(pts, sl.shape)[1] for kind, pts, _, h in contours if kind == "inner"}
     for kind, pts, _, _ in contours:
         if kind != "outer":
@@ -318,8 +325,9 @@ def render_slice(sl):
     return G
 
 
-def render_volume(mask, verbose=False):
-    """The rendered gobj raster (bool, same shape) of a bool (z, y, x) mask volume, slice by slice."""
+def render_volume(mask, verbose=False, min_vertices=None):
+    """The rendered gobj raster (bool, same shape) of a bool (z, y, x) mask volume, slice by slice.  min_vertices:
+    the minimum stored chain length (None = MIN_VERTICES = 4, IPL's rule; ipldt.params 'render.min_vertices')."""
     mask = np.asarray(mask, bool)
     if mask.ndim != 3:
         raise ValueError(f"expected a 3-D (z, y, x) mask, got shape {mask.shape}")
@@ -327,7 +335,7 @@ def render_volume(mask, verbose=False):
     for z in range(mask.shape[0]):
         if mask[z].any():
             try:
-                G[z] = render_slice(mask[z])
+                G[z] = render_slice(mask[z], min_vertices)
             except RuntimeError as e:
                 raise RuntimeError(f"slice {z}: {e}") from e
         if verbose and z % 50 == 0:

@@ -23,7 +23,11 @@ tags 00..31 of the T16 test-run export: the /gobj_maskaimpeel_ow peel 0 of the g
 
 PARAMETERS: Step1Params.  Everything is literal in the script except IPL_PEEL0 (peel0, 6 in every
 evaluation), IPL_MISC1_0 (corner_min: 200000 tibia / 800 radius) and IPL_MISC1_1 (close2: 50 tibia / 30
-radius).  TIBIA is the Script 32 preset, RADIUS the Script 33 preset.  Both have a stage-by-stage oracle:
+radius).  TIBIA is the Script 32 preset, RADIUS the Script 33 preset.  Every literal is a field too (since
+2026-09-26: the rank range and -connect_boundary of stages 05 / 08 / 10, -continuous_at_boundary of 11 / 12 / 19 /
+23, the peel of the peel-0 masking steps, the remaining /cl_nr_extract bounds of 18 / 20 / 21 and the
+/bounding_box_cut border), with the script's value as its default, so a user can change any value of the chain
+(ipldt.params, `--set step1.NAME=VALUE`) while TIBIA / RADIUS and every output stay what they were.  Both have a stage-by-stage oracle:
 TIBIA the T16 export of PFJ-0be66a_R (X2420448, a tibia), RADIUS the T17 exports of PFJ-0be66a_R, PFJ-42293d_L and PFJ-6f5538_R
 (2026-09-14: every stage 01..29 exact, isolated and cumulative); the stage tags keep the test-run-16 tibia names
 ('23_close50') for either preset.
@@ -91,7 +95,13 @@ STAGES = ("00_all", "01_seggauss", "02_trab0", "03_peel6", "04_inv", "05_rank1",
 
 @dataclass(frozen=True)
 class Step1Params:
-    """The parameters of Script 32 / 33 STEP 1 (names follow the evaluation script; values are IPL's literals)."""
+    """The parameters of Script 32 / 33 STEP 1 (names follow the evaluation script; values are IPL's literals).
+
+    The first sixteen are the script's options that the site presets and Supplementary Table S1 name.  The last
+    twelve (2026-09-26) are the script's remaining literals, made parameters so that every value of the chain can be
+    changed; their defaults are the script's, so TIBIA / RADIUS and every output are unchanged.  All are plain int /
+    float (IPL's own options are integers: 0 / 1 for a flag, three fields for an x y z triple), so asdict() stays
+    JSON-native and round-trips exactly.  ipldt.params.Parameters wraps this class as its 'step1' stage."""
     sigma: float = 2.0            # /seg_gauss -sigma
     support: int = 3              # /seg_gauss -support
     lower_mgha: float = 500.0     # /seg_gauss -lower_in_perm_aut_al (mg HA/ccm, -unit 2)
@@ -108,6 +118,36 @@ class Step1Params:
     close2: int = 50              # IPL_MISC1_1: /close -close_distance (23); 50 tibia, 30 radius
     slicewise_lo: float = 50.0    # /cl_slicewise_extractow -lo_vol_fract_in_perc (25, 27)
     slicewise_up: float = 100.0   # /cl_slicewise_extractow -up_vol_fract_in_perc
+    # ---- the script's remaining literals (defaults = Script 32 / 33)
+    rank_first: int = 1           # /cl_ow_rank_extract -first_rank of stages 05, 08, 10
+    rank_last: int = 1            # /cl_ow_rank_extract -last_rank
+    rank_connect_boundary: int = 0  # /cl_ow_rank_extract -connect_boundary (0 false, 1 true; test run 18 verified)
+    continuous_x: int = 0         # /dilation and /close -continuous_at_boundary cx cy cz of stages 11, 12, 19, 23
+    continuous_y: int = 0         #   (0 = an empty border, 1 = the object mirrored into it; test run 20 verified)
+    continuous_z: int = 0
+    mask_peel: int = 0            # /gobj_maskaimpeel_ow -peel_iter of the peel-0 steps (the greyscale before 01, stage 06)
+    corner_min_max_number: int = 0  # /cl_nr_extract -max_number of stages 18, 20 (0 = no upper bound)
+    corner_max_min_number: int = 1  # /cl_nr_extract -min_number of stage 21
+    bbc_border_x: int = 0         # /bounding_box_cut -border bx by bz of the greyscale before 01 and of stages 14, 28
+    bbc_border_y: int = 0         #   (border != 0 is implemented but never observed in IPL)
+    bbc_border_z: int = 0
+
+    @property
+    def continuous_at_boundary(self):
+        return (self.continuous_x, self.continuous_y, self.continuous_z)
+
+    @property
+    def bbc_border(self):
+        return (self.bbc_border_x, self.bbc_border_y, self.bbc_border_z)
+
+    def record(self):
+        """The JSON record of the parameters that the reports and info['params'] carry: the sixteen preset fields
+        always, and a script literal (the last twelve fields) only when it differs from the script's value.  So the
+        record of TIBIA / RADIUS -- of every run at the script's literals -- has exactly the keys it had before
+        the literals became parameters (a report written now can be read by the release before), and
+        Step1Params(**record) rebuilds the parameters exactly."""
+        d = asdict(self)
+        return {k: v for k, v in d.items() if k in PRESET_FIELDS or v != _LITERAL_DEFAULTS[k]}
 
     def __post_init__(self):
         # numpy scalars (np.float32 / np.int64 ...) -> plain Python float / int, so asdict(), info['params'],
@@ -129,6 +169,10 @@ def _plain_field(name, value, is_float):
         raise ValueError(f"Step1Params.{name}={value!r} must be an integer")
     return int(x)
 
+
+PRESET_FIELDS = ("sigma", "support", "lower_mgha", "upper_mgha", "peel0", "erode", "dilate", "close1", "open_",
+                 "corner_erode", "corner_min", "corner_dilate", "corner_max", "close2", "slicewise_lo", "slicewise_up")
+_LITERAL_DEFAULTS = {f.name: f.default for f in fields(Step1Params) if f.name not in PRESET_FIELDS}
 
 TIBIA = Step1Params()                                    # Script 32 (verified stage by stage on PFJ-0be66a_R, test run 16)
 RADIUS = Step1Params(corner_min=800, close2=30)          # Script 33 (verified stage by stage on PFJ-0be66a_R, PFJ-42293d_L,
@@ -165,7 +209,7 @@ def cort_trab_separation(grey, periosteal, params=TIBIA, keep_stages=False, log=
     """
     p = params
     t_start = time.time()
-    info = dict(params=asdict(p), counts={}, negatives={}, grids={}, timings={})
+    info = dict(params=p.record(), counts={}, negatives={}, grids={}, timings={})
     stages = {}
     t_last = [t_start]
 
@@ -185,8 +229,12 @@ def cort_trab_separation(grey, periosteal, params=TIBIA, keep_stages=False, log=
 
     # 00: the rendered periosteal contour (input) and its peel masks for /gobj_maskaimpeel_ow
     all_ = stage("00_all", ops.set_value(periosteal, ops.SET, 0))
-    peel = {0: all_, p.peel0: ops.peel_gobj_render(all_, p.peel0)}
-    info["counts"]["peel"] = {0: _count(peel[0]), p.peel0: _count(peel[p.peel0])}
+    p0 = p.mask_peel                                                 # the script's peel-0 masking steps (0)
+    peel = {p0: all_ if p0 == 0 else ops.peel_gobj_render(all_, p0), p.peel0: ops.peel_gobj_render(all_, p.peel0)}
+    info["counts"]["peel"] = {p0: _count(peel[p0]), p.peel0: _count(peel[p.peel0])}
+    cab = p.continuous_at_boundary                                   # /dilation and /close -continuous_at_boundary
+    border = p.bbc_border                                            # /bounding_box_cut -border
+    rank = dict(first_rank=p.rank_first, last_rank=p.rank_last, connect_boundary=bool(p.rank_connect_boundary))
 
     # 01: /gobj_maskaimpeel_ow peel 0 on the greyscale, /bounding_box_cut border 0, /seg_gauss
     cal = dict(calibration) if calibration is not None else ops.calibration_from_proclog(grey)
@@ -194,13 +242,13 @@ def cort_trab_separation(grey, periosteal, params=TIBIA, keep_stages=False, log=
     upper = ops.mgha_to_native(p.upper_mgha, cal["slope"], cal["intercept"], cal["mu_scaling"])
     info["calibration"] = cal
     info["thresholds"] = dict(lower_native=lower, upper_native=upper, lower_mgha=p.lower_mgha, upper_mgha=p.upper_mgha)
-    masked = ops.mask_by_gobj(grey, peel[0])
+    masked = ops.mask_by_gobj(grey, peel[p0])
     if not masked["data"].any():
         raise ValueError("cort_trab_separation: the periosteal contour selects no non-zero greyscale voxel "
                          f"(grey {tuple(grey['dim'])} @ {tuple(grey['pos'])}, periosteal {tuple(all_['dim'])} @ "
-                         f"{tuple(all_['pos'])}, |periosteal| = {info['counts']['peel'][0]:,d}): the contour is "
+                         f"{tuple(all_['pos'])}, |periosteal| = {info['counts']['peel'][p0]:,d}): the contour is "
                          "empty or the two grids do not overlap")
-    aim_bbc = ops.bounding_box_cut(masked)
+    aim_bbc = ops.bounding_box_cut(masked, border)
     del masked
     info["box"] = dict(dim=aim_bbc["dim"], pos=aim_bbc["pos"])
     s01 = stage("01_seggauss", ops.seg_gauss(aim_bbc, p.sigma, p.support, lower, upper))
@@ -210,39 +258,39 @@ def cort_trab_separation(grey, periosteal, params=TIBIA, keep_stages=False, log=
     s02 = stage("02_trab0", ops.subtract_aims(all_, s01))
     s03 = stage("03_peel6", ops.mask_by_gobj(s02, peel[p.peel0]))
     s04 = stage("04_inv", ops.set_value(s03, 0, ops.SET))
-    s05 = stage("05_rank1", ops.cl_ow_rank_extract(s04, 1, 1))
-    s06 = stage("06_bgrm", ops.mask_by_gobj(s05, peel[0]))
+    s05 = stage("05_rank1", ops.cl_ow_rank_extract(s04, **rank))
+    s06 = stage("06_bgrm", ops.mask_by_gobj(s05, peel[p0]))
     s07 = stage("07_trab1", ops.subtract_aims(all_, s06))
-    s08 = stage("08_trabrank", ops.cl_ow_rank_extract(s07, 1, 1))
+    s08 = stage("08_trabrank", ops.cl_ow_rank_extract(s07, **rank))
     del s01, s02, s03, s04, s05, s06, s07
 
     # 09..14: erosion / component / dilation, the large close, back to the contour and its box
     s09 = stage("09_ero3", ops.erosion(s08, p.erode))
-    s10 = stage("10_erorank", ops.cl_ow_rank_extract(s09, 1, 1))
-    s11 = stage("11_dil3", ops.dilation(s10, p.dilate))
-    s12 = stage("12_close15", ops.close(s11, p.close1))
+    s10 = stage("10_erorank", ops.cl_ow_rank_extract(s09, **rank))
+    s11 = stage("11_dil3", ops.dilation(s10, p.dilate, continuous_at_boundary=cab))
+    s12 = stage("12_close15", ops.close(s11, p.close1, continuous_at_boundary=cab))
     s13 = stage("13_close15peel", ops.mask_by_gobj(s12, peel[p.peel0]))
-    s14 = stage("14_bbc", ops.bounding_box_cut(s13))
+    s14 = stage("14_bbc", ops.bounding_box_cut(s13, border))
     del s08, s09, s10, s11, s12, s13
 
     # 15..22: the open, and the corners it removed (kept only if large) added back
     s15 = stage("15_open15", ops.open_(s14, p.open_))
     s16 = stage("16_corners", ops.subtract_aims(s14, s15))
     s17 = stage("17_cornero", ops.erosion(s16, p.corner_erode))
-    s18 = stage("18_corncl", ops.cl_nr_extract(s17, p.corner_min, 0))
-    s19 = stage("19_cornmajor", ops.dilation(s18, p.corner_dilate))
-    s20 = stage("20_corncl2", ops.cl_nr_extract(s19, p.corner_min, 0))
-    s21 = stage("21_corners2", ops.cl_nr_extract(s20, 1, p.corner_max))
+    s18 = stage("18_corncl", ops.cl_nr_extract(s17, p.corner_min, p.corner_min_max_number))
+    s19 = stage("19_cornmajor", ops.dilation(s18, p.corner_dilate, continuous_at_boundary=cab))
+    s20 = stage("20_corncl2", ops.cl_nr_extract(s19, p.corner_min, p.corner_min_max_number))
+    s21 = stage("21_corners2", ops.cl_nr_extract(s20, p.corner_max_min_number, p.corner_max))
     s22 = stage("22_trabadd", ops.add_aims(s21, s15))
     del s14, s16, s17, s18, s19, s20, s21
 
     # 23..29: the second close, minimum cortical thickness, slicewise clean-up, the two masks
-    s23 = stage("23_close50", ops.close(s22, p.close2))
+    s23 = stage("23_close50", ops.close(s22, p.close2, continuous_at_boundary=cab))
     s24 = stage("24_close50peel", ops.mask_by_gobj(s23, peel[p.peel0]))
     s25 = stage("25_slicewise", ops.cl_slicewise_extractow(s24, p.slicewise_lo, p.slicewise_up))
     s26 = stage("26_cort", ops.subtract_aims(all_, s25))
     s27 = stage("27_cortslice", ops.cl_slicewise_extractow(s26, p.slicewise_lo, p.slicewise_up))
-    s28 = stage("28_cortfinal", ops.bounding_box_cut(s27))
+    s28 = stage("28_cortfinal", ops.bounding_box_cut(s27, border))
     s29 = stage("29_trabfinal", ops.subtract_aims(all_, s28))
     del s15, s22, s23, s24, s25, s26, s27
 
