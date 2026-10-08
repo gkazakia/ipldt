@@ -82,6 +82,8 @@ or, from a clone, `pip install -e ".[bqrl]"`. Extras: `io` (ITK with its Scanco 
 (ORMIR-XCT, which needs Python 3.11 or later), `bqrl` (io + ormir + matplotlib), `gpu` (CuPy for CUDA 12), `test`
 (pytest) and `paper` (the validation and figure scripts). The validation ran with Python 3.11.15, NumPy 2.3.5,
 SciPy 1.15.3, numba 0.66.0, CuPy 14.2.0, ITK 5.4.6, SimpleITK 2.5.5 and ORMIR-XCT 1.1.0.
+Processes sharing one GPU take turns in its GPU sections (a lock per device, which kept the NVIDIA driver from
+faulting when several processes ran at once; `IPLDT_GPU_LOCK=0` switches it off); results are the same either way.
 
 ## Quick start
 

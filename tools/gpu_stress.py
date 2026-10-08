@@ -8,7 +8,8 @@ first one.
 --root is the checkout whose ipldt the workers import (default: the one this file belongs to), so the same
 harness can run an older release for comparison.  Exit status: 0 no driver event, 1 a driver event (workers
 killed at once), 2 a worker failed, 3 the event log could not be read.  tests/test_gpu_stress.py runs it on
-this checkout when IPLDT_GPU_STRESS=1.
+this checkout when IPLDT_GPU_STRESS=1.  The workers inherit the environment, so IPLDT_GPU_LOCK=0 runs them without
+the cross-process GPU lock (ipldt.gpu._gpu_section).
 """
 from __future__ import annotations
 
@@ -94,6 +95,7 @@ def run(root, workers=4, minutes=10.0, report=None, interval_ms=1000, log=print)
         raise SystemExit("gpu_stress reads the Windows System event log: Windows only")
     since = (datetime.datetime.now() - datetime.timedelta(seconds=2)).strftime("%Y-%m-%dT%H:%M:%S")
     rep = {"root": root, "workers": workers, "minutes": minutes, "since": since, "volume": VOLUME,
+           "IPLDT_GPU_LOCK": os.environ.get("IPLDT_GPU_LOCK", "unset (lock on)"),
            "events": 0, "event_details": [], "worker_rounds": {}, "worker_tail": {}, "status": None}
     watch = subprocess.Popen(["powershell.exe", "-NoProfile", "-Command",
                               _PS_WATCH.format(since=since, interval_ms=interval_ms)],
@@ -189,7 +191,8 @@ def main(argv=None):
     if a.worker:
         return worker(os.path.abspath(a.root), a.seconds)
     status, rep = run(os.path.abspath(a.root), a.workers, a.minutes, a.report)
-    print(json.dumps({k: rep[k] for k in ("status", "events", "worker_rounds", "since", "ended")}, indent=1))
+    print(json.dumps({k: rep[k] for k in ("status", "events", "worker_rounds", "since", "ended", "IPLDT_GPU_LOCK")},
+                     indent=1))
     for e in rep["event_details"]:
         print("  event:", e)
     return status

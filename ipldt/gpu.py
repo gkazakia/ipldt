@@ -8,11 +8,18 @@ What runs on the GPU (bit-identical to the CPU path, verified on the validation 
     of bounded work (stamp_plan)
 What stays on the CPU: the slice-interleaved vector distance transform (a sequential sweep whose
 tie choices ARE the result; numba, a few seconds) and the contour rendering (per-slice tracing).
+Processes sharing a GPU take turns in these sections (one machine-wide lock per device; IPLDT_GPU_LOCK=0
+switches it off): see _gpu_section.
 
 backend = "auto" (GPU if CuPy sees a device, else CPU), "gpu" (error if unavailable), "cpu".
 """
 from __future__ import annotations
 
+import contextlib
+import os
+import sys
+import threading
+import warnings
 from collections import namedtuple
 
 import numpy as np
@@ -42,6 +49,116 @@ def resolve_backend(backend="auto"):
     if backend == "auto":
         return "gpu" if cupy_available() else "cpu"
     raise ValueError(f"backend must be 'auto', 'gpu' or 'cpu' (got {backend!r})")
+
+
+# Processes sharing one GPU take turns: ridge_gpu and draw_spheres_gpu each hold a machine-wide lock of the device
+# they run on (a named mutex on Windows, an flock-ed file elsewhere) from their first upload to their last
+# download.  When several processes ran these sections at once, the NVIDIA driver logged Xid 13 (FECS) faults:
+# four processes on sparse volumes drew one within 22 s with the single-launch stamping and within 8 minutes with
+# bounded launches; taking turns, none in 10 minutes with four processes or in 60 with eight, and waiting cost four
+# processes under 1 % of their time (tools/gpu_stress.py; RTX 4090).  The lock decides when a call runs, never what
+# it computes.  IPLDT_GPU_LOCK=0 switches it off.
+_LOCK_THREADS = threading.RLock()       # the threads of one process take turns too
+_LOCK_DEPTH = [0]                       # > 0 while this process holds the lock (re-entrant within a thread)
+_LOCK_HANDLES = {}                      # lock name -> mutex handle (Windows) or file descriptor, kept open
+_LOCK_NAMES = {}                        # CuPy device id -> lock name
+_K32 = None
+
+
+def gpu_lock_enabled():
+    """False when the environment sets IPLDT_GPU_LOCK to 0, false, no or off."""
+    return os.environ.get("IPLDT_GPU_LOCK", "1").strip().lower() not in ("0", "false", "no", "off")
+
+
+def _lock_name():
+    """One lock per physical GPU, named after the current device's PCI bus id (device numbers depend on
+    CUDA_VISIBLE_DEVICES, bus ids do not)."""
+    import cupy as cp
+    dev = cp.cuda.Device()
+    if dev.id not in _LOCK_NAMES:
+        _LOCK_NAMES[dev.id] = "ipldt-gpu-" + "".join(ch if ch.isalnum() else "-" for ch in dev.pci_bus_id)
+    return _LOCK_NAMES[dev.id]
+
+
+def _kernel32():
+    global _K32
+    if _K32 is None:
+        import ctypes
+        from ctypes import wintypes
+        k = ctypes.WinDLL("kernel32", use_last_error=True)
+        k.CreateMutexW.restype = wintypes.HANDLE
+        k.CreateMutexW.argtypes = (ctypes.c_void_p, wintypes.BOOL, wintypes.LPCWSTR)
+        k.WaitForSingleObject.restype = wintypes.DWORD
+        k.WaitForSingleObject.argtypes = (wintypes.HANDLE, wintypes.DWORD)
+        k.ReleaseMutex.restype = wintypes.BOOL
+        k.ReleaseMutex.argtypes = (wintypes.HANDLE,)
+        _K32 = k
+    return _K32
+
+
+def _os_lock(name):
+    """Block until this process owns the machine-wide lock `name`; returns its handle."""
+    if sys.platform == "win32":
+        import ctypes
+        k = _kernel32()
+        h = _LOCK_HANDLES.get(name)
+        if h is None:
+            h = k.CreateMutexW(None, False, "Local\\" + name)
+            if not h:
+                raise ctypes.WinError(ctypes.get_last_error())
+            _LOCK_HANDLES[name] = h
+        while True:                                         # 250 ms waits, so that Ctrl+C gets through
+            r = k.WaitForSingleObject(h, 250)
+            if r in (0, 0x80):                              # owned, or abandoned by a holder that died
+                return h
+            if r != 0x102:                                  # anything but WAIT_TIMEOUT
+                raise ctypes.WinError(ctypes.get_last_error())
+    import fcntl
+    import tempfile
+    fd = _LOCK_HANDLES.get(name)
+    if fd is None:
+        fd = os.open(os.path.join(tempfile.gettempdir(), name + ".lock"), os.O_RDONLY | os.O_CREAT, 0o666)
+        _LOCK_HANDLES[name] = fd
+    fcntl.flock(fd, fcntl.LOCK_EX)                                       # released by the OS if the holder dies
+    return fd
+
+
+def _os_unlock(handle):
+    if sys.platform == "win32":
+        _kernel32().ReleaseMutex(handle)
+    else:
+        import fcntl
+        fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+@contextlib.contextmanager
+def _gpu_section(name=None):
+    """Hold the machine-wide lock of the current GPU (or the lock `name`) while the body runs: a no-op with
+    IPLDT_GPU_LOCK=0, re-entrant within a thread.  If the operating system refuses the lock, the body runs
+    without it, after a warning."""
+    if not gpu_lock_enabled():
+        yield
+        return
+    with _LOCK_THREADS:
+        if _LOCK_DEPTH[0]:
+            _LOCK_DEPTH[0] += 1
+            try:
+                yield
+            finally:
+                _LOCK_DEPTH[0] -= 1
+            return
+        try:
+            handle = _os_lock(name or _lock_name())
+        except OSError as e:
+            warnings.warn(f"ipldt.gpu: the GPU lock is unavailable ({e}); running without it", RuntimeWarning)
+            handle = None
+        _LOCK_DEPTH[0] = 1
+        try:
+            yield
+        finally:
+            _LOCK_DEPTH[0] = 0
+            if handle is not None:
+                _os_unlock(handle)
 
 
 def _stamp_kernel():
@@ -212,42 +329,45 @@ def _draw_spheres_gpu(cz, cy, cx, diam, shape, assign_epsilon=0.5, budget=None, 
     """draw_spheres_gpu with the schedule's knobs (tests, benchmarks); `timings`, a list, receives
     (kind, start, stop, steps, milliseconds) for every launch."""
     import cupy as cp
-    n = int(np.asarray(diam).size)
-    out = cp.zeros(int(np.prod(shape)), dtype=cp.int32)
-    if n:
-        nz, ny, nx = np.int32(shape[0]), np.int32(shape[1]), np.int32(shape[2])
-        two_ae = np.float32(2.0 * assign_epsilon)
-        czd, cyd, cxd, dd = (cp.asarray(np.asarray(a, dtype=np.int32)) for a in (cz, cy, cx, diam))
-        rad = cp.empty(n, dtype=cp.int32)
-        _stamp_radius_kernel()(((n + 127) // 128,), (128,), (dd, np.int32(n), two_ae, rad))
-        plan = stamp_plan(cp.asnumpy(rad), budget, small_box)
-        o = cp.asarray(plan.order)
-        czs, cys, cxs, ds = (a[o] for a in (czd, cyd, cxd, dd))
-        del czd, cyd, cxd, dd, rad, o
-        ns = plan.n_small
-        col0 = cp.asarray(plan.col0)
-        err = cp.zeros(1, dtype=cp.int32)
-        point, columns = _stamp_kernel(), _stamp_columns_kernel()
-        stream = cp.cuda.get_current_stream()
-        for kind, a, b, steps in plan.launches:
-            if timings is not None:
-                t0, t1 = cp.cuda.Event(), cp.cuda.Event()
-                t0.record(stream)
-            if kind == "point":
-                point(((b - a + 127) // 128,), (128,), (czs[a:b], cys[a:b], cxs[a:b], ds[a:b], np.int32(b - a),
-                                                        nz, ny, nx, two_ae, out))
-            else:
-                columns(((b - a + 255) // 256,), (256,), (czs[ns:], cys[ns:], cxs[ns:], ds[ns:], col0, np.int32(n - ns),
-                                                          np.int64(a), np.int64(b - a), nz, ny, nx, two_ae, out, err))
-            if timings is not None:
-                t1.record(stream)
-            stream.synchronize()
-            if timings is not None:
-                timings.append((kind, a, b, steps, cp.cuda.get_elapsed_time(t0, t1)))
-        if int(err.get()[0]):
-            raise RuntimeError("ipldt.gpu: the stamping plan disagrees with the kernel's sphere radius; "
-                               "no map returned")
-    return cp.asnumpy(out).astype(np.int16).reshape(shape)
+    with _gpu_section():                        # one process on this GPU at a time
+        n = int(np.asarray(diam).size)
+        out = cp.zeros(int(np.prod(shape)), dtype=cp.int32)
+        if n:
+            nz, ny, nx = np.int32(shape[0]), np.int32(shape[1]), np.int32(shape[2])
+            two_ae = np.float32(2.0 * assign_epsilon)
+            czd, cyd, cxd, dd = (cp.asarray(np.asarray(a, dtype=np.int32)) for a in (cz, cy, cx, diam))
+            rad = cp.empty(n, dtype=cp.int32)
+            _stamp_radius_kernel()(((n + 127) // 128,), (128,), (dd, np.int32(n), two_ae, rad))
+            plan = stamp_plan(cp.asnumpy(rad), budget, small_box)
+            o = cp.asarray(plan.order)
+            czs, cys, cxs, ds = (a[o] for a in (czd, cyd, cxd, dd))
+            del czd, cyd, cxd, dd, rad, o
+            ns = plan.n_small
+            col0 = cp.asarray(plan.col0)
+            err = cp.zeros(1, dtype=cp.int32)
+            point, columns = _stamp_kernel(), _stamp_columns_kernel()
+            stream = cp.cuda.get_current_stream()
+            for kind, a, b, steps in plan.launches:
+                if timings is not None:
+                    t0, t1 = cp.cuda.Event(), cp.cuda.Event()
+                    t0.record(stream)
+                if kind == "point":
+                    point(((b - a + 127) // 128,), (128,), (czs[a:b], cys[a:b], cxs[a:b], ds[a:b], np.int32(b - a),
+                                                            nz, ny, nx, two_ae, out))
+                else:
+                    columns(((b - a + 255) // 256,), (256,), (czs[ns:], cys[ns:], cxs[ns:], ds[ns:], col0,
+                                                              np.int32(n - ns), np.int64(a), np.int64(b - a),
+                                                              nz, ny, nx, two_ae, out, err))
+                if timings is not None:
+                    t1.record(stream)
+                stream.synchronize()
+                if timings is not None:
+                    timings.append((kind, a, b, steps, cp.cuda.get_elapsed_time(t0, t1)))
+            if int(err.get()[0]):
+                raise RuntimeError("ipldt.gpu: the stamping plan disagrees with the kernel's sphere radius; "
+                                   "no map returned")
+        host = cp.asnumpy(out)
+    return host.astype(np.int16).reshape(shape)
 
 
 def ridge_gpu(obj, V, ridge_epsilon=0.9, tol=1e-9):
@@ -259,16 +379,17 @@ def ridge_gpu(obj, V, ridge_epsilon=0.9, tol=1e-9):
     import cupy as cp
     import itertools
     from .core import surface_distance
-    objd = cp.asarray(obj)
-    s = surface_distance(V, xp=cp)
-    s[~objd] = 0
-    sp = cp.pad(s, 1)
-    del s
-    op = cp.pad(objd, 1, constant_values=False)
-    keep = op & (sp > 0)
-    thr = np.float64(ridge_epsilon + tol)
-    for dz, dy, dx in (o for o in itertools.product((-1, 0, 1), repeat=3) if any(o)):
-        sep = np.float64(np.sqrt(dz * dz + dy * dy + dx * dx))
-        keep &= ~(cp.roll(op, (dz, dy, dx), axis=(0, 1, 2))
-                  & ((sep + sp - cp.roll(sp, (dz, dy, dx), axis=(0, 1, 2))) <= thr))
-    return cp.asnumpy(keep[1:-1, 1:-1, 1:-1])
+    with _gpu_section():                        # one process on this GPU at a time
+        objd = cp.asarray(obj)
+        s = surface_distance(V, xp=cp)
+        s[~objd] = 0
+        sp = cp.pad(s, 1)
+        del s
+        op = cp.pad(objd, 1, constant_values=False)
+        keep = op & (sp > 0)
+        thr = np.float64(ridge_epsilon + tol)
+        for dz, dy, dx in (o for o in itertools.product((-1, 0, 1), repeat=3) if any(o)):
+            sep = np.float64(np.sqrt(dz * dz + dy * dy + dx * dx))
+            keep &= ~(cp.roll(op, (dz, dy, dx), axis=(0, 1, 2))
+                      & ((sep + sp - cp.roll(sp, (dz, dy, dx), axis=(0, 1, 2))) <= thr))
+        return cp.asnumpy(keep[1:-1, 1:-1, 1:-1])
