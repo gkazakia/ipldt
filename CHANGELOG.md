@@ -59,3 +59,19 @@ First public release, accompanying the paper (under review).
   before this change (eleven real scans through both workflows, the command lines, the redo and a batch); the reports
   gain only the parameter blocks. Supplementary Table S1's note says which of its values can be changed. Tests:
   `tests/test_params.py` (104 tests; the suite collects 434).
+
+### 2026-10-07: the GPU sphere stamping runs in bounded launches; every output unchanged
+
+- `ipldt.gpu.draw_spheres_gpu` stamped every sphere from one thread looping over its whole (2R+1)^3 box, all in one
+  launch; on sparse segmentations (spheres up to D ~ 180: 6e6 loop steps in one thread, over 1e10 in one launch)
+  several processes doing this at once drew Xid 13 (FECS) faults from the NVIDIA driver. Now the centres are sorted
+  by box width, boxes up to 27 voxels wide keep one thread each (the unchanged kernel), wider ones get one thread per
+  (dz, dx) column, and every launch holds at most 2^27 box positions and finishes before the next starts
+  (`ipldt.gpu.stamp_plan`, a pure function).
+- **Output unchanged**: the same containment test runs on the same (centre, voxel) pairs with the same float32
+  instructions (identical in the compiled PTX), and atomicMax is order-independent. Maps, centres and reports are
+  bit-identical to 750c94a and to the CPU path (`tests/test_gpu_stamp_schedule.py`, against arrays frozen from
+  750c94a by `tools/gpu_stamp_golden.py`).
+- **Driver faults rarer, not gone**: in the opt-in stress test (`tools/gpu_stress.py`, `tests/test_gpu_stress.py`;
+  four processes running `dt_spacing` + `dt_number` with spheres up to D = 190 on an RTX 4090) the old stamping drew
+  an Xid 13 within 22 s, the new one after 8 minutes.
