@@ -45,7 +45,7 @@ paper = ["matplotlib>=3.7", "pandas", "psutil"]
 all = ["ipldt[gpu,io,ormir,test,bqrl,paper]"]
 
 [project.urls]
-Homepage = "https://github.com/zhuyihua1234/ipldt"
+Homepage = "https://github.com/gkazakia/ipldt"
 "ORMIR-XCT" = "https://github.com/ORMIRcommunity/ormir-xct"
 
 # Command-line workflows in the style of ormir_xct.workflows (need the [io] extra; the pipeline

@@ -23,7 +23,7 @@
  "facts": {
   "facts_json": "manuscript/facts/facts.json",
   "bmd_ctpo_json": "manuscript/facts/FACTS_BMD_CTPO.json",
-  "built": "2026-09-26",
+  "built": "2026-10-18",
   "set": "137"
  },
  "crosscheck_worst_relative_deviation": 5.39020447578844e-10,

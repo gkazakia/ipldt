@@ -54,8 +54,16 @@ manufacturer supplies with the scanner (they fix which commands run, in which or
 processing log IPL writes into each output file, and the intermediate products IPL can export. Each candidate rule
 was then checked against IPL treated as a black box, on synthetic phantoms designed so that competing rules give
 different answers and on real scans with a single option changed per run. The expected output was written down
-before every scanner run, and a rule was kept only when IPL's export matched it exactly. The paper and its Supplement
-describe the procedure, with one worked example.
+before every scanner run, and a rule was kept only when IPL's export matched it exactly. `docs/derivation.md`
+describes the procedure, with one worked example.
+
+## Documentation
+
+The folder `docs/` holds the implementation notes that the paper summarizes: `implementation.md` (how every stage
+reimplements its IPL commands, with every parameter value and convention, and the modules' agreement with IPL),
+`derivation.md` (how the rules were derived, with a worked example), `environment.md` (software environment and
+runtime), and `figures.md` (the parameter atlas, Figures D1-D9, one panel per parameter or rule).
+`manuscript/tables/tableS1_parameters.md` lists every parameter with the IPL option it corresponds to.
 
 ## Agreement with IPL
 
@@ -63,7 +71,7 @@ The products of every stage were compared with IPL's own on 137 XtremeCT II scan
 ultradistal radius, ultradistal tibia, diaphyseal radius and diaphyseal tibia), by counting the voxels on which they
 differ, in two configurations: A gives ipldt IPL's own segmentation and contours and tests the distance-transform and
 pore stages; B gives ipldt only IPL's periosteal contour and runs the whole chain. The results are reported in the
-paper. Every number of the main text, Tables 1-3 and Figure 5 is regenerated from the per-scan validation records
+paper. Every number of the main text, its tables, and its agreement figure is regenerated from the per-scan validation records
 in this repository (`manuscript/facts/FACTS.md` and `facts.json` list them with their sources), and Supplementary
 Table S1 is checked against the code; the numbers printed in the legends of the image figures are recorded in the
 figures' `*_numbers.json` sidecars (see "Regenerating the paper's numbers").
@@ -73,9 +81,9 @@ figures' `*_numbers.json` sidecars (see "Regenerating the paper's numbers").
 Python 3.10 or later; NumPy, SciPy and numba are the only required dependencies.
 
 ```bash
-pip install "ipldt @ git+https://github.com/zhuyihua1234/ipldt"                 # the engine
-pip install "ipldt[bqrl] @ git+https://github.com/zhuyihua1234/ipldt"           # + ORMIR-BQRL (ITK, SimpleITK, ORMIR-XCT)
-pip install "ipldt[bqrl,gpu] @ git+https://github.com/zhuyihua1234/ipldt"       # + CuPy for the GPU back end
+pip install "ipldt @ git+https://github.com/gkazakia/ipldt"                 # the engine
+pip install "ipldt[bqrl] @ git+https://github.com/gkazakia/ipldt"           # + ORMIR-BQRL (ITK, SimpleITK, ORMIR-XCT)
+pip install "ipldt[bqrl,gpu] @ git+https://github.com/gkazakia/ipldt"       # + CuPy for the GPU back end
 ```
 
 or, from a clone, `pip install -e ".[bqrl]"`. Extras: `io` (ITK with its Scanco IO module, SimpleITK), `ormir`
@@ -296,4 +304,4 @@ MIT (see `LICENSE`). Scanco, IPL and XtremeCT are trademarks of Scanco Medical A
 or endorsed by Scanco.
 
 Contact: Yihua Zhu, Bone Quality Research Lab, University of California, San Francisco; questions and bug reports
-through the repository's issue tracker (https://github.com/zhuyihua1234/ipldt/issues).
+through the repository's issue tracker (https://github.com/gkazakia/ipldt/issues).

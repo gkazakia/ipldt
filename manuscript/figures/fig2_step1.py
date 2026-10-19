@@ -291,7 +291,7 @@ def load_cache():
 
 
 # ------------------------------------------------------------------------------------------------ drawing
-FIG_W, FIG_H = 180.0, 133.0          # mm
+FIG_W, FIG_H = 180.0, 128.0          # mm (2026-10-17: 133 -> 128 after the footnotes under panel I were removed)
 
 
 def ax_mm(fig, x, y_top, w, h):
@@ -392,7 +392,7 @@ def draw(R, scans):
                columnspacing=1.6, handletextpad=0.6, borderaxespad=0)
 
     # ---------------------------------------------------------------- panel I: the 137 scans
-    yI = y_leg + 4.6
+    yI = y_leg + 9.0                                   # 2026-10-17: more white space between the A-H legend and panel I
     xl, xr = 15.0, FIG_W - 2.0
     n = len(scans)
     ftext(fig, x_left, yI, "I", fontsize=9, fontweight="bold", ha="left")
@@ -463,14 +463,9 @@ def draw(R, scans):
                 axs.text(i, 2.05, f"{d}", ha="center", va="bottom", fontsize=7, color=C_ORANGE)
     for row, lab in ((1, "cortical"), (0, "trabecular")):
         ftext(fig, xl - 0.9, strip_top + (2 - row - 0.5) * cell_h, lab, fontsize=7, color=C_INK2, ha="right", va="center")
-    # the pooled totals and the comparison rule under the strip
-    tot_c, tot_t = sum(r["cort_ipl"] for r in scans), sum(r["trab_ipl"] for r in scans)
-    y_foot = strip_top + 2 * cell_h + 1.0
-    f1 = ftext(fig, xl, y_foot, f"Compared per scan by global voxel position; IPL's masks hold {fmt(tot_c)} cortical "
-                                f"and {fmt(tot_t)} trabecular voxels in total.", fontsize=7, color=C_INK2, ha="left")
-    f2 = ftext(fig, xl, y_foot + 2.9, "Patellae: the STEP 1 rasters; radius and tibia: the STEP 1 masks as rendered "
-                                      "from their contour files.", fontsize=7, color=C_INK2, ha="left")
-    checks += [(f1, xl, xr, "footnote 1"), (f2, xl, xr, "footnote 2"), (hd, xl, xr, "strip header")]
+    # (2026-10-17: the two footnote lines under the strip were removed at the authors' request; the pooled totals
+    # stay in fig2_step1_numbers.json)
+    checks += [(hd, xl, xr, "strip header")]
     check_text_widths(fig, checks)
     return fig
 

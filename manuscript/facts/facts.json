@@ -1,6 +1,6 @@
 {
  "meta": {
-  "built": "2026-09-26",
+  "built": "2026-10-18",
   "version": "n = 137 (public build): radius/tibia records from oslh_auto_v4 (62 counted) + oslh_noedit_v3 (54, all diaphyseal); 21 patellae",
   "set": "137",
   "builder": "manuscript/facts/build_facts.py",

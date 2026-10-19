@@ -26,7 +26,7 @@ onto the input AIM's grid (see "The pore map's grid").
 ## Install
 
 ```bash
-pip install "ipldt[bqrl] @ git+https://github.com/zhuyihua1234/ipldt"          # add ,gpu for the CuPy back end
+pip install "ipldt[bqrl] @ git+https://github.com/gkazakia/ipldt"          # add ,gpu for the CuPy back end
 ```
 
 ORMIR-XCT needs Python 3.11 or later.

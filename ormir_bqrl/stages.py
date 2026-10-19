@@ -204,7 +204,7 @@ def _log(log):
 
 def _need_sitk():
     if sitk is None:
-        raise ImportError("SimpleITK is required by the ORMIR-BQRL workflow (pip install \"ipldt[bqrl] @ git+https://github.com/zhuyihua1234/ipldt\")")
+        raise ImportError("SimpleITK is required by the ORMIR-BQRL workflow (pip install \"ipldt[bqrl] @ git+https://github.com/gkazakia/ipldt\")")
 
 
 def as_bool(arr, grid, what="mask"):
